@@ -229,6 +229,195 @@ aside > img {
   width: 180px !important;
   height: 180px !important;
 }
+    /* چیدمان اصلی صفحه */
+body {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  margin-left: 250px;
+  padding: 70px 48px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.home-content {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* معرفی */
+.home-hero {
+  position: relative;
+  padding: 20px 0 36px;
+}
+
+.home-hero h1 {
+  margin: 0 0 24px;
+  font-size: clamp(30px, 3.5vw, 46px);
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.home-hero h1 span {
+  color: #185abd;
+}
+
+.home-intro {
+  max-width: 730px;
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.8;
+}
+
+/* دکمه‌ها */
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.home-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border: 1px solid #185abd;
+  border-radius: 10px;
+  background: #185abd;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+}
+
+.home-button.secondary {
+  background: transparent;
+  color: #185abd;
+}
+
+.home-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.home-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* برچسب مهارت‌ها */
+.home-skills,
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-skills {
+  margin-top: 34px;
+}
+
+.home-skills span,
+.project-tags span {
+  padding: 5px 14px;
+  border-radius: 24px;
+  background: #eaf0ff;
+  color: #17376a;
+  font-size: 14px;
+}
+
+/* کارت پروژه‌ها */
+.home-projects {
+  margin-top: 36px;
+}
+
+.home-projects h2 {
+  margin: 0 0 24px;
+  font-size: 28px;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid #dfe6f0;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.project-icon {
+  width: 28px;
+  height: 28px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #eaf0ff;
+  color: #185abd;
+}
+
+.project-card h3 {
+  margin: 20px 0 10px;
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.project-card p {
+  margin: 0 0 24px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #526174;
+}
+
+.project-tags {
+  margin-top: auto;
+}
+
+.project-tags span {
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+/* حالت تاریک */
+body.dark-mode .project-card {
+  background: #1b2738;
+  border-color: #35445a;
+}
+
+body.dark-mode .project-card p {
+  color: #cbd5e1;
+}
+
+body.dark-mode .home-hero h1 span,
+body.dark-mode .home-button.secondary {
+  color: #93c5fd;
+}
+
+/* نمایش در صفحه‌های کوچک */
+@media (max-width: 1100px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  aside {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  main {
+    margin-left: 0;
+    padding: 36px 22px;
+  }
+}
   </style>
 </head>
 
@@ -386,37 +575,138 @@ aside > img {
 
 </div>
   </aside>
-  <main>
-    <h1>Nasim Eshaghian</h1>
-    <p class="subtitle">
-      AI/ML Engineer · NLP · Workflow Automation
-    </p>
+  <main id="home">
+  <div class="home-content">
 
-    <h2>About me</h2>
-    <p>
-      I build practical solutions using machine learning,
-      natural language processing, and workflow automation.
-      My projects include water-treatment decision support,
-      CRM automation, Persian speech recognition, and
-      retrieval-augmented assistants.
-    </p>
+    <section class="home-hero">
+      <h1>AI &amp; <span>Machine Learning</span> Engineer</h1>
 
-    <h2>Selected work</h2>
-    <ul>
-      <li>Machine learning for drinking-water treatment</li>
-      <li>CRM and exhibition-management automation</li>
-      <li>Persian speech recognition with Whisper</li>
-      <li>Pharmaceutical information assistant using RAG</li>
-    </ul>
+      <p class="home-intro">
+        I build machine learning models and automate business
+        workflows. My work includes water-treatment decision
+        support, Persian language applications, and CRM systems.
+        I focus on understanding the problem, working carefully
+        with the data, and building tools that people can use.
+      </p>
 
-    <nav aria-label="Contact links">
-      <a href="mailto:nasimeshaghian@gmail.com">Email</a>
-      <a href="https://github.com/NasimEshaghian">GitHub</a>
-      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/">
-        LinkedIn
-      </a>
-    </nav>
-  </main>
+      <div class="home-actions">
+
+        <button class="home-button" type="button" disabled
+                title="CV download will be available soon">
+          <svg viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <path d="M12 3v12m-5-5 5 5 5-5"/>
+            <path d="M4 16v5h16v-5"/>
+          </svg>
+          Download CV
+        </button>
+
+        <button class="home-button secondary" type="button" disabled
+                title="Introduction video will be available soon">
+          <svg viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.8"
+               aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="m10 8 6 4-6 4Z"
+                  fill="currentColor" stroke="none"/>
+          </svg>
+          Watch My Introduction
+        </button>
+
+      </div>
+
+      <div class="home-skills" aria-label="Core skills">
+        <span>Python</span>
+        <span>Machine Learning</span>
+        <span>NLP</span>
+        <span>SQL</span>
+        <span>PostgreSQL</span>
+        <span>n8n</span>
+        <span>Streamlit</span>
+      </div>
+    </section>
+
+    <section class="home-projects" id="projects">
+      <h2>Featured Projects</h2>
+
+      <div class="project-grid">
+
+        <article class="project-card">
+          <svg class="project-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="1.7" stroke-linecap="round"
+               stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/>
+            <path d="M8 15a4 4 0 0 0 4 4"/>
+          </svg>
+
+          <h3>Water Treatment AI</h3>
+          <p>
+            Developing and evaluating models for turbidity
+            forecasting, coagulant decision support, and
+            chlorine-demand and free-residual prediction.
+          </p>
+
+          <div class="project-tags">
+            <span>Machine Learning</span>
+            <span>Time Series</span>
+            <span>Streamlit</span>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <svg class="project-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="1.7" stroke-linecap="round"
+               stroke-linejoin="round" aria-hidden="true">
+            <path d="m12 3 10 5-10 5L2 8Z"/>
+            <path d="m2 12 10 5 10-5M2 16l10 5 10-5"/>
+          </svg>
+
+          <h3>CRM &amp; Workflow Automation</h3>
+          <p>
+            Building exhibition-management workflows for
+            registration, data imports, and reporting using
+            n8n, PostgreSQL, and connected APIs.
+          </p>
+
+          <div class="project-tags">
+            <span>n8n</span>
+            <span>PostgreSQL</span>
+            <span>API</span>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <svg class="project-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="1.7" stroke-linecap="round"
+               stroke-linejoin="round" aria-hidden="true">
+            <path d="m9 4-5 5a6 6 0 0 0 8 8l5-5a6 6 0 0 0-8-8Z"/>
+            <path d="m7 7 8 8"/>
+          </svg>
+
+          <h3>Drug Information Assistant</h3>
+          <p>
+            A prototype assistant that retrieves medication
+            information from official sources using web crawling,
+            semantic search, and retrieval-augmented generation.
+          </p>
+
+          <div class="project-tags">
+            <span>RAG</span>
+            <span>Semantic Search</span>
+            <span>NLP</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </div>
+</main>
   <script>
   const themeButton = document.getElementById("theme-toggle");
 

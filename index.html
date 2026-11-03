@@ -290,6 +290,7 @@ main {
   color: white;
   font: inherit;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .home-button.secondary {
@@ -682,17 +683,22 @@ body.dark-mode .home-button.secondary {
 
       <div class="home-actions">
 
-        <button class="home-button" type="button" disabled
-                title="CV download will be available soon">
-          <svg viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round"
-               aria-hidden="true">
-            <path d="M12 3v12m-5-5 5 5 5-5"/>
-            <path d="M4 16v5h16v-5"/>
-          </svg>
-          Download CV
-        </button>
+
+<a class="home-button"
+   href="./Nasim_Eshaghian_Resume.pdf"
+   download="Nasim_Eshaghian_Resume.pdf">
+
+  <svg viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round"
+       aria-hidden="true">
+    <path d="M12 3v12m-5-5 5 5 5-5"/>
+    <path d="M4 16v5h16v-5"/>
+  </svg>
+
+  Download CV
+</a>
+
 
         <button class="home-button secondary" type="button" disabled
                 title="Introduction video will be available soon">

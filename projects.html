@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects</title>
+  <style>
+    body {
+      max-width: 760px;
+      margin: 60px auto;
+      padding: 0 24px;
+      font-family: Arial, sans-serif;
+      line-height: 1.8;
+      color: #243447;
+      background: #fafcfe;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: 38px;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: #526579;
+    }
+
+    h2 {
+      margin-top: 40px;
+    }
+
+    a {
+      color: #1769aa;
+      text-underline-offset: 4px;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    .sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 28px 20px;
+  padding: 24px 0;
+  border-top: 1px solid #42536b;
+  border-bottom: 1px solid #42536b;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  color: #eef3fa;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a:focus-visible {
+  background-color: #1c3b68;
+}
+
+.sidebar-menu svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+    .sidebar-footer {
+  position: static;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding-bottom: 24px;
+}
+
+.sidebar-footer a,
+.sidebar-footer button {
+  display: inline-flex;
+  padding: 4px;
+  color: #cbd5e1;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.sidebar-footer a:hover,
+.sidebar-footer button:hover {
+  color: white;
+}
+
+.sidebar-footer svg {
+  width: 22px;
+  height: 22px;
+}
+
+body.dark-mode {
+  background-color: #111827;
+  color: #e5e7eb;
+}
+
+body.dark-mode .subtitle {
+  color: #b8c5d6;
+}
+
+body.dark-mode main a {
+  color: #93c5fd;
+}
+aside > img {
+  margin: 32px auto 20px !important;
+}
+
+aside > h2 {
+  margin: 0 12px 6px !important;
+  font-size: 23px !important;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+aside > p {
+  margin: 0 12px !important;
+  font-size: 16px !important;
+  line-height: 1.5;
+}
+
+.sidebar-menu {
+  position: relative;
+  gap: 4px;
+  margin: 24px 16px 0;
+  padding: 20px 0;
+  border: none;
+}
+
+.sidebar-menu::before,
+.sidebar-menu::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background-color: #52647e;
+}
+
+.sidebar-menu::before {
+  top: 0;
+}
+
+.sidebar-menu::after {
+  bottom: 0;
+}
+
+.sidebar-menu a {
+  gap: 14px;
+  padding: 10px 18px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.sidebar-menu svg {
+  width: 21px;
+  height: 21px;
+}
+aside {
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+aside > h2 {
+  font-size: 26px !important;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  color: #ffffff;
+}
+
+aside > p {
+  font-size: 15px !important;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #dbe4f0 !important;
+}
+
+.sidebar-menu a {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #f1f5f9;
+}
+
+.sidebar-menu svg {
+  color: #ffffff;
+}
+
+.sidebar-footer a,
+.sidebar-footer button {
+  color: #ffffff;
+}
+aside {
+  padding-top: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+aside > img {
+  width: 180px !important;
+  height: 180px !important;
+}
+body {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  margin-left: 250px;
+  padding: 70px 48px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.home-content {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.home-hero {
+  position: relative;
+  padding: 20px 0 36px;
+}
+
+.home-hero h1 {
+  margin: 0 0 24px;
+  font-size: clamp(30px, 3.5vw, 46px);
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.home-hero h1 span {
+  color: #185abd;
+}
+
+.home-intro {
+  max-width: 730px;
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.8;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.home-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border: 1px solid #185abd;
+  border-radius: 10px;
+  background: #185abd;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+}
+
+.home-button.secondary {
+  background: transparent;
+  color: #185abd;
+}
+
+.home-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.home-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.home-skills,
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-skills {
+  margin-top: 34px;
+}
+
+.home-skills span,
+.project-tags span {
+  padding: 5px 14px;
+  border-radius: 24px;
+  background: #eaf0ff;
+  color: #17376a;
+  font-size: 14px;
+}
+
+.home-projects {
+  margin-top: 36px;
+}
+
+.home-projects h2 {
+  margin: 0 0 24px;
+  font-size: 28px;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid #dfe6f0;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.project-icon {
+  width: 28px;
+  height: 28px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #eaf0ff;
+  color: #185abd;
+}
+
+.project-card h3 {
+  margin: 20px 0 10px;
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.project-card p {
+  margin: 0 0 24px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #526174;
+}
+
+.project-tags {
+  margin-top: auto;
+}
+
+.project-tags span {
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+body.dark-mode .project-card {
+  background: #1b2738;
+  border-color: #35445a;
+}
+
+body.dark-mode .project-card p {
+  color: #cbd5e1;
+}
+
+body.dark-mode .home-hero h1 span,
+body.dark-mode .home-button.secondary {
+  color: #93c5fd;
+}
+
+@media (max-width: 1100px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  aside {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  main {
+    margin-left: 0;
+    padding: 36px 22px;
+  }
+}
+    .sidebar-menu a[aria-current="page"] {
+  background-color: #1c3b68;
+  color: #ffffff;
+  font-weight: 600;
+}
+@media (min-width: 1101px) {
+  main#home {
+    padding: 36px 40px;
+  }
+
+  .home-hero {
+    padding: 0 0 20px;
+  }
+
+  .home-hero h1 {
+    margin-bottom: 16px;
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  .home-intro {
+    max-width: 850px;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .home-actions {
+    margin-top: 22px;
+    gap: 14px;
+  }
+
+  .home-button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .home-skills {
+    margin-top: 22px;
+    gap: 8px;
+  }
+
+  .home-skills span {
+    padding: 4px 12px;
+    font-size: 13px;
+  }
+
+  .home-projects {
+    margin-top: 22px;
+  }
+
+  .home-projects h2 {
+    margin: 0 0 16px;
+    font-size: 25px;
+  }
+
+  .project-grid {
+    gap: 16px;
+  }
+
+  .project-card {
+    padding: 20px;
+  }
+
+  .project-icon {
+    width: 24px;
+    height: 24px;
+    padding: 10px;
+  }
+
+  .project-card h3 {
+    margin: 14px 0 8px;
+    font-size: 17px;
+    line-height: 1.35;
+  }
+
+  .project-card p {
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .project-tags {
+    gap: 6px;
+  }
+
+  .project-tags span {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}
+    .about-content {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.about-content h1 {
+  margin: 0 0 22px;
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.about-content h2 {
+  margin: 28px 0 10px;
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+.about-content p {
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.about-content .about-lead {
+  font-size: 18px;
+}
+    
+
+@media (min-width: 1101px) {
+
+  main#about {
+    padding: 36px 42px;
+  }
+
+  .about-content {
+    max-width: 1000px;
+  }
+
+  .about-content h1 {
+    font-size: 35px;
+    margin-bottom: 18px;
+  }
+
+  .about-content h2 {
+    font-size: 20px;
+    margin: 23px 0 9px;
+    line-height: 1.3;
+  }
+
+  .about-content p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 13px;
+  }
+
+  .about-content .about-lead {
+    font-size: 17px;
+    line-height: 1.6;
+  }
+}
+    
+.about-content p,
+.about-content li,
+.about-content .about-lead {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+    
+/* =========================
+   PROJECTS PAGE
+========================= */
+
+main#projects {
+  padding: 42px 40px;
+}
+
+.projects-content {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.projects-intro {
+  margin-bottom: 32px;
+}
+
+.projects-eyebrow {
+  margin: 0 0 8px;
+  color: #185abd;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.projects-intro h1 {
+  margin: 0 0 14px;
+  font-size: 36px;
+  line-height: 1.2;
+}
+
+.projects-intro > p:last-child {
+  max-width: 850px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #526174;
+}
+
+/* Project cards */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.portfolio-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid #dfe6f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.portfolio-card.featured {
+  grid-column: 1 / -1;
+  border-color: #b9cbea;
+  background: #f8faff;
+}
+
+.project-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.project-category {
+  color: #185abd;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.project-status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eaf0ff;
+  color: #17376a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.portfolio-card h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.portfolio-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.portfolio-card p {
+  margin: 0 0 14px;
+  color: #526174;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.project-tags span {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eaf0ff;
+  color: #17376a;
+  font-size: 11px;
+}
+
+/* Project card link */
+
+.project-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  color: #185abd;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.project-card-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.case-study {
+  margin-top: 24px;
+}
+
+.case-study-heading {
+  margin-bottom: 24px;
+}
+
+.case-study-heading .projects-eyebrow {
+  margin-bottom: 8px;
+}
+
+.case-study-heading h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  line-height: 1.3;
+}
+
+.case-study-heading p {
+  max-width: 900px;
+  margin: 0;
+  color: #526174;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.case-study-section {
+  margin-bottom: 34px;
+}
+
+.case-study-section > h3 {
+  margin: 0 0 13px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #dfe6f0;
+  font-size: 21px;
+}
+
+.case-study-section p {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.case-study-section ul {
+  padding-left: 22px;
+  margin: 10px 0 14px;
+}
+
+.case-study-section li {
+  margin-bottom: 9px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.process-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid #dfe6f0;
+  border-radius: 12px;
+  background: #f8faff;
+}
+
+.process-step {
+  padding: 8px 11px;
+  border-radius: 8px;
+  background: #eaf0ff;
+  color: #17376a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.process-arrow {
+  color: #718096;
+  font-weight: 700;
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.phase-card {
+  padding: 19px;
+  border: 1px solid #dfe6f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.phase-number {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #185abd;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.phase-card h4 {
+  margin: 0 0 9px;
+  font-size: 17px;
+}
+
+.phase-card p {
+  margin: 0;
+  color: #526174;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.metric-card {
+  padding: 17px;
+  border: 1px solid #dfe6f0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.metric-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #185abd;
+  font-size: 23px;
+}
+
+.metric-card span {
+  color: #526174;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.technical-note {
+  margin-top: 18px;
+  padding: 17px 19px;
+  border-left: 3px solid #185abd;
+  border-radius: 5px;
+  background: #f1f5fb;
+}
+
+.technical-note p {
+  margin: 0;
+  font-size: 14px;
+}
+.technical-details {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid #dfe6f0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.technical-details summary {
+  color: #185abd;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.technical-details p,
+.technical-details li {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+body.dark-mode .projects-intro > p:last-child,
+body.dark-mode .portfolio-card p,
+body.dark-mode .case-study-heading p,
+body.dark-mode .phase-card p,
+body.dark-mode .metric-card span {
+  color: #cbd5e1;
+}
+
+body.dark-mode .portfolio-card,
+body.dark-mode .phase-card,
+body.dark-mode .metric-card,
+body.dark-mode .technical-details {
+  background: #1b2738;
+  border-color: #35445a;
+}
+
+body.dark-mode .portfolio-card.featured,
+body.dark-mode .process-flow,
+body.dark-mode .technical-note {
+  background: #202e43;
+  border-color: #35445a;
+}
+
+body.dark-mode .case-study-section > h3 {
+  border-color: #35445a;
+}
+
+body.dark-mode .process-step,
+body.dark-mode .project-tags span,
+body.dark-mode .project-status {
+  background: #293d5a;
+  color: #dbeafe;
+}
+
+@media (max-width: 1000px) {
+  .phase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  main#projects {
+    padding: 30px 22px;
+  }
+
+  .projects-grid,
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-card.featured {
+    grid-column: auto;
+  }
+
+  .projects-intro h1 {
+    font-size: 31px;
+  }
+
+  .case-study-heading h2 {
+    font-size: 24px;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <aside style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #101d30;">
+    <img
+  src="personal image.png"
+  alt="Nasim Eshaghian"
+  style="
+    display: block;
+    width: 160px;
+    height: 160px;
+    margin: 30px auto 0;
+    border-radius: 50%;
+    object-fit: cover;
+  "
+>
+     <h2 style="
+    color: white;
+    text-align: center;
+    font-size: 22px;
+    margin-top: 40px;
+  ">
+    Nasim Eshaghian
+  </h2>
+
+  <p style="
+    color: #cbd5e1;
+    text-align: center;
+    font-size: 16px;
+  ">
+    AI / ML Engineer
+  </p>
+<nav class="sidebar-menu" aria-label="Main navigation">
+
+  <a href="./index.html#home">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <path d="M3 10 12 3l9 7"/>
+      <path d="M5 9v12h5v-7h4v7h5V9"/>
+    </svg>
+    <span>Home</span>
+  </a>
+
+  <a href="./about.html">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 11v6"/>
+      <path d="M12 7h.01"/>
+    </svg>
+    <span>About</span>
+  </a>
+
+<a href="./projects.html" aria-current="page">
+  <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <rect x="3" y="7" width="18" height="14" rx="2"/>
+      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      <path d="M3 12a22 22 0 0 0 18 0M12 12v3"/>
+    </svg>
+    <span>Projects</span>
+  </a>
+
+  <a href="./resume.html">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
+      <path d="M14 2v6h6M8 12h8M8 16h8"/>
+    </svg>
+    <span>Resume</span>
+  </a>
+
+  <a href="./blog.html">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <path d="M7 7h10M7 11h10M7 15h6M7 18h4"/>
+    </svg>
+    <span>Blog</span>
+  </a>
+
+</nav>
+    <div class="sidebar-footer">
+
+  <!-- GitHub -->
+  <a href="https://github.com/NasimEshaghian"
+     aria-label="GitHub" title="GitHub">
+    <svg viewBox="0 0 24 24" fill="currentColor"
+         aria-hidden="true">
+      <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
+    </svg>
+  </a>
+
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/"
+     aria-label="LinkedIn" title="LinkedIn">
+    <svg viewBox="0 0 24 24" fill="currentColor"
+         aria-hidden="true">
+      <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/>
+    </svg>
+  </a>
+
+  <!-- Email -->
+  <a href="mailto:nasimeshaghian@gmail.com"
+     aria-label="Email" title="Email">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2"/>
+      <path d="m3 6 9 7 9-7"/>
+    </svg>
+  </a>
+
+  <!-- RSS -->
+  <a href="/feed.xml" aria-label="RSS feed" title="RSS">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" aria-hidden="true">
+      <circle cx="5" cy="19" r="1" fill="currentColor"/>
+      <path d="M4 11a9 9 0 0 1 9 9"/>
+      <path d="M4 4a16 16 0 0 1 16 16"/>
+    </svg>
+  </a>
+
+  <!-- Theme -->
+  <button id="theme-toggle" type="button"
+          aria-label="Dark mode" aria-pressed="false"
+          title="Toggle dark mode">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 3a9 9 0 0 0 0 18Z"
+            fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
+
+</div>
+  </aside>
+
+<main id="projects">
+  <div class="projects-content">
+
+    <!-- PAGE INTRO -->
+    <header class="projects-intro">
+      <p class="projects-eyebrow">SELECTED WORK</p>
+      <h1>Projects</h1>
+      <p>
+        A selection of my work across industrial machine learning,
+        AI applications, research, and workflow automation.
+        I focus on building practical solutions from real-world
+        data and evaluating them carefully before deployment.
+      </p>
+    </header>
+
+
+    <!-- PROJECT CARDS -->
+    <section class="projects-grid" aria-label="Selected projects">
+
+      <!-- FEATURED PROJECT -->
+      <article class="portfolio-card featured">
+        <div class="project-card-top">
+          <span class="project-category">Featured case study</span>
+          <span class="project-status">Industrial AI / ML</span>
+        </div>
+
+        <h2>AI-Assisted Drinking-Water Treatment Decision Support</h2>
+
+        <p>
+          An applied machine-learning project focused on supporting
+          drinking-water treatment operators through turbidity
+          forecasting, coagulant decision support, and chlorine
+          demand and free-residual assessment.
+        </p>
+
+        <p>
+          My contribution focused on data preparation, model
+          development and evaluation, decision-support logic,
+          Streamlit dashboard development, and technical
+          documentation.
+        </p>
+
+        <div class="project-tags">
+          <span>Python</span>
+          <span>scikit-learn</span>
+          <span>Time Series</span>
+          <span>Industrial ML</span>
+          <span>Streamlit</span>
+          <span>Decision Support</span>
+        </div>
+
+        <a class="project-card-link" href="#water-treatment-case-study">
+          Explore case study →
+        </a>
+      </article>
+
+
+      <!-- CRM PROJECT -->
+      <article class="portfolio-card">
+        <div class="project-card-top">
+          <span class="project-category">Workflow Automation</span>
+        </div>
+
+        <h3>CRM &amp; Exhibition Workflow Automation</h3>
+
+        <p>
+          Built operational workflows connecting CRM processes,
+          exhibition registration, database functions, Telegram
+          bots, and external APIs. Worked on bulk and linked
+          registrations, Excel imports, Persian-column mapping,
+          validation, and API documentation.
+        </p>
+
+        <div class="project-tags">
+          <span>n8n</span>
+          <span>PostgreSQL</span>
+          <span>REST APIs</span>
+          <span>Telegram</span>
+          <span>OpenAPI</span>
+        </div>
+      </article>
+
+
+      <!-- SPEECH RECOGNITION -->
+      <article class="portfolio-card">
+        <div class="project-card-top">
+          <span class="project-category">Speech AI</span>
+        </div>
+
+        <h3>Persian Speech Recognition</h3>
+
+        <p>
+          Fine-tuned Whisper on a local GPU and investigated
+          adaptation for the Khorasani accent, including attempts
+          to collect accent-specific data. Compared local
+          recognition quality and infrastructure costs with
+          hosted speech APIs.
+        </p>
+
+        <div class="project-tags">
+          <span>Whisper</span>
+          <span>Python</span>
+          <span>Speech Recognition</span>
+          <span>GPU</span>
+        </div>
+      </article>
+
+
+      <!-- PHARMACEUTICAL ASSISTANT -->
+      <article class="portfolio-card">
+        <div class="project-card-top">
+          <span class="project-category">NLP / RAG</span>
+        </div>
+
+        <h3>Pharmaceutical Information Assistant</h3>
+
+        <p>
+          Developed a retrieval-augmented generation prototype
+          using information collected from official Iranian
+          medication sources. Built content retrieval around
+          semantic search and connected retrieved information
+          to conversational answers.
+        </p>
+
+        <div class="project-tags">
+          <span>Python</span>
+          <span>RAG</span>
+          <span>Web Crawling</span>
+          <span>Embeddings</span>
+          <span>Semantic Search</span>
+        </div>
+      </article>
+
+
+      <!-- RESEARCH PROJECT -->
+      <article class="portfolio-card">
+        <div class="project-card-top">
+          <span class="project-category">Research</span>
+        </div>
+
+        <h3>Fake News Detection</h3>
+
+        <p>
+          Investigated social and user-profile features from
+          Twitter for misinformation detection, using
+          Ordered Weighted Averaging fusion. This research
+          resulted in a peer-reviewed journal publication.
+        </p>
+
+        <div class="project-tags">
+          <span>Machine Learning</span>
+          <span>Feature Fusion</span>
+          <span>Research</span>
+          <span>Python</span>
+        </div>
+      </article>
+
+    </section>
+
+
+    <!-- WATER TREATMENT CASE STUDY -->
+    <section class="case-study" id="water-treatment-case-study">
+
+      <header class="case-study-heading">
+        <p class="projects-eyebrow">FEATURED CASE STUDY</p>
+        <h2>AI-Assisted Drinking-Water Treatment Decision Support</h2>
+        <p>
+          An applied industrial ML project exploring how historical
+          plant data can support operational awareness and
+          decision-making across different stages of drinking-water
+          treatment.
+        </p>
+      </header>
+
+
+      <!-- PROJECT OVERVIEW -->
+      <section class="case-study-section">
+        <h3>Project Overview</h3>
+
+        <p>
+          The project focuses on developing a decision-support
+          framework for small and rural drinking-water treatment
+          plants, where operators may have limited time and
+          resources for analysing process data.
+        </p>
+
+        <p>
+          The work uses real operational data from a Split Lake,
+          Canada case study. Split Lake is a data case study for
+          model development and evaluation, not a claim that the
+          system is permanently deployed at that site. The
+          framework is intended to be adaptable to different
+          treatment plants through site-specific configuration.
+        </p>
+
+        <p>
+          The goal is not to replace operators or automate
+          treatment decisions. It is to provide forecasts,
+          evidence-based suggestions, and transparent assessments
+          that operators can review before making decisions.
+        </p>
+
+        <div class="project-tags">
+          <span>Industrial Machine Learning</span>
+          <span>Water Treatment</span>
+          <span>Operator Decision Support</span>
+          <span>Applied Research</span>
+        </div>
+      </section>
+
+
+      <!-- PROCESS CONTEXT -->
+      <section class="case-study-section">
+        <h3>Treatment Process Context</h3>
+
+        <p>
+          The project considers the main treatment sequence and
+          the relationship between water-quality measurements
+          and chemical-treatment decisions.
+        </p>
+
+        <div class="process-flow">
+          <span class="process-step">Raw Water</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Coagulation</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Sedimentation</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Filtration</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Filtered Water</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Chlorination</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Storage Tank</span>
+          <span class="process-arrow">→</span>
+          <span class="process-step">Free Chlorine Residual</span>
+        </div>
+
+        <p>
+          Turbidity data are organised using the measurement
+          sequence Raw Water Turbidity, Filtered Water Turbidity,
+          and Treated Water Turbidity. Chlorine residual assessment
+          focuses on the storage tank measurement.
+        </p>
+      </section>
+
+
+      <!-- THREE PHASES -->
+      <section class="case-study-section">
+        <h3>Three Development Phases</h3>
+
+        <div class="phase-grid">
+
+          <article class="phase-card">
+            <span class="phase-number">PHASE 01</span>
+            <h4>Turbidity Early Warning</h4>
+            <p>
+              Detecting potential raw-water turbidity spikes
+              and estimating their magnitude to provide
+              earlier operational awareness.
+            </p>
+          </article>
+
+          <article class="phase-card">
+            <span class="phase-number">PHASE 02</span>
+            <h4>Coagulant Decision Support</h4>
+            <p>
+              Evaluating candidate coagulant-flow scenarios
+              and estimating the likelihood of achieving
+              the filtered-water turbidity objective.
+            </p>
+          </article>
+
+          <article class="phase-card">
+            <span class="phase-number">PHASE 03</span>
+            <h4>Chlorine Demand &amp; Residual</h4>
+            <p>
+              Predicting the operational chlorine-demand
+              measure and assessing free chlorine residual
+              while retaining conservative baseline behaviour.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+
+      <!-- PHASE 1 -->
+      <section class="case-study-section">
+        <h3>Phase 1 — Turbidity Early Warning &amp; Forecasting</h3>
+
+        <p>
+          The first phase focused on identifying significant
+          changes in raw-water turbidity and estimating the
+          magnitude of potential spikes.
+        </p>
+
+        <p>
+          The modelling workflow included data auditing,
+          timestamp alignment, feature preparation, event
+          definition, classification, regression, and
+          comparison with persistence baselines.
+        </p>
+
+        <ul>
+          <li>
+            Audited irregular sensor readings and prepared
+            aligned observations for chronological modelling.
+          </li>
+          <li>
+            Defined a turbidity spike as a rise of more than
+            2 NTU from the current observation to the next.
+          </li>
+          <li>
+            Developed a classifier using recent raw-water
+            turbidity features to identify potential spike events.
+          </li>
+          <li>
+            Evaluated separate magnitude-estimation approaches
+            for spike and non-spike conditions.
+          </li>
+          <li>
+            Compared candidate models against persistence
+            rather than assuming that a more complex model
+            was automatically better.
+          </li>
+        </ul>
+
+        <div class="metrics-grid">
+
+          <div class="metric-card">
+            <strong>70%</strong>
+            <span>
+              Spike-classifier precision on a
+              38-observation validation set
+            </span>
+          </div>
+
+          <div class="metric-card">
+            <strong>63.6%</strong>
+            <span>
+              Spike-classifier recall on the same
+              validation set
+            </span>
+          </div>
+
+          <div class="metric-card">
+            <strong>4.26</strong>
+            <span>
+              MAE for a separate spike-magnitude
+              experiment, compared with 6.76 for persistence
+            </span>
+          </div>
+
+          <div class="metric-card">
+            <strong>0.913 vs 0.868</strong>
+            <span>
+              Non-spike Huber model MAE versus persistence;
+              persistence remained better in this comparison
+            </span>
+          </div>
+
+        </div>
+
+        <div class="technical-note">
+          <p>
+            <strong>Evaluation principle:</strong>
+            classification and magnitude estimation were
+            treated as separate tasks. The results were
+            reported by task and compared against a simple
+            baseline, including cases where persistence
+            performed better.
+          </p>
+        </div>
+      </section>
+
+
+      <!-- PHASE 2 -->
+      <section class="case-study-section">
+        <h3>Phase 2 — Coagulant Decision Support</h3>
+
+        <p>
+          The second phase explored how historical process
+          measurements could support operator review of
+          coagulant-flow scenarios.
+        </p>
+
+        <p>
+          Rather than building a minimum-dose optimiser, the
+          approach focused on estimating the likelihood that
+          a candidate operating scenario would achieve the
+          filtered-water turbidity objective.
+        </p>
+
+        <ul>
+          <li>
+            Used a filtered-water turbidity objective below
+            1.00 NTU, with a 0.30 NTU tolerance and an upper
+            acceptance boundary of 1.30 NTU.
+          </li>
+          <li>
+            Generated candidate coagulant scenarios for
+            evaluation rather than issuing automatic dosing
+            commands.
+          </li>
+<li>
+  Combined model-based success probability with
+  Bayesian-smoothed historical success probability,
+  using a conservative estimate to avoid overstating
+  the reliability of candidate scenarios.
+</li>
+          <li>
+            Applied conservative probability handling and
+            historical-support checks.
+          </li>
+          <li>
+            Returned operator-review or abstention outcomes
+            when evidence was insufficient or a scenario
+            was outside the supported historical range.
+          </li>
+        </ul>
+
+        <p>
+          A key modelling constraint was the limited variation
+          in historical dosing data. ClearPAC operation was
+          nearly constant in the available history, while
+          CL2410 dosing patterns were influenced by intake flow
+          and operating state. Therefore, the project does not
+          claim that historical associations establish a
+          causal relationship between a particular dose and
+          a particular turbidity outcome.
+        </p>
+
+        <div class="technical-note">
+          <p>
+            <strong>Data-leakage and causality safeguards:</strong>
+            filtered-water turbidity was treated as an observed
+            outcome for evaluation, not as an input feature
+            for predicting that same outcome. No unsupported
+            hydraulic-retention-time assumption was used.
+          </p>
+        </div>
+      </section>
+
+
+      <!-- PHASE 3 -->
+      <section class="case-study-section">
+        <h3>Phase 3 — Chlorine Demand &amp; Free Residual Assessment</h3>
+
+        <p>
+          The third phase addressed two related but distinct
+          prediction tasks: the operational chlorine-demand
+          measure and free chlorine residual.
+        </p>
+
+        <p>
+          The demand target follows the treatment system's
+          software-calculated operational metric. It is not
+          presented as a laboratory measurement of
+          pre-chlorination chlorine demand. Chlorine dose
+          was deliberately excluded from the demand model's
+          input features.
+        </p>
+        <p>
+  The software-derived demand calculation uses the
+  previous day's total chlorine, the average chlorine-dose
+  indication over the interval, and the current day's
+  total chlorine. The dose indication is not used as an
+  input feature for the demand prediction model.
+</p>
+        <p>
+          Free residual assessment focused on the storage-tank
+          measurement. The current case-study configuration
+          uses an engineer-provided target range of
+          0.6–2.0 mg/L. This is a configurable plant setting,
+          not a universal target for every treatment site.
+        </p>
+
+        <ul>
+          <li>
+            Prepared historical and manual observations
+            for both demand and residual modelling.
+          </li>
+          <li>
+            Used chronological evaluation partitions to
+            reflect the order in which operational data
+            become available.
+          </li>
+          <li>
+            Compared candidate models against persistence
+            baselines.
+          </li>
+          <li>
+            Retained persistence where candidate performance
+            did not demonstrate reliable generalisation.
+          </li>
+          <li>
+            Kept candidate models in shadow evaluation
+            rather than authorising automatic dosing.
+          </li>
+        </ul>
+
+        <div class="metrics-grid">
+
+          <div class="metric-card">
+            <strong>0.40</strong>
+            <span>
+              Chlorine-demand validation MAE
+              (53 observations)
+            </span>
+          </div>
+
+          <div class="metric-card">
+            <strong>1.33</strong>
+            <span>
+              Chlorine-demand test MAE
+              (54 observations)
+            </span>
+          </div>
+
+          <div class="metric-card">
+            <strong>0.221</strong>
+            <span>
+              Free-residual persistence baseline MAE
+            </span>
+          </div>
+
+          <div class="metric-card">
+            <strong>0.2007</strong>
+            <span>
+              Best tested free-residual candidate MAE
+              (Extra Trees)
+            </span>
+          </div>
+
+        </div>
+
+        <div class="technical-note">
+          <p>
+            <strong>Model approval outcome:</strong>
+            the chlorine-demand candidate did not generalise
+            sufficiently on the test data. Free-residual
+            candidates showed only a modest improvement over
+            persistence. The evaluated bundle therefore
+            retained the persistence baseline, with candidate
+            models remaining in shadow mode.
+          </p>
+        </div>
+      </section>
+
+
+      <!-- SYSTEM DESIGN -->
+      <section class="case-study-section">
+        <h3>System Architecture &amp; Operator Governance</h3>
+
+        <p>
+          Beyond individual models, the project considered
+          how model outputs should be presented and governed
+          in an operational decision-support application.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Canonical data layer:</strong>
+            a consistent layer for organising measurements
+            and observations used across the three phases.
+          </li>
+          <li>
+            <strong>Model registry:</strong>
+            separation of approved, shadow, challenger,
+            and experimental models.
+          </li>
+          <li>
+            <strong>Configurable site settings:</strong>
+            plant-specific mappings, thresholds, dose grids,
+            concentrations, and paths are kept outside
+            hard-coded model logic.
+          </li>
+          <li>
+            <strong>Measured versus predicted data:</strong>
+            measured API values remain the default operational
+            state; predictions used for planning are identified
+            separately as predictions.
+          </li>
+          <li>
+            <strong>Operator approval:</strong>
+            recommendations remain advisory and require
+            operator review. The system does not directly
+            control pumps, dosing equipment, or PLCs.
+          </li>
+          <li>
+            <strong>Deployment considerations:</strong>
+            the architecture is designed to be adaptable
+            to different sites, including local or offline
+            environments where required.
+          </li>
+        </ul>
+      </section>
+
+
+      <!-- DASHBOARD -->
+      <section class="case-study-section">
+        <h3>Decision-Support Dashboard</h3>
+
+        <p>
+          A Streamlit application was developed to organise
+          the three project phases and present their outputs
+          as separate operational decision-support workflows.
+          The dashboard and model packaging work included
+          configuration, model registry integration, launch
+          scripts, and checks of application startup and
+          model inference.
+        </p>
+      </section>
+
+
+      <!-- ROLE AND TECHNOLOGY -->
+      <section class="case-study-section">
+        <h3>My Contribution</h3>
+
+        <ul>
+          <li>Data preparation, quality checks, and temporal alignment.</li>
+          <li>Feature engineering and target definition.</li>
+          <li>Machine-learning model development and benchmarking.</li>
+          <li>Chronological validation and error analysis.</li>
+          <li>Decision-support and abstention logic.</li>
+          <li>Streamlit dashboard and model packaging work.</li>
+          <li>Technical documentation and communication of model limitations.</li>
+        </ul>
+
+        <h3>Technology Stack</h3>
+
+        <div class="project-tags">
+          <span>Python</span>
+          <span>pandas</span>
+          <span>NumPy</span>
+          <span>scikit-learn</span>
+          <span>Machine Learning</span>
+          <span>Time-Series Evaluation</span>
+          <span>SQL</span>
+          <span>Streamlit</span>
+          <span>Model Registry</span>
+        </div>
+      </section>
+
+
+      <!-- TRANSPARENT TECHNICAL NOTES -->
+      <details class="technical-details">
+        <summary>Additional evaluation and implementation notes</summary>
+
+        <p>
+          <strong>Phase 1 data audit:</strong>
+          one audited extract contained 470 raw rows,
+          of which 46 were invalid and 424 were valid.
+          The modelling dataset contained 395 aligned pairs.
+        </p>
+
+        <p>
+          <strong>Phase 1 classifier:</strong>
+          the 38-observation validation confusion matrix
+          contained 24 true negatives, 3 false positives,
+          4 false negatives, and 7 true positives.
+        </p>
+
+        <p>
+          <strong>Phase 2 model configuration:</strong>
+          one evaluated Random Forest configuration used
+          281 rows, 700 trees, maximum depth 4, minimum
+          leaf size 5, balanced subsampling, and a
+          probability threshold of 0.80. Its input
+          features covered raw-water conditions, intake
+          flow, and coagulant-flow measurements.
+        </p>
+
+        <p>
+          <strong>Phase 3 evaluation:</strong>
+          the demand test set contained 54 records.
+          Nine test records did not have a persistence
+          baseline comparison. For free residual, the
+          evaluated MAE values were 0.221 for persistence,
+          0.2013 for Kernel Ridge, and 0.2007 for Extra Trees.
+        </p>
+
+        <p>
+          These figures describe specific historical
+          evaluation datasets and model experiments.
+          They should not be interpreted as guaranteed
+          performance at another plant or under different
+          operating conditions.
+        </p>
+
+        <p>
+  <strong>Phase 1 classifier details:</strong>
+  the classifier used four recent raw-water features.
+  At the selected threshold of 0.7244, its 38-observation
+  validation matrix contained 24 true negatives,
+  3 false positives, 4 false negatives, and 7 true positives.
+</p>
+
+<p>
+  <strong>Phase 3 data preparation:</strong>
+  the historical SQL data were deduplicated before
+  modelling. Manual review identified 509 usable demand
+  days and 503 usable residual days. The evaluated
+  deployment subsets contained 353 demand records
+  and 358 residual records.
+</p>
+
+<p>
+  <strong>Configuration:</strong>
+  plant-specific settings, including residual targets,
+  chemical concentrations, sensor mappings, and
+  operating thresholds, are configurable rather
+  than fixed in the model code.
+</p>
+
+<p>
+  <strong>Model governance:</strong>
+  candidate models do not automatically replace
+  approved models or retrain themselves in production.
+  They require evaluation and review before approval.
+</p>
+      </details>
+
+    </section>
+
+  </div>
+</main>
+  <script>
+  const themeButton = document.getElementById("theme-toggle");
+
+  function setDarkMode(enabled) {
+    document.body.classList.toggle("dark-mode", enabled);
+    themeButton.setAttribute("aria-pressed", String(enabled));
+  }
+
+  try {
+    setDarkMode(localStorage.getItem("theme") === "dark");
+  } catch {}
+
+  themeButton.addEventListener("click", function () {
+    const enabled = !document.body.classList.contains("dark-mode");
+    setDarkMode(enabled);
+
+    try {
+      localStorage.setItem("theme", enabled ? "dark" : "light");
+    } catch {}
+  });
+</script>
+</body>
+</html>

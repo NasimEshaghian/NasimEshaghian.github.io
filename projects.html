@@ -937,8 +937,8 @@ body.dark-mode .project-status {
 
 .showcase-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
   margin-top: 32px;
 }
 
@@ -961,8 +961,9 @@ body.dark-mode .project-status {
 .showcase-card img {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 175px;
   object-fit: cover;
+  object-position: center;
 }
 
 .showcase-card-content {
@@ -1004,9 +1005,21 @@ body.dark-mode .showcase-card p {
   outline-offset: 3px;
 }
 
-@media (max-width: 700px) {
+/* Tablet */
+@media (max-width: 1000px) {
+  .showcase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
   .showcase-grid {
     grid-template-columns: 1fr;
+  }
+
+  .showcase-card img {
+    height: 190px;
   }
 }
 

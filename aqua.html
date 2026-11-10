@@ -1,1 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An ongoing applied machine-learning project exploring decision support for drinking-water treatment operations.">
+  <title>Water Treatment AI | Nasim Eshaghian</title>
+
+  <style>
+    :root {
+      --navy: #101d30;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --green: #26745a;
+      --green-soft: #eaf5ef;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    a { color: inherit; }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 10;
+      width: 250px;
+      min-height: 100vh;
+      padding: 20px 0 18px;
+      overflow-y: auto;
+      background: var(--navy);
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #ffffff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.4px;
+    }
+
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: #1c3b68;
+      color: #ffffff;
+    }
+
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+
+    .sidebar-menu svg {
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 24px;
+      padding: 0 12px 12px;
+    }
+
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #93c5fd; }
+
+    .sidebar-footer svg { width: 21px; height: 21px; }
+
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 42px 42px 70px;
+    }
+
+    .page-content {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--blue); }
+
+    .back-link svg { width: 17px; height: 17px; }
+
+    .hero {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 8px 28px rgba(24, 45, 75, 0.05);
+    }
+
+    .hero-image {
+      display: block;
+      width: 100%;
+      max-height: 390px;
+      aspect-ratio: 16 / 7;
+      background: #e8f0f5;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-body { padding: 30px 34px 32px; }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 900px;
+      margin: 0 0 14px;
+      color: #172a40;
+      font-size: clamp(30px, 3.2vw, 42px);
+      line-height: 1.18;
+      letter-spacing: -0.8px;
+    }
+
+    .hero-description {
+      max-width: 900px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      border: 1px solid #cde6d8;
+      border-radius: 30px;
+      background: var(--green-soft);
+      color: #23684f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #29966a;
+    }
+
+    .meta-text {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section { margin-top: 38px; }
+
+    .section-heading {
+      margin: 0 0 14px;
+      color: #1c3047;
+      font-size: 23px;
+      line-height: 1.3;
+    }
+
+    .section-lead {
+      max-width: 920px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .overview-card,
+    .phase-card,
+    .principle-card {
+      min-width: 0;
+      padding: 21px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .card-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .card-icon svg { width: 22px; height: 22px; }
+
+    .overview-card h3,
+    .phase-card h3,
+    .principle-card h3 {
+      margin: 0 0 8px;
+      color: #20364d;
+      font-size: 17px;
+      line-height: 1.4;
+    }
+
+    .overview-card p,
+    .phase-card p,
+    .principle-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .phase-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .phase-label {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+    }
+
+    .phase-card ul {
+      margin: 13px 0 0;
+      padding-left: 19px;
+      color: var(--muted);
+    }
+
+    .phase-card li {
+      margin-bottom: 7px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .workflow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfcfe;
+    }
+
+    .workflow-step {
+      padding: 9px 12px;
+      border: 1px solid #d9e5f7;
+      border-radius: 8px;
+      background: #eef4ff;
+      color: #254b7d;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .workflow-arrow { color: #8291a3; font-size: 15px; }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .principle-card { padding: 18px 20px; }
+
+    .note {
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: 1px solid #d7e7df;
+      border-left: 4px solid #388566;
+      border-radius: 10px;
+      background: #f0f7f3;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #245d47;
+      font-size: 14px;
+    }
+
+    .note p {
+      margin: 0;
+      color: #526b60;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .confidentiality {
+      margin-top: 34px;
+      padding: 20px 22px;
+      border: 1px solid #eadfca;
+      border-radius: 13px;
+      background: #fcf8ef;
+    }
+
+    .confidentiality h2 {
+      margin: 0 0 8px;
+      color: #715b32;
+      font-size: 17px;
+    }
+
+    .confidentiality p {
+      margin: 0;
+      color: #74674f;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .tech-stack span {
+      padding: 7px 12px;
+      border: 1px solid #dce5ef;
+      border-radius: 25px;
+      background: #ffffff;
+      color: #38516b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 42px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: #758397;
+      font-size: 12px;
+    }
+
+    .page-footer a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* Dark mode */
+    body.dark-mode {
+      --ink: #e5eaf1;
+      --muted: #b7c4d3;
+      --line: #35445a;
+      --surface: #1b2738;
+      --page: #111827;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    body.dark-mode .hero h1,
+    body.dark-mode .section-heading,
+    body.dark-mode .overview-card h3,
+    body.dark-mode .phase-card h3,
+    body.dark-mode .principle-card h3 {
+      color: #edf3fa;
+    }
+
+    body.dark-mode .hero,
+    body.dark-mode .overview-card,
+    body.dark-mode .phase-card,
+    body.dark-mode .principle-card {
+      background: var(--surface);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .workflow {
+      background: #172337;
+      border-color: var(--line);
+    }
+
+    body.dark-mode .workflow-step,
+    body.dark-mode .tech-stack span {
+      background: #263b59;
+      border-color: #3b5578;
+      color: #dce9fb;
+    }
+
+    body.dark-mode .note {
+      background: #1b332c;
+      border-color: #315f4d;
+    }
+
+    body.dark-mode .note strong { color: #a8ddc2; }
+    body.dark-mode .note p { color: #c2d9ce; }
+
+    body.dark-mode .confidentiality {
+      background: #342d20;
+      border-color: #63543a;
+    }
+
+    body.dark-mode .confidentiality h2 { color: #f0d9a9; }
+    body.dark-mode .confidentiality p { color: #d8c9a9; }
+
+    body.dark-mode .status-pill {
+      background: #1b3b30;
+      border-color: #315e4c;
+      color: #b9e4cf;
+    }
+
+    body.dark-mode .page-footer { border-color: var(--line); }
+
+    @media (max-width: 1100px) {
+      .overview-grid,
+      .phase-list { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 18px 0;
+      }
+
+      .sidebar-photo {
+        width: 112px;
+        height: 112px;
+        margin-top: 0;
+      }
+
+      .sidebar-name { font-size: 22px; }
+      .sidebar-menu { max-width: 420px; margin: 20px auto 0; padding-right: 14px; padding-left: 14px; }
+      .sidebar-footer { margin-top: 16px; }
+
+      main {
+        margin-left: 0;
+        padding: 28px 18px 48px;
+      }
+
+      .hero-body { padding: 23px 21px 25px; }
+      .hero-image { aspect-ratio: 16 / 9; }
+      .hero-description { font-size: 14px; }
+      .principles-grid { grid-template-columns: 1fr; }
+      .section { margin-top: 30px; }
+      .section-heading { font-size: 21px; }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <img class="sidebar-photo" src="./personal image.png" alt="Nasim Eshaghian">
+    <h2 class="sidebar-name">Nasim Eshaghian</h2>
+    <p class="sidebar-role">AI / ML Engineer</p>
+
+    <nav class="sidebar-menu" aria-label="Main navigation">
+      <a href="./index.html#home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10 12 3l9 7"/><path d="M5 9v12h5v-7h4v7h5V9"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="./about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7h.01"/>
+        </svg>
+        <span>About</span>
+      </a>
+      <a href="./projects.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12a22 22 0 0 0 18 0M12 12v3"/>
+        </svg>
+        <span>Projects</span>
+      </a>
+      <a href="./resume.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 12h8M8 16h8"/>
+        </svg>
+        <span>Resume</span>
+      </a>
+      <a href="./blog.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h10M7 15h6M7 18h4"/>
+        </svg>
+        <span>Blog</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/NasimEshaghian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/></svg>
+      </a>
+      <a href="mailto:nasimeshaghian@gmail.com" aria-label="Email" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main id="aqua-project">
+    <div class="page-content">
+      <a class="back-link" href="./projects.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h12"/></svg>
+        Back to Projects
+      </a>
+
+      <header class="hero">
+        <img class="hero-image" src="./images/projects/water-treatment.jfif" alt="Visual cover for an AI-assisted drinking-water treatment project">
+        <div class="hero-body">
+          <p class="eyebrow">Applied Industrial AI / Machine Learning</p>
+          <h1>AI-Assisted Drinking-Water Treatment Decision Support</h1>
+          <p class="hero-description">
+            An ongoing applied machine-learning project exploring how operational water-quality data can support turbidity monitoring, coagulant scenario assessment, and chlorine-related decision support.
+          </p>
+          <div class="status-row">
+            <span class="status-pill"><span class="status-dot"></span> Ongoing Research &amp; Development</span>
+            <span class="meta-text">My contribution: AI/ML development, evaluation, and decision-support prototyping</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="section">
+        <h2 class="section-heading">Project Overview</h2>
+        <p class="section-lead">
+          This project explores a data-informed decision-support approach for drinking-water treatment operations. The work brings together data preparation, machine-learning experiments, time-aware evaluation, and an operator-oriented application prototype. Its purpose is to help make operational patterns easier to review—not to replace plant expertise or automate treatment decisions.
+        </p>
+
+        <div class="overview-grid">
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8c2.5 0 4.5 1.5 7 4s4.5 4 7 4"/><path d="M5 16c2.5 0 4.5-1.5 7-4s4.5-4 7-4"/></svg>
+            </span>
+            <h3>Water-quality monitoring</h3>
+            <p>Preparing and analysing operational measurements to study changes in turbidity and identify patterns that may warrant attention.</p>
+          </article>
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7h14M7 7l-3 6h6L7 7Zm10 0-3 6h6l-3-6Z"/><path d="M8 21h8"/></svg>
+            </span>
+            <h3>Decision support</h3>
+            <p>Evaluating candidate operating scenarios against water-quality objectives while accounting for the limits of historical evidence.</p>
+          </article>
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5m0 14h17"/><path d="m7 15 4-4 3 2 5-7"/><path d="M16 6h3v3"/></svg>
+            </span>
+            <h3>Model evaluation</h3>
+            <p>Comparing candidate models with simple baselines and keeping model limitations visible throughout development.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Three Development Areas</h2>
+        <p class="section-lead">
+          The work is organised into three related development areas. Each is evaluated as a distinct problem because the targets, available evidence, and operational implications are different.
+        </p>
+
+        <div class="phase-list">
+          <article class="phase-card">
+            <span class="phase-label">AREA 01</span>
+            <h3>Turbidity Monitoring &amp; Early Warning</h3>
+            <p>Exploring approaches for identifying notable changes in raw-water turbidity and estimating the magnitude of potential events.</p>
+            <ul>
+              <li>Data quality checks and temporal alignment.</li>
+              <li>Feature preparation from recent observations.</li>
+              <li>Separate classification and magnitude-estimation experiments.</li>
+              <li>Comparison with persistence-based baselines.</li>
+            </ul>
+          </article>
+
+          <article class="phase-card">
+            <span class="phase-label">AREA 02</span>
+            <h3>Coagulant Scenario Assessment</h3>
+            <p>Studying whether historical process data can provide useful evidence when reviewing candidate coagulant operating scenarios.</p>
+            <ul>
+              <li>Evaluation of candidate scenarios against a water-quality objective.</li>
+              <li>Use of model estimates alongside historical evidence.</li>
+              <li>Conservative handling when historical support is limited.</li>
+              <li>Operator review or abstention when evidence is insufficient.</li>
+            </ul>
+          </article>
+
+          <article class="phase-card">
+            <span class="phase-label">AREA 03</span>
+            <h3>Chlorine Demand &amp; Residual Assessment</h3>
+            <p>Investigating separate prediction tasks related to an operational chlorine-demand measure and free chlorine residual.</p>
+            <ul>
+              <li>Preparation of historical and manually reviewed observations.</li>
+              <li>Chronological model evaluation.</li>
+              <li>Benchmarking candidate models against persistence.</li>
+              <li>Keeping candidates in evaluation until their reliability is demonstrated.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Development Workflow</h2>
+        <p class="section-lead">A repeatable workflow is used to move from raw operational records to outputs that can be reviewed by a human operator.</p>
+        <div class="workflow" aria-label="Project development workflow">
+          <span class="workflow-step">Data review</span>
+          <span class="workflow-arrow" aria-hidden="true">→</span>
+          <span class="workflow-step">Preparation &amp; alignment</span>
+          <span class="workflow-arrow" aria-hidden="true">→</span>
+          <span class="workflow-step">Feature engineering</span>
+          <span class="workflow-arrow" aria-hidden="true">→</span>
+          <span class="workflow-step">Model experiments</span>
+          <span class="workflow-arrow" aria-hidden="true">→</span>
+          <span class="workflow-step">Baseline evaluation</span>
+          <span class="workflow-arrow" aria-hidden="true">→</span>
+          <span class="workflow-step">Operator review</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Engineering &amp; Evaluation Principles</h2>
+        <div class="principles-grid">
+          <article class="principle-card">
+            <h3>Time-aware validation</h3>
+            <p>Evaluation is designed to respect chronological order so that future observations do not leak into model training.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Baseline-first assessment</h3>
+            <p>Candidate models are compared with simple reference approaches. Complexity alone is not treated as evidence of improvement.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Evidence-aware recommendations</h3>
+            <p>Limited historical variation or insufficient support can lead to a cautious result or an explicit request for operator review.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Measured data remain distinct</h3>
+            <p>Observed measurements and model predictions are treated as different information types and should be clearly distinguished in the interface.</p>
+          </article>
+        </div>
+        <div class="note">
+          <strong>Human-in-the-loop by design</strong>
+          <p>The project is being developed as an advisory decision-support capability. It is not presented as an autonomous dosing controller and does not directly operate pumps, treatment equipment, or plant control systems.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Prototype &amp; Technical Work</h2>
+        <p class="section-lead">
+          A Streamlit-based prototype has been developed to organise project outputs into operator-oriented workflows. The broader work includes data preparation, model experimentation, evaluation, configuration management, and application prototyping. Integration and validation remain part of the ongoing project.
+        </p>
+        <div class="tech-stack" aria-label="Technologies used">
+          <span>Python</span>
+          <span>pandas</span>
+          <span>NumPy</span>
+          <span>scikit-learn</span>
+          <span>SQL</span>
+          <span>Streamlit</span>
+          <span>Time-series evaluation</span>
+          <span>Feature engineering</span>
+        </div>
+      </section>
+
+      <section class="confidentiality" aria-label="Project confidentiality note">
+        <h2>Confidentiality &amp; Project Status</h2>
+        <p>
+          This project is ongoing and involves non-public operational information. To respect confidentiality, this public overview intentionally excludes client and site identifiers, raw or identifiable plant data, sensor mappings, exact operating thresholds, chemical-dose settings, internal system details, and unreleased model results. The description is a high-level summary and should not be interpreted as evidence of production deployment or independently verified treatment outcomes.
+        </p>
+      </section>
+
+      <footer class="page-footer">
+        <span>Ongoing project · Public overview</span>
+        <a href="./projects.html">← Back to all projects</a>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const themeButton = document.getElementById("theme-toggle");
+
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
+
+    try {
+      setDarkMode(localStorage.getItem("theme") === "dark");
+    } catch {
+      setDarkMode(false);
+    }
+
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+      try {
+        localStorage.setItem("theme", enabled ? "dark" : "light");
+      } catch {
+        // Theme still works for the current page when storage is unavailable.
+      }
+    });
+  </script>
+</body>
+</html>
 

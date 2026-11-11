@@ -1,1 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A public case study of an exhibition CRM and workflow automation platform built with n8n, a relational database, webhooks, and role-based access control.">
+  <title>Exhibition CRM &amp; Workflow Automation | Nasim Eshaghian</title>
+
+  <style>
+    :root {
+      --navy: #101d30;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --green: #26745a;
+      --green-soft: #eaf5ef;
+      --purple: #6652b8;
+      --purple-soft: #f1effb;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    a { color: inherit; }
+
+    /* Sidebar — shared portfolio navigation */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 10;
+      width: 250px;
+      min-height: 100vh;
+      padding: 20px 0 18px;
+      overflow-y: auto;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+    }
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.4px;
+    }
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: #1c3b68;
+      color: #fff;
+    }
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg {
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+      color: #fff;
+    }
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 24px;
+      padding: 0 12px 12px;
+    }
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+    }
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #93c5fd; }
+    .sidebar-footer svg { width: 21px; height: 21px; }
+
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 42px 42px 70px;
+    }
+    .page-content {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--blue); }
+    .back-link svg { width: 17px; height: 17px; }
+
+    /* Hero */
+    .hero {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 8px 28px rgba(24, 45, 75, 0.05);
+    }
+    .hero-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 360px;
+      aspect-ratio: 16 / 7;
+      background: #eeedfa;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-body { padding: 30px 34px 32px; }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      max-width: 940px;
+      margin: 0 0 14px;
+      color: #172a40;
+      font-size: clamp(30px, 3.2vw, 42px);
+      line-height: 1.18;
+      letter-spacing: -0.8px;
+    }
+    .hero-description {
+      max-width: 920px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      border: 1px solid #cde6d8;
+      border-radius: 30px;
+      background: var(--green-soft);
+      color: #23684f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #29966a;
+    }
+    .meta-text { color: var(--muted); font-size: 13px; }
+
+    .section { margin-top: 38px; }
+    .section-heading {
+      margin: 0 0 14px;
+      color: #1c3047;
+      font-size: 23px;
+      line-height: 1.3;
+    }
+    .section-lead {
+      max-width: 940px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .section p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .overview-card,
+    .phase-card,
+    .principle-card,
+    .result-card,
+    .architecture-card {
+      min-width: 0;
+      padding: 21px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+    .card-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+    .card-icon svg { width: 22px; height: 22px; }
+    .overview-card h3,
+    .phase-card h3,
+    .principle-card h3,
+    .architecture-card h3 {
+      margin: 0 0 8px;
+      color: #20364d;
+      font-size: 17px;
+      line-height: 1.4;
+    }
+    .overview-card p,
+    .phase-card p,
+    .principle-card p,
+    .architecture-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Implementation phases */
+    .phase-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .phase-label {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+    }
+    .phase-card ul {
+      margin: 13px 0 0;
+      padding-left: 19px;
+      color: var(--muted);
+    }
+    .phase-card li {
+      margin-bottom: 7px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    /* Architecture flow */
+    .architecture-flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+      align-items: stretch;
+    }
+    .architecture-card {
+      position: relative;
+      padding: 18px 15px;
+      background: #fbfcff;
+    }
+    .architecture-card:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -16px;
+      z-index: 2;
+      transform: translateY(-50%);
+      color: #8394aa;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .architecture-card .step {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .architecture-card h3 { font-size: 15px; }
+    .architecture-card p { font-size: 12px; }
+
+    /* RBAC matrix */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .role-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .role-card h3 {
+      margin: 0 0 7px;
+      color: #20364d;
+      font-size: 14px;
+    }
+    .role-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    /* Results */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .result-card { padding: 20px; }
+    .result-value {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--blue);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+    .result-card h3 {
+      margin: 0 0 7px;
+      color: #20364d;
+      font-size: 15px;
+    }
+    .result-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .result-note {
+      margin-top: 14px;
+      color: #78879a;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .principle-card { padding: 18px 20px; }
+    .note {
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: 1px solid #d7e7df;
+      border-left: 4px solid #388566;
+      border-radius: 10px;
+      background: #f0f7f3;
+    }
+    .note strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #245d47;
+      font-size: 14px;
+    }
+    .note p {
+      margin: 0;
+      color: #526b60;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 16px;
+    }
+    .tech-stack span {
+      padding: 7px 12px;
+      border: 1px solid #dce5ef;
+      border-radius: 25px;
+      background: #fff;
+      color: #38516b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .confidentiality {
+      margin-top: 34px;
+      padding: 20px 22px;
+      border: 1px solid #d7e4f2;
+      border-radius: 13px;
+      background: #f1f6fc;
+    }
+    .confidentiality h2 {
+      margin: 0 0 8px;
+      color: #274d78;
+      font-size: 17px;
+    }
+    .confidentiality p {
+      margin: 0;
+      color: #586d83;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 42px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: #758397;
+      font-size: 12px;
+    }
+    .page-footer a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* Dark mode */
+    body.dark-mode {
+      --ink: #e5eaf1;
+      --muted: #b7c4d3;
+      --line: #35445a;
+      --surface: #1b2738;
+      --page: #111827;
+      background: var(--page);
+      color: var(--ink);
+    }
+    body.dark-mode .hero h1,
+    body.dark-mode .section-heading,
+    body.dark-mode .overview-card h3,
+    body.dark-mode .phase-card h3,
+    body.dark-mode .principle-card h3,
+    body.dark-mode .architecture-card h3,
+    body.dark-mode .role-card h3,
+    body.dark-mode .result-card h3 { color: #edf3fa; }
+    body.dark-mode .hero,
+    body.dark-mode .overview-card,
+    body.dark-mode .phase-card,
+    body.dark-mode .principle-card,
+    body.dark-mode .architecture-card,
+    body.dark-mode .role-card,
+    body.dark-mode .result-card {
+      background: var(--surface);
+      border-color: var(--line);
+    }
+    body.dark-mode .architecture-card { background: #172337; }
+    body.dark-mode .tech-stack span {
+      background: #263b59;
+      border-color: #3b5578;
+      color: #dce9fb;
+    }
+    body.dark-mode .note {
+      background: #1b332c;
+      border-color: #315f4d;
+    }
+    body.dark-mode .note strong { color: #a8ddc2; }
+    body.dark-mode .note p { color: #c2d9ce; }
+    body.dark-mode .confidentiality {
+      background: #1c2c40;
+      border-color: #354d6b;
+    }
+    body.dark-mode .confidentiality h2 { color: #c6dcf7; }
+    body.dark-mode .confidentiality p { color: #bacbde; }
+    body.dark-mode .status-pill {
+      background: #1b3b30;
+      border-color: #315e4c;
+      color: #b9e4cf;
+    }
+    body.dark-mode .page-footer { border-color: var(--line); }
+
+    @media (max-width: 1100px) {
+      .overview-grid { grid-template-columns: 1fr; }
+      .role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .architecture-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .architecture-card:nth-child(2)::after { display: none; }
+    }
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 18px 0;
+      }
+      .sidebar-photo {
+        width: 112px;
+        height: 112px;
+        margin-top: 0;
+      }
+      .sidebar-name { font-size: 22px; }
+      .sidebar-menu {
+        max-width: 420px;
+        margin: 20px auto 0;
+        padding-right: 14px;
+        padding-left: 14px;
+      }
+      .sidebar-footer { margin-top: 16px; }
+      main { margin-left: 0; padding: 28px 18px 48px; }
+      .hero-body { padding: 23px 21px 25px; }
+      .hero-image { aspect-ratio: 16 / 9; max-height: 260px; }
+      .hero-description { font-size: 14px; }
+      .principles-grid,
+      .phase-list,
+      .results-grid,
+      .role-grid,
+      .architecture-flow { grid-template-columns: 1fr; }
+      .architecture-card::after { display: none !important; }
+      .section { margin-top: 30px; }
+      .section-heading { font-size: 21px; }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <img class="sidebar-photo" src="./personal image.png" alt="Nasim Eshaghian">
+    <h2 class="sidebar-name">Nasim Eshaghian</h2>
+    <p class="sidebar-role">AI / ML Engineer</p>
+
+    <nav class="sidebar-menu" aria-label="Main navigation">
+      <a href="./index.html#home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7"/><path d="M5 9v12h5v-7h4v7h5V9"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="./about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7h.01"/></svg>
+        <span>About</span>
+      </a>
+      <a href="./projects.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12a22 22 0 0 0 18 0M12 12v3"/></svg>
+        <span>Projects</span>
+      </a>
+      <a href="./resume.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 12h8M8 16h8"/></svg>
+        <span>Resume</span>
+      </a>
+      <a href="./blog.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h10M7 15h6M7 18h4"/></svg>
+        <span>Blog</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/NasimEshaghian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/></svg>
+      </a>
+      <a href="mailto:nasimeshaghian@gmail.com" aria-label="Email" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main id="crm-project">
+    <div class="page-content">
+      <a class="back-link" href="./projects.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h12"/></svg>
+        Back to Projects
+      </a>
+
+      <header class="hero">
+        <img class="hero-image" src="./images/projects/crm-project-showcase.webp" alt="Screenshots of the exhibition CRM platform showing the company management table and registration forms">
+        <div class="hero-body">
+          <p class="eyebrow">Full-Stack Automation · Data Systems · CRM</p>
+          <h1>Exhibition CRM &amp; Workflow Automation Engine</h1>
+          <p class="hero-description">
+            Designed and delivered a centralized CRM ecosystem for exhibition sales operations, combining a relational data model, n8n workflow automation, and a multi-role web portal for company records, contacts, booth allocation, and marketing follow-up.
+          </p>
+          <div class="status-row">
+            <span class="status-pill"><span class="status-dot"></span> Implemented Project</span>
+            <span class="meta-text">My role: Architecture, database design, workflow automation, and web portal development</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="section">
+        <h2 class="section-heading">Project Overview</h2>
+        <p class="section-lead">
+          The project addressed fragmented exhibition-sales records that were maintained in separate local spreadsheets. The solution brought company and contact information, exhibition participation, booth requirements, and marketing interactions into a shared system with structured data, automated validation, and role-scoped access.
+        </p>
+        <div class="overview-grid">
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+            </span>
+            <h3>Centralized data foundation</h3>
+            <p>Moved operational records from disconnected files toward a structured relational database with linked business entities and consistent identifiers.</p>
+          </article>
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 14h6v6h-6zM14 4h6M17 4v6M4 17h6M7 14v6M10 7h4a3 3 0 0 1 3 3v4"/></svg>
+            </span>
+            <h3>Automated workflows</h3>
+            <p>Used n8n to validate, normalize, route, and integrate incoming records between operational forms, staging data, and the database.</p>
+          </article>
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 8h8M8 12h5M8 16h8M17 12h.01"/></svg>
+            </span>
+            <h3>Operational web portal</h3>
+            <p>Built an interface for company registration, exhibition selection, booth information, contact management, and marketing follow-up.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">The Challenge</h2>
+        <p class="section-lead">
+          Before the centralized workflow, sales operators worked with separate Excel files and inconsistent data-entry practices. This made it difficult to preserve interaction history, identify duplicate prospecting, coordinate teams, and give managers a consistent view of the sales pipeline.
+        </p>
+        <div class="principles-grid">
+          <article class="principle-card">
+            <h3>Fragmented records</h3>
+            <p>Company information and contact history were distributed across local files, creating the risk of missing or outdated records.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Inconsistent data entry</h3>
+            <p>Phone numbers, identifiers, company categories, and call notes were not captured consistently across operators.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Duplicate outreach</h3>
+            <p>Without a shared prospecting directory, different operators could approach the same company without seeing previous interactions.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Limited pipeline visibility</h3>
+            <p>Management lacked a unified view of follow-ups, lead status, booth requirements, and exhibition-specific activity.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Implementation Approach</h2>
+        <p class="section-lead">
+          The rollout followed a phased approach so that data practices could be standardized before the full portal and database workflow became the primary operational path.
+        </p>
+        <div class="phase-list">
+          <article class="phase-card">
+            <span class="phase-label">PHASE 01</span>
+            <h3>Operational Standardization</h3>
+            <p>Introduced a shared Google Sheets master template as an interim bridge for operators.</p>
+            <ul>
+              <li>Standardized fields and dropdown values.</li>
+              <li>Defined required fields and consistent data formats.</li>
+              <li>Added validation rules for key contact and company fields.</li>
+            </ul>
+          </article>
+          <article class="phase-card">
+            <span class="phase-label">PHASE 02</span>
+            <h3>Relational Database Design</h3>
+            <p>Designed a normalized schema to represent the main business entities and their relationships.</p>
+            <ul>
+              <li>Separated companies, contacts, exhibitions, and booth allocations.</li>
+              <li>Structured marketing interactions and follow-up records.</li>
+              <li>Applied keys, constraints, and audit timestamps.</li>
+            </ul>
+          </article>
+          <article class="phase-card">
+            <span class="phase-label">PHASE 03</span>
+            <h3>n8n ETL &amp; Data Quality</h3>
+            <p>Built automated workflows to move structured records into the central data layer.</p>
+            <ul>
+              <li>Parsed and normalized incoming fields.</li>
+              <li>Checked duplicates and invalid or incomplete values.</li>
+              <li>Routed anomalous records for manual review before insertion.</li>
+            </ul>
+          </article>
+          <article class="phase-card">
+            <span class="phase-label">PHASE 04</span>
+            <h3>Multi-Role Access Control</h3>
+            <p>Designed permissions around user roles and exhibition-group scope.</p>
+            <ul>
+              <li>Supported Super Admin, Exhibition Admin, Operator, and Viewer roles.</li>
+              <li>Restricted records to authorized exhibition groups.</li>
+              <li>Separated viewing, editing, and administration privileges.</li>
+            </ul>
+          </article>
+          <article class="phase-card">
+            <span class="phase-label">PHASE 05</span>
+            <h3>Web Portal &amp; CRM Interface</h3>
+            <p>Developed a responsive interface for day-to-day company and exhibition management.</p>
+            <ul>
+              <li>Authentication and exhibition-scope selection.</li>
+              <li>Dynamic company intake with autocomplete and multi-select tags.</li>
+              <li>Booth details, date selection, and form validation.</li>
+              <li>Management table with editing and confirmation safeguards.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">System Architecture</h2>
+        <p class="section-lead">
+          At a high level, the platform connects the operator-facing portal with an automation layer and a centralized relational data store. A spreadsheet adapter supported the initial transition and structured data handoff.
+        </p>
+        <div class="architecture-flow" aria-label="High-level system architecture">
+          <article class="architecture-card">
+            <span class="step">LAYER 01</span>
+            <h3>Web Portal</h3>
+            <p>Authentication, scoped forms, company management, booth information, and sales activity.</p>
+          </article>
+          <article class="architecture-card">
+            <span class="step">LAYER 02</span>
+            <h3>n8n Automation</h3>
+            <p>Webhook intake, validation, normalization, duplicate checks, and exception routing.</p>
+          </article>
+          <article class="architecture-card">
+            <span class="step">LAYER 03</span>
+            <h3>Relational Database</h3>
+            <p>Linked company, contact, exhibition, booth, marketing, and access-control records.</p>
+          </article>
+          <article class="architecture-card">
+            <span class="step">TRANSITION</span>
+            <h3>Google Sheets</h3>
+            <p>Standardized staging and onboarding bridge during the phased transition.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Core Capabilities</h2>
+        <div class="principles-grid">
+          <article class="principle-card">
+            <h3>Company &amp; contact management</h3>
+            <p>Maintains company profiles and multiple stakeholder contacts, with structured roles such as executive, sales, and booth representative.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Exhibition &amp; booth management</h3>
+            <p>Connects company participation to exhibition editions, venue details, booth requirements, requested area, and reservation status.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Marketing interaction history</h3>
+            <p>Records outreach channels, contact attempts, call outcomes, notes, lead stages, and planned follow-up dates.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Validation &amp; safe editing</h3>
+            <p>Uses field-level checks, autocomplete, controlled values, edit forms, and confirmation steps for sensitive changes.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Role-Based Access Control</h2>
+        <p class="section-lead">
+          Access was designed around both the user's role and the exhibition group they are authorized to work with. This supports separation between teams while allowing explicitly granted cross-group permissions where required.
+        </p>
+        <div class="role-grid">
+          <article class="role-card">
+            <h3>Super Admin</h3>
+            <p>Platform-level administration and broad access management.</p>
+          </article>
+          <article class="role-card">
+            <h3>Exhibition Admin</h3>
+            <p>Administrative permissions within an assigned exhibition scope.</p>
+          </article>
+          <article class="role-card">
+            <h3>Operator</h3>
+            <p>Operational access to assigned records and workflows.</p>
+          </article>
+          <article class="role-card">
+            <h3>Read-Only Viewer</h3>
+            <p>View access without permission to modify records.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Reported Project Outcomes</h2>
+        <p class="section-lead">
+          The project documentation describes the following operational outcomes after centralizing records and introducing validation and access controls.
+        </p>
+        <div class="results-grid">
+          <article class="result-card">
+            <span class="result-value">100%</span>
+            <h3>Reported elimination of spreadsheet-related data loss</h3>
+            <p>Centralized storage replaced disconnected local records as the shared source of operational information.</p>
+          </article>
+          <article class="result-card">
+            <span class="result-value">0%</span>
+            <h3>Reported lead-collision rate</h3>
+            <p>A unified prospecting directory made previous company interactions visible across the workflow.</p>
+          </article>
+          <article class="result-card">
+            <span class="result-value">90%</span>
+            <h3>Reported reduction in data-entry errors</h3>
+            <p>Dropdowns, autocomplete, input validation, and normalization reduced incomplete and inconsistent submissions.</p>
+          </article>
+        </div>
+        <p class="result-note">
+          Note: These figures are reported in the project case-study documentation. They are presented as project-reported outcomes, not as independently audited measurements or externally verified guarantees.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">My Role &amp; Contributions</h2>
+        <p class="section-lead">
+          I worked as the individual automation and systems engineer responsible for the end-to-end technical delivery described in this case study.
+        </p>
+        <div class="principles-grid">
+          <article class="principle-card">
+            <h3>Solution architecture</h3>
+            <p>Translated operational requirements into a phased system design connecting data, automation, permissions, and user-facing workflows.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Database engineering</h3>
+            <p>Designed the relational structure, entity relationships, key constraints, and audit-oriented fields.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Workflow automation</h3>
+            <p>Built n8n ingestion and validation workflows for data normalization, duplicate checks, and exception handling.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Frontend &amp; integration</h3>
+            <p>Developed the web forms and management interface, integrating them with webhook-driven backend workflows.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Technology Stack</h2>
+        <p class="section-lead">The project combines workflow orchestration, relational data modeling, integration APIs, and a custom web interface.</p>
+        <div class="tech-stack" aria-label="Technologies used">
+          <span>n8n</span>
+          <span>PostgreSQL / Relational SQL</span>
+          <span>Google Sheets</span>
+          <span>REST APIs</span>
+          <span>Webhooks</span>
+          <span>JavaScript</span>
+          <span>HTML</span>
+          <span>CSS</span>
+          <span>RBAC</span>
+          <span>ETL &amp; Data Validation</span>
+        </div>
+      </section>
+
+      <section class="note">
+        <strong>Engineering takeaway</strong>
+        <p>The central lesson of this project was that successful automation is not only about connecting tools. It also requires a reliable data model, gradual process change, clear validation rules, and permissions that reflect how people actually work.</p>
+      </section>
+
+      <section class="confidentiality" aria-label="Public project overview note">
+        <h2>Public Project Overview</h2>
+        <p>
+          This page is a high-level portfolio summary. It intentionally excludes company and customer names, contact records, personal identifiers, production URLs, webhook addresses, credentials, and other internal operational information. Detailed implementation artifacts and business records are not published here.
+        </p>
+      </section>
+
+      <footer class="page-footer">
+        <span>Project case study · Public overview</span>
+        <a href="./projects.html">← Back to all projects</a>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const themeButton = document.getElementById("theme-toggle");
+
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
+
+    try {
+      setDarkMode(localStorage.getItem("theme") === "dark");
+    } catch {
+      setDarkMode(false);
+    }
+
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+      try {
+        localStorage.setItem("theme", enabled ? "dark" : "light");
+      } catch {
+        // Theme remains usable for the current page if storage is unavailable.
+      }
+    });
+  </script>
+</body>
+</html>
 

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A public case study of a social-context fake-news research data pipeline using PolitiFact, GossipCop, news articles, tweets, retweets, and user-context collection.">
+  <title>Fake News Research Pipeline | Nasim Eshaghian</title>
+  <style>
+    :root {
+      --navy: #101d30;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --green: #26745a;
+      --green-soft: #eaf5ef;
+      --amber: #9a6a19;
+      --amber-soft: #fbf3df;
+      --red: #a3453b;
+      --red-soft: #faeeeb;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    a { color: inherit; }
+
+    /* Shared portfolio sidebar */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 10;
+      width: 250px;
+      min-height: 100vh;
+      padding: 20px 0 18px;
+      overflow-y: auto;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+    }
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -.4px;
+    }
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background .2s ease;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: #1c3b68;
+      color: #fff;
+    }
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg {
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+      color: #fff;
+    }
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 24px;
+      padding: 0 12px 12px;
+    }
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #93c5fd; }
+    .sidebar-footer svg { width: 21px; height: 21px; }
+
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 42px 42px 70px;
+    }
+    .page-content {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--blue); }
+    .back-link svg { width: 17px; height: 17px; }
+
+    /* Hero */
+    .hero {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 8px 24px rgba(25, 45, 75, .045);
+    }
+    .hero-image {
+      display: block;
+      width: 100%;
+      height: 285px;
+      background: #eaf0f7;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-body { padding: 30px 34px 32px; }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-size: clamp(29px, 3vw, 39px);
+      line-height: 1.2;
+      letter-spacing: -.8px;
+    }
+    .hero-description {
+      max-width: 920px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid #cfe2d5;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #286344;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3b9b68; }
+    .meta-text { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    /* Sections */
+    .section { margin-top: 38px; }
+    .section-heading {
+      margin: 0 0 14px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1.3;
+    }
+    .section-lead {
+      max-width: 970px;
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .overview-card,
+    .principle-card,
+    .phase-card,
+    .detail-card,
+    .metric-card,
+    .source-card {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--surface);
+    }
+    .overview-card { padding: 20px; }
+    .card-icon {
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+    .card-icon svg { width: 21px; height: 21px; }
+    .overview-card h3,
+    .principle-card h3,
+    .phase-card h3,
+    .detail-card h3,
+    .source-card h3 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.4;
+    }
+    .overview-card p,
+    .principle-card p,
+    .phase-card p,
+    .detail-card p,
+    .source-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Dataset snapshot */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 13px;
+      margin: 20px 0;
+    }
+    .metric-card { padding: 17px 18px; }
+    .metric-value {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--blue);
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -.6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric-label { display: block; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .dataset-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .dataset-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+    .dataset-table th,
+    .dataset-table td {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      text-align: left;
+    }
+    .dataset-table th { background: #f3f6fa; color: var(--muted); font-weight: 700; }
+    .dataset-table td { color: var(--ink); }
+    .dataset-table tr:last-child td { border-bottom: 0; }
+    .count { font-weight: 750; font-variant-numeric: tabular-nums; }
+    .label-fake { color: var(--red); font-weight: 700; }
+    .label-real { color: var(--green); font-weight: 700; }
+    .data-caveat {
+      margin-top: 12px;
+      padding: 13px 16px;
+      border-left: 3px solid #9aabc1;
+      border-radius: 7px;
+      background: #f1f5fa;
+      color: #53647a;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    /* Collection architecture */
+    .architecture {
+      display: grid;
+      grid-template-columns: 1fr auto 1.2fr auto 1.15fr;
+      align-items: stretch;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .arch-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 150px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .arch-box strong { margin-bottom: 8px; color: var(--ink); font-size: 14px; }
+    .arch-box span { color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .arch-arrow { display: flex; align-items: center; justify-content: center; color: #8292a7; font-size: 23px; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+      margin-top: 18px;
+    }
+    .detail-card { padding: 20px; }
+    .detail-card ul,
+    .phase-card ul {
+      margin: 11px 0 0;
+      padding-left: 19px;
+      color: var(--muted);
+    }
+    .detail-card li,
+    .phase-card li {
+      margin: 0 0 7px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .phase-list { display: grid; gap: 14px; margin-top: 18px; }
+    .phase-card { padding: 21px 23px; }
+    .phase-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .principle-card { padding: 19px 20px; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .tag-list span {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 11px;
+      border: 1px solid #dce6f0;
+      border-radius: 999px;
+      background: #f2f6fb;
+      color: #40566f;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .note {
+      margin-top: 28px;
+      padding: 20px 22px;
+      border: 1px solid #d6e2f2;
+      border-left: 4px solid var(--blue);
+      border-radius: 12px;
+      background: #f2f6fc;
+    }
+    .note strong { display: block; margin-bottom: 7px; color: var(--ink); font-size: 15px; }
+    .note p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+    .scope-note {
+      margin-top: 22px;
+      padding: 20px 22px;
+      border: 1px solid #eadfbd;
+      border-radius: 12px;
+      background: var(--amber-soft);
+    }
+    .scope-note h2 { margin: 0 0 8px; color: #76551c; font-size: 17px; }
+    .scope-note p { margin: 0; color: #715f3c; font-size: 13px; line-height: 1.75; }
+    .page-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 38px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .page-footer a { color: var(--blue); text-decoration: none; }
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* Dark mode */
+    body.dark-mode {
+      --ink: #e7edf6;
+      --muted: #b3c0d0;
+      --line: #34445a;
+      --surface: #172438;
+      --page: #0d1726;
+      --blue-soft: #213a5e;
+      --green-soft: #1d3b31;
+      --amber-soft: #3c3321;
+      background: var(--page);
+      color: var(--ink);
+    }
+    body.dark-mode .hero,
+    body.dark-mode .overview-card,
+    body.dark-mode .principle-card,
+    body.dark-mode .phase-card,
+    body.dark-mode .detail-card,
+    body.dark-mode .metric-card,
+    body.dark-mode .source-card,
+    body.dark-mode .dataset-table-wrap { background: var(--surface); border-color: var(--line); }
+    body.dark-mode .section-heading { border-color: var(--line); }
+    body.dark-mode .dataset-table th { background: #202f45; color: #c4d0df; }
+    body.dark-mode .dataset-table td { color: var(--ink); border-color: var(--line); }
+    body.dark-mode .data-caveat { background: #1c2b40; color: #c1cddd; }
+    body.dark-mode .tag-list span { background: #20324b; border-color: #354a66; color: #d2deed; }
+    body.dark-mode .note { background: #1a2b43; border-color: #344e70; }
+    body.dark-mode .note strong { color: #e7edf6; }
+    body.dark-mode .scope-note { background: #302b20; border-color: #5d4e2b; }
+    body.dark-mode .scope-note h2 { color: #f1d99e; }
+    body.dark-mode .scope-note p { color: #dacba9; }
+    body.dark-mode .hero-image { background: #1b2a3f; }
+
+    @media (max-width: 1100px) {
+      main { padding: 34px 28px 58px; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .architecture { grid-template-columns: 1fr; }
+      .arch-arrow { transform: rotate(90deg); min-height: 18px; }
+      .arch-box { min-height: 0; }
+    }
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 14px 12px;
+      }
+      .sidebar-photo { width: 92px; height: 92px; margin: 6px auto 10px; }
+      .sidebar-name { font-size: 20px; }
+      .sidebar-menu {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 16px 0 0;
+        padding: 13px 0;
+      }
+      .sidebar-menu::before, .sidebar-menu::after { right: 8px; left: 8px; }
+      .sidebar-menu a { gap: 7px; padding: 8px 10px; font-size: 13px; }
+      .sidebar-menu svg { width: 17px; height: 17px; flex-basis: 17px; }
+      .sidebar-footer { margin-top: 10px; }
+      main { margin-left: 0; padding: 26px 16px 46px; }
+      .hero-image { height: 190px; }
+      .hero-body { padding: 23px 20px 25px; }
+      h1 { font-size: 29px; }
+      .hero-description { font-size: 14px; }
+      .feature-grid, .principles-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section { margin-top: 30px; }
+      .section-heading { font-size: 21px; }
+    }
+    @media (max-width: 420px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+      .status-row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <img class="sidebar-photo" src="./personal image.png" alt="Nasim Eshaghian">
+    <h2 class="sidebar-name">Nasim Eshaghian</h2>
+    <p class="sidebar-role">AI / ML Engineer</p>
+
+    <nav class="sidebar-menu" aria-label="Main navigation">
+      <a href="./index.html#home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7"/><path d="M5 9v12h5v-7h4v7h5V9"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="./about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>
+        <span>About</span>
+      </a>
+      <a href="./projects.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M12 12v3"/></svg>
+        <span>Projects</span>
+      </a>
+      <a href="./resume.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 12h8M8 16h8"/></svg>
+        <span>Resume</span>
+      </a>
+      <a href="./blog.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h10M7 15h6M7 18h4"/></svg>
+        <span>Blog</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/NasimEshaghian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/></svg>
+      </a>
+      <a href="mailto:nasimeshaghian@gmail.com" aria-label="Email" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main id="fake-news-project">
+    <div class="page-content">
+      <a class="back-link" href="./projects.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h12"/></svg>
+        Back to Projects
+      </a>
+
+      <header class="hero">
+        <img class="hero-image" src="./images/projects/fake-news.jfif" alt="Project cover for social-context fake news research">
+        <div class="hero-body">
+          <p class="eyebrow">Research Data Engineering · Social Media Analytics</p>
+          <h1>Fake News Research &amp; Social Context Data Pipeline</h1>
+          <p class="hero-description">
+            A data collection and research foundation for studying fake and real news through article content and the social context in which news links are shared. The project brings together source-labelled news records, article extraction, tweet and retweet collection, and user-context data in a structured dataset.
+          </p>
+          <div class="status-row">
+            <span class="status-pill"><span class="status-dot"></span> Research / Data Pipeline</span>
+            <span class="meta-text">Project focus: dataset collection, social-context capture, and research data organization</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="section">
+        <h2 class="section-heading">Project Overview</h2>
+        <p class="section-lead">
+          The project is based on the FakeNewsNet data structure and its two source collections, PolitiFact and GossipCop. It organizes news samples using source-provided fake/real labels and connects each news item to article metadata and the tweet identifiers associated with its dissemination. The accompanying Python modules extend the collection workflow to article content, tweets, retweets, and user-level social context.
+        </p>
+        <div class="overview-grid">
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+            <h3>News content</h3>
+            <p>Collecting article text and publication metadata from the source URLs, with structured JSON output for downstream analysis.</p>
+          </article>
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a4 4 0 0 1 0 8h-3"/><path d="m10 12-3 4-3-4"/><path d="M17 16H7a4 4 0 0 1 0-8h3"/></svg></span>
+            <h3>Social context</h3>
+            <p>Connecting news items with tweets, retweets, author profiles, timelines, and network-related identifiers where collected.</p>
+          </article>
+          <article class="overview-card">
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
+            <h3>Structured research data</h3>
+            <p>Separating source and label splits and storing collected records in a predictable folder and JSON layout.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Dataset Snapshot</h2>
+        <p class="section-lead">
+          The four CSV files supplied with this project contain 23,196 news records across two sources and two source-provided label groups. These counts describe the uploaded CSV snapshot only; they are not counts of successfully downloaded articles, tweets, retweets, or unique social-media users.
+        </p>
+        <div class="metrics-grid">
+          <div class="metric-card"><span class="metric-value">23,196</span><span class="metric-label">News records across the four supplied CSV files</span></div>
+          <div class="metric-card"><span class="metric-value">5,755</span><span class="metric-label">Records labelled fake in the supplied CSV snapshot</span></div>
+          <div class="metric-card"><span class="metric-value">17,441</span><span class="metric-label">Records labelled real in the supplied CSV snapshot</span></div>
+          <div class="metric-card"><span class="metric-value">2</span><span class="metric-label">Source collections: PolitiFact and GossipCop</span></div>
+        </div>
+        <div class="dataset-table-wrap">
+          <table class="dataset-table">
+            <thead><tr><th>Source</th><th>Label in CSV</th><th>Records</th></tr></thead>
+            <tbody>
+              <tr><td>GossipCop</td><td class="label-fake">Fake</td><td class="count">5,323</td></tr>
+              <tr><td>GossipCop</td><td class="label-real">Real</td><td class="count">16,817</td></tr>
+              <tr><td>PolitiFact</td><td class="label-fake">Fake</td><td class="count">432</td></tr>
+              <tr><td>PolitiFact</td><td class="label-real">Real</td><td class="count">624</td></tr>
+              <tr><td><strong>Total</strong></td><td>—</td><td class="count">23,196</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="data-caveat">
+          <strong>Interpretation note:</strong> “Fake” and “Real” are the labels supplied by the dataset sources. They are dataset annotations used for research organization, not independent verification performed by this collection pipeline. The CSV rows represent news items; tweet IDs are references associated with those items, not additional news records.
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Data Collection Workflow</h2>
+        <p class="section-lead">
+          A configuration-driven collector selects the source/label splits and the data dimensions to collect. A factory in <code>main.py</code> routes each requested feature to its corresponding collector module. The workflow supports parallel collection and writes collected artifacts into a source- and label-organized directory structure.
+        </p>
+        <div class="architecture" aria-label="Data collection architecture">
+          <div class="arch-box">
+            <strong>Seed CSV files</strong>
+            <span>PolitiFact / GossipCop<br>Fake / Real<br>News ID, URL, title, tweet IDs</span>
+          </div>
+          <div class="arch-arrow" aria-hidden="true">→</div>
+          <div class="arch-box">
+            <strong>Python collector workflow</strong>
+            <span>Configuration loader<br>Collector factory<br>Multiprocessing orchestration</span>
+          </div>
+          <div class="arch-arrow" aria-hidden="true">→</div>
+          <div class="arch-box">
+            <strong>Structured outputs</strong>
+            <span>Article JSON<br>Tweet / retweet JSON<br>User-context JSON folders</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Collection Components</h2>
+        <p class="section-lead">The supplied code separates each collection task into a dedicated module, making the data acquisition process easier to configure and inspect.</p>
+        <div class="feature-grid">
+          <article class="detail-card">
+            <h3>01 · News article extraction</h3>
+            <p>The article collector uses <code>newspaper3k</code> to retrieve and parse content from each news URL.</p>
+            <ul>
+              <li>Article body text, headline, images, and top image.</li>
+              <li>Authors, keywords, summary, canonical URL, and source metadata.</li>
+              <li>Publication date when available.</li>
+              <li>Archive lookup fallback when the original page cannot be fetched.</li>
+            </ul>
+          </article>
+          <article class="detail-card">
+            <h3>02 · Tweet collection</h3>
+            <p>The tweet collector reads the tab-separated tweet identifiers associated with each news record and requests tweet objects through Twython.</p>
+            <ul>
+              <li>Processes tweet IDs in chunks of up to 100.</li>
+              <li>Requests tweet objects with entity information.</li>
+              <li>Stores retrieved tweet objects as JSON under the related news item.</li>
+            </ul>
+          </article>
+          <article class="detail-card">
+            <h3>03 · Retweet collection</h3>
+            <p>A separate collector retrieves retweet information for the source tweets and stores it alongside the corresponding news record.</p>
+            <ul>
+              <li>Retweet retrieval is handled as an independent collection stage.</li>
+              <li>Outputs are stored in dedicated retweet folders.</li>
+              <li>API exceptions are logged for troubleshooting.</li>
+            </ul>
+          </article>
+          <article class="detail-card">
+            <h3>04 · User and network context</h3>
+            <p>User-level collection modules use the authors of collected tweets to identify related social-context records.</p>
+            <ul>
+              <li>User profile information.</li>
+              <li>Up to 200 recent timeline posts where returned by the API.</li>
+              <li>Follower and following identifier collections.</li>
+              <li>Shared user-context folders across the selected source/label groups.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Collection Orchestration &amp; Reliability</h2>
+        <div class="principles-grid">
+          <article class="principle-card">
+            <h3>Configuration-driven runs</h3>
+            <p><code>config.json</code> controls the dataset directory, output location, selected source/label combinations, requested data dimensions, and process configuration.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Parallel data collection</h3>
+            <p>The utility layer uses Python multiprocessing to process collection jobs concurrently and report progress through <code>tqdm</code>.</p>
+          </article>
+          <article class="principle-card">
+            <h3>API access coordination</h3>
+            <p>A small Flask service and a resource-allocation component coordinate access to configured Twitter API connections across worker processes, helping manage rate-limit windows.</p>
+          </article>
+          <article class="principle-card">
+            <h3>Logs and recoverable outputs</h3>
+            <p>Collection activity is logged, and article, tweet, retweet, and user records are written as separate files so individual stages can be inspected.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Data Structure &amp; Research Dimensions</h2>
+        <p class="section-lead">The project organizes records around each news item and keeps the collected dimensions distinct. This structure supports later analysis of article content alongside the social activity associated with its circulation.</p>
+        <div class="phase-list">
+          <article class="phase-card">
+            <span class="phase-label">NEWS RECORD</span>
+            <h3>Source metadata</h3>
+            <p>The provided CSV schema contains <code>id</code>, <code>news_url</code>, <code>title</code>, and <code>tweet_ids</code>. Each row identifies a news item and the tweet IDs associated with links to that item.</p>
+          </article>
+          <article class="phase-card">
+            <span class="phase-label">ARTICLE CONTENT</span>
+            <h3>Parsed publisher content</h3>
+            <p>Article-level JSON can include extracted text, images, publication date, title, authors, keywords, canonical link, source, and summary, depending on what the publisher page makes available.</p>
+          </article>
+          <article class="phase-card">
+            <span class="phase-label">SOCIAL CONTEXT</span>
+            <h3>Sharing and user activity</h3>
+            <p>Tweet objects, retweets, user profiles, timeline posts, and follower/following identifiers are collected into separate folders linked back to the source news items or user IDs.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">My Technical Focus</h2>
+        <p class="section-lead">The project folder demonstrates an engineering workflow around acquiring and organizing multi-source research data, including:</p>
+        <div class="tag-list">
+          <span>Python</span><span>Data Collection</span><span>Web Scraping</span><span>newspaper3k</span><span>BeautifulSoup</span><span>Requests</span><span>Twython</span><span>Twitter API</span><span>Flask</span><span>Multiprocessing</span><span>CSV / JSON</span><span>Logging</span><span>Dataset Engineering</span><span>Social Context Analysis</span>
+        </div>
+      </section>
+
+      <section class="note">
+        <strong>Research and engineering takeaway</strong>
+        <p>Fake-news research needs more than a headline and a binary label. The supplied collection workflow brings article-level content together with the sharing activity and user context associated with news items, creating a richer data foundation for later analysis. The data pipeline itself does not determine whether a claim is true; it organizes source-labelled research records for subsequent investigation.</p>
+      </section>
+
+      <section class="scope-note" aria-label="Scope and evidence note">
+        <h2>Scope of the Shared Project Files</h2>
+        <p>
+          The files supplied for this portfolio page document dataset configuration, article/tweet/retweet/user-context collection, and the four source CSV files. They do not include a fake-news classifier training script, model weights, a model evaluation report, or verified accuracy/F1 results. For that reason, this page presents the data collection and research foundation only and does not claim that a predictive model was trained or deployed. The FakeNewsNet project documentation also notes that the complete dataset cannot be redistributed in full because of Twitter privacy policies and publisher copyright restrictions.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2 class="section-heading">Dataset Attribution &amp; References</h2>
+        <p class="section-lead">
+          The supplied README identifies the dataset as FakeNewsNet and recommends citing the original dataset and research papers. The project uses source-labelled samples from PolitiFact and GossipCop; attribution to the dataset authors is retained here.
+        </p>
+        <div class="detail-card">
+          <h3>FakeNewsNet: A Data Repository with News Content, Social Context and Dynamic Information for Studying Fake News on Social Media</h3>
+          <p>Kai Shu, Deepak Mahudeswaran, Suhang Wang, Dongwon Lee, and Huan Liu (2018).</p>
+          <p style="margin-top:10px"><a href="https://arxiv.org/abs/1809.01286" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none;font-weight:650">Read the FakeNewsNet paper →</a></p>
+          <p style="margin-top:9px">Additional background: <a href="https://arxiv.org/abs/1708.01967" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none">Fake News Detection on Social Media: A Data Mining Perspective</a>.</p>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <span>Project case study · Data collection and research foundation</span>
+        <a href="./projects.html">← Back to all projects</a>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const themeButton = document.getElementById("theme-toggle");
+
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
+
+    try {
+      setDarkMode(localStorage.getItem("theme") === "dark");
+    } catch {
+      setDarkMode(false);
+    }
+
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+      try {
+        localStorage.setItem("theme", enabled ? "dark" : "light");
+      } catch {
+        // Theme remains usable for the current page if storage is unavailable.
+      }
+    });
+  </script>
+</body>
+</html>

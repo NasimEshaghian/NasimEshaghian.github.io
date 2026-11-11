@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A pharmaceutical data collection and price discovery platform using Persian and English medicine search, live autocomplete, filtering, and price analytics.">
+  <title>Pharmaceutical Data &amp; Price Discovery | Nasim Eshaghian</title>
+  <style>
+    :root {
+      --navy: #101d30;
+      --navy-soft: #1c3b68;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --text: #17243a;
+      --muted: #5c6b80;
+      --border: #dfe6f0;
+      --surface: #ffffff;
+      --surface-soft: #f7f9fc;
+      --green: #32785b;
+      --green-soft: #eaf3ed;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #f8fafc;
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    /* Sidebar — consistent with the main portfolio pages */
+    aside {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px 0 18px;
+      background: var(--navy);
+      color: #fff;
+      z-index: 20;
+    }
+    .profile-image {
+      display: block;
+      width: 160px;
+      height: 160px;
+      margin: 30px auto 20px;
+      border: 2px solid rgba(255,255,255,.75);
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .profile-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      text-align: center;
+      font-size: 25px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -.4px;
+    }
+    .profile-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 24px 16px 0;
+      padding: 20px 0;
+    }
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: #52647e;
+    }
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-decoration: none;
+      transition: background .18s ease;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: var(--navy-soft);
+      color: #fff;
+    }
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg { width: 21px; height: 21px; flex-shrink: 0; }
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 17px;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      padding: 4px;
+      color: #fff;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .sidebar-footer svg { width: 22px; height: 22px; }
+
+    main {
+      margin-left: 250px;
+      padding: 48px 46px 64px;
+    }
+    .page-content { max-width: 1120px; margin: 0 auto; }
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .breadcrumb a { color: var(--blue); text-decoration: none; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid #cfe2d5;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #286344;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3b9b68; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+      gap: 34px;
+      align-items: center;
+      padding: 34px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(135deg, #fff 0%, #f2f6fc 100%);
+      box-shadow: 0 10px 28px rgba(20, 42, 75, .045);
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0 0 16px;
+      color: #15253d;
+      font-size: clamp(30px, 3.2vw, 43px);
+      line-height: 1.15;
+      letter-spacing: -1px;
+    }
+    .hero-description {
+      max-width: 690px;
+      margin: 0;
+      color: #526174;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+    .hero-image-wrap {
+      overflow: hidden;
+      border: 1px solid #dce5e0;
+      border-radius: 15px;
+      background: #fff;
+      box-shadow: 0 12px 26px rgba(22, 42, 68, .09);
+    }
+    .hero-image-wrap img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: center;
+    }
+    .image-caption {
+      margin: 0;
+      padding: 9px 12px;
+      color: #758296;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 10px 16px;
+      border: 1px solid var(--blue);
+      border-radius: 9px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .button.secondary { background: #fff; color: var(--blue); }
+
+    .section { margin-top: 42px; }
+    .section-heading {
+      margin: 0 0 14px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid var(--border);
+      color: #1c2c44;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+    .section-intro {
+      max-width: 930px;
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .feature-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+    .feature-icon svg { width: 20px; height: 20px; }
+    .feature-card h3 { margin: 0 0 7px; font-size: 16px; }
+    .feature-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .workflow-step {
+      position: relative;
+      min-height: 132px;
+      padding: 18px 16px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fff;
+    }
+    .step-number { display: block; margin-bottom: 11px; color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 1px; }
+    .workflow-step h3 { margin: 0 0 7px; font-size: 14px; line-height: 1.4; }
+    .workflow-step p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    .autocomplete-panel {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #fff;
+      box-shadow: 0 8px 22px rgba(20, 42, 75, .045);
+    }
+    .mock-search {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 18px;
+      padding: 14px 16px;
+      border: 1px solid #dce5df;
+      border-radius: 11px;
+      color: #7b8795;
+      font-size: 14px;
+    }
+    .suggestions { padding: 0 18px 18px; }
+    .suggestion {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 13px;
+      border-bottom: 1px solid #eef1f5;
+      font-size: 13px;
+    }
+    .suggestion:last-child { border-bottom: 0; }
+    .suggestion strong { color: #25344a; }
+    .suggestion span { color: #738095; font-size: 12px; }
+    .note {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 3px solid #6a91c9;
+      border-radius: 6px;
+      background: #f0f5fb;
+      color: #465b77;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      display: inline-flex;
+      padding: 6px 11px;
+      border: 1px solid #dbe5f2;
+      border-radius: 999px;
+      background: #f2f6fc;
+      color: #34557f;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .role-list { margin: 0; padding-left: 21px; }
+    .role-list li { margin-bottom: 9px; color: #526174; font-size: 14px; line-height: 1.7; }
+    .data-note {
+      padding: 20px;
+      border: 1px solid #e6e8d8;
+      border-radius: 14px;
+      background: #fbfbf5;
+    }
+    .data-note h3 { margin: 0 0 8px; font-size: 16px; color: #48523d; }
+    .data-note p { margin: 0; color: #656d59; font-size: 14px; line-height: 1.75; }
+    footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #8290a2;
+      font-size: 12px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    body.dark-mode { background: #0f1724; color: #e5edf8; }
+    body.dark-mode main { color: #e5edf8; }
+    body.dark-mode .hero,
+    body.dark-mode .feature-card,
+    body.dark-mode .workflow-step,
+    body.dark-mode .autocomplete-panel { background: #182437; border-color: #34445b; }
+    body.dark-mode h1,
+    body.dark-mode .section-heading,
+    body.dark-mode .feature-card h3,
+    body.dark-mode .workflow-step h3,
+    body.dark-mode .suggestion strong { color: #e8eef8; }
+    body.dark-mode .hero-description,
+    body.dark-mode .section-intro,
+    body.dark-mode .feature-card p,
+    body.dark-mode .workflow-step p,
+    body.dark-mode .role-list li { color: #bdc9d9; }
+    body.dark-mode .suggestion { border-color: #34445b; }
+    body.dark-mode .suggestion span { color: #a8b6c9; }
+    body.dark-mode .mock-search { background: #101b2b; border-color: #34445b; color: #a8b6c9; }
+    body.dark-mode .note { background: #1d2d43; color: #c7d6e9; }
+    body.dark-mode .tag { background: #20314a; border-color: #354b68; color: #d4e2f6; }
+    body.dark-mode .data-note { background: #242b29; border-color: #46534a; }
+    body.dark-mode .data-note h3 { color: #d8e2d8; }
+    body.dark-mode .data-note p { color: #c0cdbf; }
+    body.dark-mode footer { border-color: #34445b; color: #a1afc2; }
+    body.dark-mode .button.secondary { background: #182437; }
+
+    @media (max-width: 1050px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-image-wrap { max-width: 620px; }
+      .workflow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      aside { position: relative; width: 100%; height: auto; padding-bottom: 8px; }
+      .profile-image { width: 110px; height: 110px; margin: 18px auto 12px; }
+      .profile-name { font-size: 21px; }
+      .sidebar-menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 16px 12px 0; padding: 14px 0; }
+      .sidebar-menu a { justify-content: center; gap: 7px; padding: 9px 5px; font-size: 12px; }
+      .sidebar-menu svg { width: 17px; height: 17px; }
+      .sidebar-footer { margin-top: 10px; padding-bottom: 8px; }
+      main { margin-left: 0; padding: 28px 18px 44px; }
+      .hero { padding: 23px; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .topline { align-items: flex-start; flex-direction: column; }
+      .workflow { grid-template-columns: 1fr; }
+      .suggestion { align-items: flex-start; flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <img class="profile-image" src="./personal image.png" alt="Nasim Eshaghian">
+    <h2 class="profile-name">Nasim Eshaghian</h2>
+    <p class="profile-role">AI / ML Engineer</p>
+
+    <nav class="sidebar-menu" aria-label="Main navigation">
+      <a href="./index.html#home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7"/><path d="M5 9v12h5v-7h4v7h5V9"/></svg><span>Home</span>
+      </a>
+      <a href="./about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg><span>About</span>
+      </a>
+      <a href="./projects.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span>Projects</span>
+      </a>
+      <a href="./resume.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 12h8M8 16h8"/></svg><span>Resume</span>
+      </a>
+      <a href="./blog.html"><span>Blog</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/NasimEshaghian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/></svg>
+      </a>
+      <a href="mailto:nasimeshaghian@gmail.com" aria-label="Email" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="page-content">
+      <div class="topline">
+        <div class="breadcrumb"><a href="./projects.html">Projects</a> / Pharmaceutical Data &amp; Price Discovery</div>
+        <div class="status"><span class="status-dot"></span> Developed Prototype</div>
+      </div>
+
+      <section class="hero">
+        <div>
+          <p class="eyebrow">PHARMACEUTICAL DATA · SEARCH · ANALYTICS</p>
+          <h1>Pharmaceutical Data Collection &amp; Price Discovery</h1>
+          <p class="hero-description">
+            A Python-based pharmaceutical information platform that organizes medicine records and package-price data into a searchable catalogue, with live autocomplete for Persian and English medicine names and an interactive Streamlit dashboard.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="./projects.html">← Back to Projects</a>
+            <a class="button secondary" href="#features">Explore platform</a>
+          </div>
+        </div>
+        <div class="hero-image-wrap">
+          <img src="./images/projects/pharma-showcase.webp" alt="Real dashboard views of the Iran Drug Prices pharmaceutical search and analytics project" loading="eager">
+          <p class="image-caption">Project interface: medicine search, price analytics, product cards, and detailed catalogue.</p>
+        </div>
+      </section>
+
+      <section class="section" id="overview">
+        <h2 class="section-heading">Project Overview</h2>
+        <p class="section-intro">
+          The project turns a prepared pharmaceutical dataset into a user-friendly search and price-discovery experience. It combines data collection and preparation workflows with a local catalogue, multilingual search, structured medicine cards, and summary price statistics.
+        </p>
+        <div class="data-note">
+          <h3>Data source and refresh context</h3>
+          <p>
+            The upstream data context is Iran's public pharmaceutical information ecosystem, including information associated with the Food and Drug Administration and TTAC. In the current implementation, the Streamlit dashboard reads a prepared Excel workbook locally; searches and autocomplete run against that workbook rather than requesting live prices from an external portal for every query. Data freshness therefore depends on when the source workbook is collected and updated.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <h2 class="section-heading">Core Features</h2>
+        <p class="section-intro">The interface is designed to make a large medicine catalogue easier to explore without exposing users to the full spreadsheet by default.</p>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="7.3"/><path d="m16.2 16.2 5 5"/></svg></span>
+            <h3>Live Autocomplete</h3>
+            <p>Displays suggestions while the user types, drawing from English names, Persian names, brand labels, and generic or active-ingredient search terms in the loaded catalogue.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h17"/><path d="m7 15 4-4 3 2 5-7"/></svg></span>
+            <h3>Price Summary Metrics</h3>
+            <p>Calculates average, lowest, and highest positive package prices, alongside the number of matching records, based on the active search and filters.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M7 12h10M10 19h4"/><path d="M6 5v4M18 5v4"/></svg></span>
+            <h3>Search and Filtering</h3>
+            <p>Supports medicine-name and generic-code search, dosage-form filtering, price-status filtering, unique-product or raw-record views, and sorting by price or name.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16M15 4v16"/></svg></span>
+            <h3>Medicine Cards and Detailed Records</h3>
+            <p>Shows paginated medicine cards with available English and Persian descriptions, dosage-form labels, generic codes, packaging details, and price status, with the original filtered table available separately.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v4h16v-4"/></svg></span>
+            <h3>Filtered Data Export</h3>
+            <p>Allows users to download the currently filtered dataset as a CSV file while retaining the original column headers from the workbook.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/><path d="M8 4v16M16 4v16"/></svg></span>
+            <h3>Flexible Dataset Handling</h3>
+            <p>Detects supported column-name variants, normalizes Persian characters and digits for search, and handles missing or non-numeric price values during calculations.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="autocomplete">
+        <h2 class="section-heading">How the Autocomplete Works</h2>
+        <p class="section-intro">
+          The autocomplete index is prepared from the loaded workbook and cached for reuse. A lightweight JavaScript component attaches to the Streamlit search field and presents matching suggestions as the user types. Users can select a suggestion with the mouse or keyboard.
+        </p>
+        <div class="autocomplete-panel" aria-label="Illustrative autocomplete interaction">
+          <div class="mock-search"><span aria-hidden="true">⌕</span><span>Search by English name, Persian name, active ingredient, or generic code...</span></div>
+          <div class="suggestions">
+            <div class="suggestion"><strong>Acetaminophen</strong><span>English name · dosage form · available price, when present</span></div>
+            <div class="suggestion"><strong>نام فارسی دارو</strong><span>Persian-name matching</span></div>
+            <div class="suggestion"><strong>Active ingredient / generic term</strong><span>Generic or search-name matching</span></div>
+          </div>
+        </div>
+        <div class="note">
+          The examples above describe the types of suggestions supported; they are explanatory labels, not a live search box or current price quotation.
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <h2 class="section-heading">Project Workflow</h2>
+        <div class="workflow">
+          <article class="workflow-step">
+            <span class="step-number">01 · SOURCE DATA</span>
+            <h3>Public medicine information</h3>
+            <p>Collecting pharmaceutical records from the relevant public information sources.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">02 · PREPARATION</span>
+            <h3>Data processing</h3>
+            <p>Cleaning, normalizing, mapping, and preparing the medicine workbook.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">03 · SEARCH</span>
+            <h3>Autocomplete index</h3>
+            <p>Building cached suggestions across English, Persian, and generic terms.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">04 · PRESENTATION</span>
+            <h3>Interactive dashboard</h3>
+            <p>Searching, filtering, comparing prices, browsing records, and exporting results.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="contribution">
+        <h2 class="section-heading">My Work</h2>
+        <ul class="role-list">
+          <li>Developed the Python and Streamlit dashboard for pharmaceutical catalogue search and price exploration.</li>
+          <li>Implemented multilingual search normalization for Persian characters and Persian or Arabic numerals.</li>
+          <li>Built a cached autocomplete index and a custom live suggestion dropdown supporting keyboard and mouse selection.</li>
+          <li>Implemented dataset-aware column detection, price parsing, dosage-form extraction, filtering, sorting, pagination, and summary metrics.</li>
+          <li>Designed medicine cards, a detailed data table, and filtered CSV export to make the catalogue easier to explore.</li>
+        </ul>
+      </section>
+
+      <section class="section" id="technology">
+        <h2 class="section-heading">Technology Stack</h2>
+        <div class="tag-list">
+          <span class="tag">Python</span>
+          <span class="tag">Streamlit</span>
+          <span class="tag">Pandas</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">Excel</span>
+          <span class="tag">Requests</span>
+          <span class="tag">BeautifulSoup</span>
+          <span class="tag">Data Cleaning</span>
+          <span class="tag">Autocomplete</span>
+          <span class="tag">Data Visualization</span>
+        </div>
+      </section>
+
+      <section class="section" id="scope">
+        <h2 class="section-heading">Scope and Data Transparency</h2>
+        <div class="data-note">
+          <h3>Information platform — not a clinical decision tool</h3>
+          <p>
+            This project supports medicine information discovery and price exploration. It does not provide diagnosis, treatment recommendations, prescribing advice, or medication-safety decisions. Displayed prices reflect the loaded dataset snapshot and should not be interpreted as guaranteed current prices. The dashboard does not make a live connection to an official portal during each search.
+          </p>
+        </div>
+      </section>
+
+      <footer>
+        <strong>Pharmaceutical Data Collection &amp; Price Discovery</strong><br>
+        A personal portfolio project by Nasim Eshaghian · <a href="./projects.html">Back to Projects</a>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const themeButton = document.getElementById("theme-toggle");
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
+    try { setDarkMode(localStorage.getItem("theme") === "dark"); } catch (e) {}
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+      try { localStorage.setItem("theme", enabled ? "dark" : "light"); } catch (e) {}
+    });
+  </script>
+</body>
+</html>

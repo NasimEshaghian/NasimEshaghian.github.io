@@ -3,736 +3,785 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nasim Eshaghian | AI/ML Engineer</title>
+  <meta name="description" content="A personal learning journal about drinking-water treatment, water quality, environmental science, and applied artificial intelligence.">
+  <meta name="theme-color" content="#101d30">
+  <title>Blog | Notes on Water, Science &amp; AI — Nasim Eshaghian</title>
 
   <style>
+    :root {
+      --navy: #101d30;
+      --navy-soft: #1c3b68;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --surface-soft: #f3f6fb;
+      --green: #26745a;
+      --green-soft: #eaf5ef;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
     body {
-      max-width: 760px;
-      margin: 60px auto;
-      padding: 0 24px;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    a { color: inherit; }
+
+    /* Sidebar — shared portfolio navigation */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      width: 250px;
+      min-height: 100vh;
+      padding: 20px 0 18px;
+      overflow-y: auto;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+    }
+
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -.4px;
+    }
+
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: var(--navy-soft);
+      color: #fff;
+    }
+
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg { width: 21px; height: 21px; flex: 0 0 21px; }
+
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 24px;
+      padding: 0 12px 12px;
+    }
+
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #93c5fd; }
+    .sidebar-footer svg { width: 21px; height: 21px; }
+
+    /* Main layout */
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 48px 46px 70px;
+    }
+
+    .page-content {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .page-eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .page-intro {
+      max-width: 850px;
+      margin-bottom: 34px;
+    }
+
+    .page-intro h1 {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-size: clamp(34px, 4vw, 46px);
+      line-height: 1.15;
+      letter-spacing: -1px;
+    }
+
+    .page-intro p:last-child {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
       line-height: 1.8;
-      color: #243447;
-      background: #fafcfe;
     }
 
-    h1 {
-      margin-bottom: 0;
-      font-size: 38px;
+    .intro-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      margin: 28px 0 38px;
+      padding: 18px 20px;
+      border: 1px solid #d8e4f4;
+      border-radius: 13px;
+      background: #f0f5fc;
     }
 
-    .subtitle {
-      margin-top: 4px;
-      color: #526579;
+    .intro-note-icon {
+      display: flex;
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #e0eaff;
+      color: var(--blue);
     }
 
-    h2 {
-      margin-top: 40px;
+    .intro-note-icon svg { width: 19px; height: 19px; }
+    .intro-note p { margin: 0; color: #455a76; font-size: 14px; line-height: 1.7; }
+    .intro-note strong { color: #233b5c; }
+
+    .section-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
-    a {
-      color: #1769aa;
-      text-underline-offset: 4px;
+    .section-heading-row h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1.3;
     }
 
-    nav {
+    .section-heading-row p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* First article card */
+    .post-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 22px;
+    }
+
+    .post-card {
+      display: grid;
+      grid-template-columns: minmax(280px, .88fr) minmax(0, 1.12fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: 0 8px 24px rgba(25, 45, 75, .045);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .post-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 13px 30px rgba(25, 45, 75, .09);
+    }
+
+    .post-cover {
+      position: relative;
+      display: flex;
+      min-height: 300px;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 24px;
+      background: linear-gradient(145deg, #e8f2fb 0%, #d7e7f5 52%, #c6dced 100%);
+    }
+
+    .post-cover::before,
+    .post-cover::after {
+      position: absolute;
+      border: 1px solid rgba(45, 95, 145, .13);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .post-cover::before { width: 290px; height: 290px; }
+    .post-cover::after { width: 220px; height: 220px; }
+
+    .water-illustration {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+    }
+
+    .post-cover-label {
+      position: absolute;
+      right: 18px;
+      bottom: 15px;
+      left: 18px;
+      z-index: 2;
+      color: #52708f;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 1.5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .post-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 30px 32px;
+    }
+
+    .post-category {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #234d88;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .post-card h3 {
+      margin: 16px 0 10px;
+      color: var(--ink);
+      font-size: clamp(22px, 2.2vw, 27px);
+      line-height: 1.3;
+      letter-spacing: -.4px;
+    }
+
+    .post-card h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .post-card h3 a:hover { color: var(--blue); }
+
+    .post-subtitle {
+      margin: 0 0 13px;
+      color: #435a78;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .post-excerpt {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .post-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
-      margin-top: 28px;
+      gap: 9px 15px;
+      margin-top: 20px;
+      color: #78879a;
+      font-size: 12px;
     }
-    .sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 28px 20px;
-  padding: 24px 0;
-  border-top: 1px solid #42536b;
-  border-bottom: 1px solid #42536b;
-}
 
-.sidebar-menu a {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  color: #eef3fa;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.sidebar-menu a:hover,
-.sidebar-menu a:focus-visible {
-  background-color: #1c3b68;
-}
-
-.sidebar-menu svg {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-}
-    .sidebar-footer {
-  position: static;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin-top: 24px;
-  padding-bottom: 24px;
-}
-
-.sidebar-footer a,
-.sidebar-footer button {
-  display: inline-flex;
-  padding: 4px;
-  color: #cbd5e1;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.sidebar-footer a:hover,
-.sidebar-footer button:hover {
-  color: white;
-}
-
-.sidebar-footer svg {
-  width: 22px;
-  height: 22px;
-}
-
-body.dark-mode {
-  background-color: #111827;
-  color: #e5e7eb;
-}
-
-body.dark-mode .subtitle {
-  color: #b8c5d6;
-}
-
-body.dark-mode main a {
-  color: #93c5fd;
-}
-aside > img {
-  margin: 32px auto 20px !important;
-}
-
-aside > h2 {
-  margin: 0 12px 6px !important;
-  font-size: 23px !important;
-  line-height: 1.3;
-  font-weight: 700;
-}
-
-aside > p {
-  margin: 0 12px !important;
-  font-size: 16px !important;
-  line-height: 1.5;
-}
-
-.sidebar-menu {
-  position: relative;
-  gap: 4px;
-  margin: 24px 16px 0;
-  padding: 20px 0;
-  border: none;
-}
-
-.sidebar-menu::before,
-.sidebar-menu::after {
-  content: "";
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  height: 2px;
-  background-color: #52647e;
-}
-
-.sidebar-menu::before {
-  top: 0;
-}
-
-.sidebar-menu::after {
-  bottom: 0;
-}
-
-.sidebar-menu a {
-  gap: 14px;
-  padding: 10px 18px;
-  margin: 0;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.4;
-}
-
-.sidebar-menu svg {
-  width: 21px;
-  height: 21px;
-}
-aside {
-  font-family: "Segoe UI", Arial, sans-serif;
-}
-
-aside > h2 {
-  font-size: 26px !important;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.4px;
-  color: #ffffff;
-}
-
-aside > p {
-  font-size: 15px !important;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #dbe4f0 !important;
-}
-
-.sidebar-menu a {
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: #f1f5f9;
-}
-
-.sidebar-menu svg {
-  color: #ffffff;
-}
-
-.sidebar-footer a,
-.sidebar-footer button {
-  color: #ffffff;
-}
-aside {
-  padding-top: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-aside > img {
-  width: 180px !important;
-  height: 180px !important;
-}
-body {
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-main {
-  margin-left: 250px;
-  padding: 70px 48px;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
-
-.home-content {
-  max-width: 1120px;
-  margin: 0 auto;
-}
-
-.home-hero {
-  position: relative;
-  padding: 20px 0 36px;
-}
-
-.home-hero h1 {
-  margin: 0 0 24px;
-  font-size: clamp(30px, 3.5vw, 46px);
-  line-height: 1.2;
-  letter-spacing: -1px;
-}
-
-.home-hero h1 span {
-  color: #185abd;
-}
-
-.home-intro {
-  max-width: 730px;
-  margin: 0;
-  font-size: 19px;
-  line-height: 1.8;
-}
-
-.home-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 32px;
-}
-
-.home-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 20px;
-  border: 1px solid #185abd;
-  border-radius: 10px;
-  background: #185abd;
-  color: white;
-  font: inherit;
-  font-weight: 600;
-}
-
-.home-button.secondary {
-  background: transparent;
-  color: #185abd;
-}
-
-.home-button svg {
-  width: 20px;
-  height: 20px;
-}
-
-.home-button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.home-skills,
-.project-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.home-skills {
-  margin-top: 34px;
-}
-
-.home-skills span,
-.project-tags span {
-  padding: 5px 14px;
-  border-radius: 24px;
-  background: #eaf0ff;
-  color: #17376a;
-  font-size: 14px;
-}
-
-.home-projects {
-  margin-top: 36px;
-}
-
-.home-projects h2 {
-  margin: 0 0 24px;
-  font-size: 28px;
-}
-
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.project-card {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  border: 1px solid #dfe6f0;
-  border-radius: 14px;
-  background: #ffffff;
-}
-
-.project-icon {
-  width: 28px;
-  height: 28px;
-  padding: 12px;
-  border-radius: 14px;
-  background: #eaf0ff;
-  color: #185abd;
-}
-
-.project-card h3 {
-  margin: 20px 0 10px;
-  font-size: 19px;
-  line-height: 1.4;
-}
-
-.project-card p {
-  margin: 0 0 24px;
-  font-size: 15px;
-  line-height: 1.7;
-  color: #526174;
-}
-
-.project-tags {
-  margin-top: auto;
-}
-
-.project-tags span {
-  padding: 3px 10px;
-  font-size: 12px;
-}
-
-body.dark-mode .project-card {
-  background: #1b2738;
-  border-color: #35445a;
-}
-
-body.dark-mode .project-card p {
-  color: #cbd5e1;
-}
-
-body.dark-mode .home-hero h1 span,
-body.dark-mode .home-button.secondary {
-  color: #93c5fd;
-}
-
-@media (max-width: 1100px) {
-  .project-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
-  aside {
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  main {
-    margin-left: 0;
-    padding: 36px 22px;
-  }
-}
-    .sidebar-menu a[aria-current="page"] {
-  background-color: #1c3b68;
-  color: #ffffff;
-  font-weight: 600;
-}
-@media (min-width: 1101px) {
-  main#home {
-    padding: 36px 40px;
-  }
-
-  .home-hero {
-    padding: 0 0 20px;
-  }
-
-  .home-hero h1 {
-    margin-bottom: 16px;
-    font-size: 36px;
-    line-height: 1.2;
-  }
-
-  .home-intro {
-    max-width: 850px;
-    font-size: 16px;
-    line-height: 1.65;
-  }
-
-  .home-actions {
-    margin-top: 22px;
-    gap: 14px;
-  }
-
-  .home-button {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-
-  .home-skills {
-    margin-top: 22px;
-    gap: 8px;
-  }
-
-  .home-skills span {
-    padding: 4px 12px;
-    font-size: 13px;
-  }
-
-  .home-projects {
-    margin-top: 22px;
-  }
-
-  .home-projects h2 {
-    margin: 0 0 16px;
-    font-size: 25px;
-  }
-
-  .project-grid {
-    gap: 16px;
-  }
-
-  .project-card {
-    padding: 20px;
-  }
-
-  .project-icon {
-    width: 24px;
-    height: 24px;
-    padding: 10px;
-  }
-
-  .project-card h3 {
-    margin: 14px 0 8px;
-    font-size: 17px;
-    line-height: 1.35;
-  }
-
-  .project-card p {
-    margin-bottom: 16px;
-    font-size: 14px;
-    line-height: 1.55;
-  }
-
-  .project-tags {
-    gap: 6px;
-  }
-
-  .project-tags span {
-    font-size: 11px;
-    padding: 3px 8px;
-  }
-}
-    .about-content {
-  max-width: 820px;
-  margin: 0 auto;
-}
-
-.about-content h1 {
-  margin: 0 0 22px;
-  font-size: 21px;
-  line-height: 1.2;
-}
-
-.about-content h2 {
-  margin: 28px 0 10px;
-  font-size: 21px;
-  line-height: 1.3;
-}
-
-.about-content p {
-  margin: 0 0 16px;
-  font-size: 16px;
-  line-height: 1.75;
-}
-
-.about-content .about-lead {
-  font-size: 18px;
-}
-    
-
-@media (min-width: 1101px) {
-
-  main#about {
-    padding: 36px 42px;
-  }
-
-  .about-content {
-    max-width: 1000px;
-  }
-
-  .about-content h1 {
-    font-size: 35px;
-    margin-bottom: 18px;
-  }
-
-  .about-content h2 {
-    font-size: 20px;
-    margin: 23px 0 9px;
-    line-height: 1.3;
-  }
-
-  .about-content p {
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 13px;
-  }
-
-  .about-content .about-lead {
-    font-size: 17px;
-    line-height: 1.6;
-  }
-}
-    
-.about-content p,
-.about-content li,
-.about-content .about-lead {
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.65;
-}
+    .post-meta span { display: inline-flex; align-items: center; gap: 6px; }
+    .post-meta svg { width: 14px; height: 14px; }
+
+    .post-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 13px;
+      margin-top: auto;
+      padding-top: 23px;
+    }
+
+    .read-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border: 1px solid var(--blue);
+      border-radius: 9px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .read-link:hover { background: #124b9e; transform: translateY(-1px); }
+    .read-link svg { width: 16px; height: 16px; }
+
+    .language-note { color: var(--muted); font-size: 12px; }
+
+    /* Learning roadmap */
+    .roadmap-section { margin-top: 48px; }
+
+    .roadmap-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 19px;
+    }
+
+    .roadmap-item {
+      min-height: 116px;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .roadmap-number {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .roadmap-item h3 {
+      margin: 0 0 5px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .roadmap-item p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    .page-footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: #8290a2;
+      font-size: 12px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .page-footer a { color: var(--blue); text-decoration: none; }
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* Dark mode */
+    body.dark-mode {
+      --ink: #e7edf6;
+      --muted: #b3c0d0;
+      --line: #34445a;
+      --surface: #172438;
+      --page: #0d1726;
+      --blue-soft: #213a5e;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    body.dark-mode .page-intro h1,
+    body.dark-mode .section-heading-row h2,
+    body.dark-mode .post-card h3,
+    body.dark-mode .roadmap-item h3 { color: var(--ink); }
+
+    body.dark-mode .page-intro p:last-child,
+    body.dark-mode .section-heading-row p,
+    body.dark-mode .post-excerpt,
+    body.dark-mode .roadmap-item p { color: var(--muted); }
+
+    body.dark-mode .intro-note {
+      border-color: #354b68;
+      background: #1b2b42;
+    }
+
+    body.dark-mode .intro-note p { color: #c7d6e9; }
+    body.dark-mode .intro-note strong { color: #edf4ff; }
+    body.dark-mode .intro-note-icon { background: #263e60; color: #a9c9f8; }
+    body.dark-mode .post-card,
+    body.dark-mode .roadmap-item { border-color: var(--line); background: var(--surface); }
+    body.dark-mode .post-subtitle { color: #c5d7ef; }
+    body.dark-mode .post-category { background: #263d5d; color: #d2e3ff; }
+    body.dark-mode .post-meta { color: #a1afc2; }
+    body.dark-mode .language-note { color: #a1afc2; }
+    body.dark-mode .page-footer { border-color: var(--line); color: #a1afc2; }
+    body.dark-mode .post-cover { background: linear-gradient(145deg, #20334b 0%, #1b2c42 52%, #172438 100%); }
+    body.dark-mode .post-cover-label { color: #b5c8df; }
+
+    /* Responsive layout */
+    @media (max-width: 1050px) {
+      main { padding: 38px 30px 60px; }
+      .post-card { grid-template-columns: minmax(240px, .8fr) minmax(0, 1.2fr); }
+      .roadmap-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 14px 12px;
+      }
+
+      .sidebar-photo { width: 100px; height: 100px; margin: 6px auto 10px; }
+      .sidebar-name { font-size: 21px; }
+      .sidebar-menu {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin: 16px 0 0;
+        padding: 14px 0;
+      }
+      .sidebar-menu a { justify-content: center; gap: 7px; padding: 9px 5px; font-size: 12px; }
+      .sidebar-menu svg { width: 17px; height: 17px; flex-basis: 17px; }
+      .sidebar-footer { margin-top: 10px; padding-bottom: 8px; }
+      main { margin-left: 0; padding: 30px 20px 48px; }
+      .post-card { grid-template-columns: 1fr; }
+      .post-cover { min-height: 245px; }
+      .post-card-content { padding: 24px; }
+      .roadmap-list { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      main { padding: 25px 15px 42px; }
+      .page-intro h1 { font-size: 34px; }
+      .page-intro p:last-child { font-size: 14px; }
+      .intro-note { padding: 15px; }
+      .section-heading-row { align-items: flex-start; flex-direction: column; }
+      .post-cover { min-height: 220px; }
+    }
   </style>
 </head>
 
 <body>
-  <aside style="
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background-color: #101d30;">
-    <img
-  src="personal image.png"
-  alt="Nasim Eshaghian"
-  style="
-    display: block;
-    width: 160px;
-    height: 160px;
-    margin: 30px auto 0;
-    border-radius: 50%;
-    object-fit: cover;
-  "
->
-     <h2 style="
-    color: white;
-    text-align: center;
-    font-size: 22px;
-    margin-top: 40px;
-  ">
-    Nasim Eshaghian
-  </h2>
+  <aside class="sidebar">
+    <img class="sidebar-photo" src="./personal image.png" alt="Nasim Eshaghian">
+    <h2 class="sidebar-name">Nasim Eshaghian</h2>
+    <p class="sidebar-role">AI / ML Engineer</p>
 
-  <p style="
-    color: #cbd5e1;
-    text-align: center;
-    font-size: 16px;
-  ">
-    AI / ML Engineer
-  </p>
-<nav class="sidebar-menu" aria-label="Main navigation">
+    <nav class="sidebar-menu" aria-label="Main navigation">
+      <a href="./index.html#home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10 12 3l9 7"/><path d="M5 9v12h5v-7h4v7h5V9"/>
+        </svg>
+        <span>Home</span>
+      </a>
 
-  <a href="index.html#home">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-      <path d="M3 10 12 3l9 7"/>
-      <path d="M5 9v12h5v-7h4v7h5V9"/>
-    </svg>
-    <span>Home</span>
-  </a>
+      <a href="./about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>
+        </svg>
+        <span>About</span>
+      </a>
 
-  <a href="./about.html">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-      <circle cx="12" cy="12" r="9"/>
-      <path d="M12 11v6"/>
-      <path d="M12 7h.01"/>
-    </svg>
-    <span>About</span>
-  </a>
+      <a href="./projects.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M12 12v3"/>
+        </svg>
+        <span>Projects</span>
+      </a>
 
-  <a href="./projects.html">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-      <rect x="3" y="7" width="18" height="14" rx="2"/>
-      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-      <path d="M3 12a22 22 0 0 0 18 0M12 12v3"/>
-    </svg>
-    <span>Projects</span>
-  </a>
+      <a href="./resume.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 12h8M8 16h8"/>
+        </svg>
+        <span>Resume</span>
+      </a>
 
-  <a href="./resume.html">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
-      <path d="M14 2v6h6M8 12h8M8 16h8"/>
-    </svg>
-    <span>Resume</span>
-  </a>
+      <a href="./blog.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h10M7 15h6M7 18h4"/>
+        </svg>
+        <span>Blog</span>
+      </a>
+    </nav>
 
-  <a href="./blog.html" aria-current="page">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="2"/>
-      <path d="M7 7h10M7 11h10M7 15h6M7 18h4"/>
-    </svg>
-    <span>Blog</span>
-  </a>
-
-</nav>
     <div class="sidebar-footer">
+      <a href="https://github.com/NasimEshaghian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
+        </svg>
+      </a>
 
-  <!-- GitHub -->
-  <a href="https://github.com/NasimEshaghian"
-     aria-label="GitHub" title="GitHub">
-    <svg viewBox="0 0 24 24" fill="currentColor"
-         aria-hidden="true">
-      <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
-    </svg>
-  </a>
+      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/>
+        </svg>
+      </a>
 
-  <!-- LinkedIn -->
-  <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/"
-     aria-label="LinkedIn" title="LinkedIn">
-    <svg viewBox="0 0 24 24" fill="currentColor"
-         aria-hidden="true">
-      <path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/>
-    </svg>
-  </a>
+      <a href="mailto:n.eshaghian.sut@gmail.com" aria-label="Email" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>
+        </svg>
+      </a>
 
-  <!-- Email -->
-  <a href="mailto:n.eshaghian.sut@gmail.com"
-     aria-label="Email" title="Email">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2"/>
-      <path d="m3 6 9 7 9-7"/>
-    </svg>
-  </a>
-
-  <!-- RSS -->
-  <a href="/feed.xml" aria-label="RSS feed" title="RSS">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2"
-         stroke-linecap="round" aria-hidden="true">
-      <circle cx="5" cy="19" r="1" fill="currentColor"/>
-      <path d="M4 11a9 9 0 0 1 9 9"/>
-      <path d="M4 4a16 16 0 0 1 16 16"/>
-    </svg>
-  </a>
-
-  <!-- Theme -->
-  <button id="theme-toggle" type="button"
-          aria-label="Dark mode" aria-pressed="false"
-          title="Toggle dark mode">
-    <svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         aria-hidden="true">
-      <circle cx="12" cy="12" r="9"/>
-      <path d="M12 3a9 9 0 0 0 0 18Z"
-            fill="currentColor" stroke="none"/>
-    </svg>
-  </button>
-
-</div>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+    </div>
   </aside>
 
+  <main id="blog">
+    <div class="page-content">
+      <header class="page-intro">
+        <p class="page-eyebrow">MY LEARNING JOURNEY</p>
+        <h1>Notes on Water, Science &amp; AI</h1>
+        <p>
+          A collection of simple explanations and reflections from the research papers,
+          technical reports, and ideas I have explored while learning about water treatment,
+          environmental science, and artificial intelligence.
+        </p>
+      </header>
+
+      <section class="intro-note" aria-label="About this blog">
+        <div class="intro-note-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v2M12 19v2M4.2 5.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 18.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+            <circle cx="12" cy="12" r="5"/>
+          </svg>
+        </div>
+        <p>
+          <strong>This is a learning journal, not a textbook.</strong>
+          I write about the questions that come up while reading and exploring this field,
+          then try to explain the answers in plain language. The goal is simple: make technical
+          ideas easier to understand, one topic at a time.
+        </p>
+      </section>
+
+      <section aria-labelledby="latest-posts-heading">
+        <div class="section-heading-row">
+          <div>
+            <h2 id="latest-posts-heading">The Learning Journal</h2>
+            <p>Start with the basics and follow the path from water quality to applied AI.</p>
+          </div>
+        </div>
+
+        <div class="post-grid">
+          <article class="post-card">
+            <a class="post-cover" href="./why-water-becomes-cloudy.html" aria-label="Read Why Does Water Become Cloudy?">
+              <svg class="water-illustration" viewBox="0 0 460 270" role="img" aria-labelledby="water-title water-desc">
+                <title id="water-title">Cloudy water and clear water</title>
+                <desc id="water-desc">Two laboratory beakers compare cloudy water containing suspended particles with clear water.</desc>
+                <defs>
+                  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#ffffff" stop-opacity=".9"/>
+                    <stop offset="1" stop-color="#dbeaf6" stop-opacity=".45"/>
+                  </linearGradient>
+                  <linearGradient id="muddy" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#b9a17c" stop-opacity=".72"/>
+                    <stop offset="1" stop-color="#826f55" stop-opacity=".9"/>
+                  </linearGradient>
+                  <linearGradient id="clear" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#b9e4f8" stop-opacity=".5"/>
+                    <stop offset="1" stop-color="#6bb5df" stop-opacity=".7"/>
+                  </linearGradient>
+                  <clipPath id="left-beaker"><path d="M73 48h112l-9 155q-2 19-20 19H102q-18 0-20-19Z"/></clipPath>
+                  <clipPath id="right-beaker"><path d="M275 48h112l-9 155q-2 19-20 19h-54q-18 0-20-19Z"/></clipPath>
+                </defs>
+
+                <ellipse cx="230" cy="238" rx="178" ry="13" fill="#6f94b5" opacity=".16"/>
+
+                <g>
+                  <path d="M73 48h112l-9 155q-2 19-20 19h-54q-18 0-20-19Z" fill="url(#glass)" stroke="#6689a9" stroke-width="3"/>
+                  <g clip-path="url(#left-beaker)">
+                    <path d="M70 117q35-9 60 0t62 0v110H70Z" fill="url(#muddy)"/>
+                    <g fill="#6e5c45" opacity=".8">
+                      <circle cx="94" cy="135" r="3"/><circle cx="119" cy="155" r="2.5"/><circle cx="151" cy="132" r="3"/><circle cx="169" cy="168" r="2"/>
+                      <circle cx="101" cy="184" r="2"/><circle cx="139" cy="177" r="3"/><circle cx="160" cy="197" r="2.5"/><circle cx="121" cy="211" r="2"/>
+                      <circle cx="180" cy="145" r="1.8"/><circle cx="85" cy="166" r="1.8"/><circle cx="145" cy="146" r="1.6"/>
+                    </g>
+                  </g>
+                  <path d="M84 48h90" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+                  <path d="M92 66h8l-7 125" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+                  <text x="129" y="26" text-anchor="middle" fill="#375c7d" font-size="14" font-weight="700">CLOUDY</text>
+                  <text x="129" y="257" text-anchor="middle" fill="#52708f" font-size="11" font-weight="700" letter-spacing="1.2">SUSPENDED PARTICLES</text>
+                </g>
+
+                <g>
+                  <path d="M275 48h112l-9 155q-2 19-20 19h-54q-18 0-20-19Z" fill="url(#glass)" stroke="#6689a9" stroke-width="3"/>
+                  <g clip-path="url(#right-beaker)">
+                    <path d="M272 117q35-9 60 0t62 0v110h-122Z" fill="url(#clear)"/>
+                    <path d="M285 134q22 8 45 0t47 0" stroke="#ffffff" stroke-width="3" fill="none" opacity=".8"/>
+                  </g>
+                  <path d="M286 48h90" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+                  <path d="M294 66h8l-7 125" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+                  <text x="331" y="26" text-anchor="middle" fill="#375c7d" font-size="14" font-weight="700">CLEAR</text>
+                  <text x="331" y="257" text-anchor="middle" fill="#52708f" font-size="11" font-weight="700" letter-spacing="1.2">LOWER TURBIDITY</text>
+                </g>
+
+                <path d="M205 126h48m-10-8 10 8-10 8" stroke="#6b8eae" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="post-cover-label">Water quality · The basics</span>
+            </a>
+
+            <div class="post-card-content">
+              <span class="post-category">Water Quality · Fundamentals</span>
+              <h3><a href="./why-water-becomes-cloudy.html">Why Does Water Become Cloudy?</a></h3>
+              <p class="post-subtitle">
+                The science of suspended particles, scattered light, and why cloudy water is an engineering puzzle.
+              </p>
+              <p class="post-excerpt">
+                What makes a river look like chocolate milk after a heavy rain? This first note explores turbidity,
+                tiny suspended particles, how we measure cloudiness, and why it matters for drinking-water treatment.
+              </p>
+
+              <div class="post-meta">
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  5 min read
+                </span>
+                <span>Learning Journal</span>
+                <span>Post 01</span>
+              </div>
+
+              <div class="post-card-actions">
+                <a class="read-link" href="./why-water-becomes-cloudy.html">
+                  Read Article
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+                <span class="language-note">English + فارسی</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="roadmap-section" aria-labelledby="roadmap-heading">
+        <div class="section-heading-row">
+          <div>
+            <h2 id="roadmap-heading">Where This Learning Path Goes</h2>
+            <p>A few questions I want to explore next.</p>
+          </div>
+        </div>
+
+        <div class="roadmap-list">
+          <article class="roadmap-item">
+            <span class="roadmap-number">NEXT · 02</span>
+            <h3>How Do We Make Tiny Particles Stick Together?</h3>
+            <p>Coagulation, flocculation, and the jar test.</p>
+          </article>
+
+          <article class="roadmap-item">
+            <span class="roadmap-number">03</span>
+            <h3>Can Seeds Help Clean Dirty Water?</h3>
+            <p>A closer look at natural coagulants and their limits.</p>
+          </article>
+
+          <article class="roadmap-item">
+            <span class="roadmap-number">04</span>
+            <h3>How Does Weather Change the Water in a Lake?</h3>
+            <p>Rain, runoff, wind, and changing turbidity.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <span>Notes on Water, Science &amp; AI · A personal learning journal</span><br>
+        <a href="./index.html#home">Back to Home</a>
+      </footer>
+    </div>
+  </main>
+
   <script>
-  const themeButton = document.getElementById("theme-toggle");
+    const themeButton = document.getElementById("theme-toggle");
 
-  function setDarkMode(enabled) {
-    document.body.classList.toggle("dark-mode", enabled);
-    themeButton.setAttribute("aria-pressed", String(enabled));
-  }
-
-  try {
-    setDarkMode(localStorage.getItem("theme") === "dark");
-  } catch {}
-
-  themeButton.addEventListener("click", function () {
-    const enabled = !document.body.classList.contains("dark-mode");
-    setDarkMode(enabled);
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
 
     try {
-      localStorage.setItem("theme", enabled ? "dark" : "light");
-    } catch {}
-  });
-</script>
+      setDarkMode(localStorage.getItem("theme") === "dark");
+    } catch (error) {
+      setDarkMode(false);
+    }
+
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+
+      try {
+        localStorage.setItem("theme", enabled ? "dark" : "light");
+      } catch (error) {
+        // Dark mode remains available for the current page.
+      }
+    });
+  </script>
 </body>
 </html>

@@ -707,6 +707,88 @@ body.dark-mode .publication {
     margin-top: 5px;
   }
 }
+
+/* Career, education & project timeline */
+.timeline-intro {
+  margin: 0 0 22px;
+  color: #526174;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin: 8px 0 0;
+  padding: 0 0 0 28px;
+  list-style: none;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 12px;
+  left: 7px;
+  width: 2px;
+  background: #d7e2f0;
+}
+.timeline-item {
+  position: relative;
+  padding: 0 0 24px 14px;
+}
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -26px;
+  width: 11px;
+  height: 11px;
+  border: 3px solid #185abd;
+  border-radius: 50%;
+  background: #fafcfe;
+  box-sizing: content-box;
+}
+.timeline-date {
+  display: block;
+  margin-bottom: 5px;
+  color: #185abd;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.timeline-item h3 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.timeline-item p {
+  margin: 0;
+  color: #526174;
+  font-size: 14px;
+  line-height: 1.65;
+}
+body.dark-mode .timeline-intro,
+body.dark-mode .timeline-item p {
+  color: #cbd5e1;
+}
+body.dark-mode .timeline::before {
+  background: #43536a;
+}
+body.dark-mode .timeline-item::before {
+  background: #111827;
+}
+@media (max-width: 700px) {
+  .timeline {
+    padding-left: 24px;
+  }
+  .timeline-item {
+    padding-left: 10px;
+  }
+}
+
   </style>
 </head>
 
@@ -887,6 +969,100 @@ body.dark-mode .publication {
         M.Sc. graduate with a peer-reviewed publication in
         misinformation detection.
       </p>
+    </section>
+
+    <section class="resume-section">
+      <h2>Career, Education &amp; Project Timeline</h2>
+      <p class="timeline-intro">
+        A snapshot of my academic background, research, professional work,
+        and applied technical projects over time.
+      </p>
+      <ol class="timeline">
+        <li class="timeline-item">
+          <span class="timeline-date">2025 – Present</span>
+          <h3>Applied AI/ML Research &amp; Workflow Automation</h3>
+          <p>
+            Working on industrial water-treatment decision support with
+            Pardazesh Seir Afagh / Aqua Intelligent Technology, alongside
+            CRM and business-process automation at Hermes.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2023</span>
+          <h3>IT Administrator — Soma Ertebatat Kian</h3>
+          <p>
+            Supported IT operations, including Windows installation,
+            Windows Server setup, and system policy configuration.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2023</span>
+          <h3>Neural-Network Image Classification</h3>
+          <p>
+            Built a three-layer neural-network image-classification project
+            using Python.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2022</span>
+          <h3>Python Machine-Learning Project</h3>
+          <p>
+            Developed a car-price prediction project using Python.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2020</span>
+          <h3>Research in Fake-News Detection</h3>
+          <p>
+            Co-authored a peer-reviewed publication on detecting fake news
+            using social features and Ordered Weighted Averaging fusion.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2019 – 2023</span>
+          <h3>Web Administration</h3>
+          <p>
+            Maintained and troubleshot websites and supported website
+            performance and online visibility at Raham Entrepreneur
+            Consultants Corporation.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2016 – 2019</span>
+          <h3>M.Sc. in Information Security</h3>
+          <p>
+            Completed graduate studies at Sadjad University of Technology;
+            thesis focused on fake-news detection on Twitter.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2014 – 2016</span>
+          <h3>Internship — Telecommunications Company</h3>
+          <p>
+            Completed an internship while preparing for the national
+            graduate entrance examination and pursuing admission to
+            M.Sc. studies.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2012 – 2014</span>
+          <h3>University Laboratory Experience</h3>
+          <p>
+            Supported IT-center operations at Sharif University of Technology
+            and practical laboratory instruction at Shahrood University of
+            Technology, alongside undergraduate studies.
+          </p>
+        </li>
+        <li class="timeline-item">
+          <span class="timeline-date">2010 – 2014</span>
+          <h3>B.Sc. in Information Technology Engineering</h3>
+          <p>
+            Studied at Shahrood University of Technology, with a capstone
+            project on brain-tumour boundary detection using CT-image
+            skeletonization.
+          </p>
+        </li>
+      </ol>
     </section>
 
     <section class="resume-section">
@@ -1106,6 +1282,36 @@ body.dark-mode .publication {
 
     <section class="resume-section">
       <h2>Earlier Experience</h2>
+
+      <article class="resume-item">
+        <div class="resume-item-heading">
+          <h3>IT Administrator</h3>
+          <span>2023</span>
+        </div>
+        <p class="resume-company">Soma Ertebatat Kian</p>
+        <ul>
+          <li>
+            Installed and configured Windows operating systems and
+            Windows Server environments.
+          </li>
+          <li>
+            Configured system policies and supported day-to-day
+            IT administration.
+          </li>
+        </ul>
+      </article>
+
+      <article class="resume-item">
+        <div class="resume-item-heading">
+          <h3>IT Intern</h3>
+          <span>2014 – 2016</span>
+        </div>
+        <p class="resume-company">Telecommunications Company</p>
+        <p>
+          Completed an IT internship while preparing for the national
+          M.Sc. entrance examination.
+        </p>
+      </article>
 
       <article class="resume-item">
         <div class="resume-item-heading">

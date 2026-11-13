@@ -35,6 +35,114 @@
     }
     a { color: inherit; }
 
+    /* Shared portfolio sidebar */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      width: 250px;
+      height: 100vh;
+      min-height: 100vh;
+      overflow-y: auto;
+      padding: 20px 0 18px;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+    }
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -.4px;
+    }
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background .18s ease;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: var(--navy-soft);
+      color: #fff;
+    }
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg {
+      display: block;
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+    }
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 17px;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border: 0;
+      border-radius: 5px;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #b9d4f7; }
+    .sidebar-footer svg { display: block; width: 22px; height: 22px; }
+
     /* Main article layout */
     main {
       min-height: 100vh;
@@ -619,7 +727,7 @@
             <div class="source-note"><strong>A note on scope:</strong> This article explains the general principles and discusses one published case study. It is not a chemical-dosing guide. The reported alum doses and model results belong to the Sidi Yacoub study and should not be treated as operating recommendations for another plant. Actual dosing and test protocols must follow site-specific procedures and qualified operator judgement.</div>
 
             <section class="persian-section" lang="fa" dir="rtl" aria-labelledby="persian-heading">
-              <h2 id="persian-heading">یک توضیح خودمونی برای فارسی‌زبان‌ها 🇮🇷</h2>
+              <h2 id="persian-heading">حالا به زبون خودمون! 🇮🇷</h2>
               <p>توی پست قبلی گفتیم بعضی از ذرات ریزِ داخل آب اون‌قدر کوچیکن که راحت ته‌نشین نمی‌شن. حالا یه دردسر دیگه هم دارن: خیلی از این ذرات توی آب بار سطحی مشابهی دارن و همین باعث می‌شه وقتی به هم نزدیک می‌شن، راحت به هم نچسبن. یه جورایی انگار توی مهمونی همه از هم فاصله می‌گیرن و هیچ‌کس حاضر نیست کنار بقیه بشینه!</p>
               <p>مهندسا برای حل این مشکل از دو مرحله کمک می‌گیرن: <strong>انعقاد (Coagulation)</strong> و <strong>لخته‌سازی (Flocculation)</strong>. اسم‌هاشون شبیه همه، ولی کارشون یکی نیست.</p>
               <p><strong>مرحله اول، انعقاد:</strong> یه ماده شیمیایی به اسم منعقدکننده به آب اضافه می‌شه. این ماده کمک می‌کنه ذرات ریز از اون حالت پایدار و پراکنده خارج بشن؛ مثلاً با کم کردن دافعه‌ی بارهای سطحی یا با تشکیل رسوبی که ذرات رو داخل خودش گیر می‌اندازه. توی مقاله‌ای که ازش حرف می‌زنیم، پژوهشگرها دو مکانیسم «خنثی‌سازی بار» و «لخته‌سازی جارویی» رو توضیح می‌دن.</p>
@@ -649,7 +757,7 @@
               <a href="#why-dose-changes">Why dose changes</a>
               <a href="#what-i-learned">What I learned</a>
               <a href="#references">References</a>
-              <a href="#persian-heading">توضیح فارسی</a>
+              <a href="#persian-heading">حالا به زبون خودمون!</a>
             </div>
           </aside>
         </div>
@@ -688,4 +796,3 @@
   </script>
 </body>
 </html>
-

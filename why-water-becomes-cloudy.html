@@ -223,6 +223,15 @@
       height: auto;
       margin: 0 auto;
     }
+    .cover-art img {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
     .cover-caption {
       margin: 2px 0 0;
       color: #74849a;
@@ -597,61 +606,20 @@
           </div>
         </header>
 
-        <figure class="cover-art">
-          <svg class="water-illustration" viewBox="0 0 460 270" role="img" aria-labelledby="water-title water-desc">
-                <title id="water-title">Cloudy water and clear water</title>
-                <desc id="water-desc">Two laboratory beakers compare cloudy water containing suspended particles with clear water.</desc>
-                <defs>
-                  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="#ffffff" stop-opacity=".9"/>
-                    <stop offset="1" stop-color="#dbeaf6" stop-opacity=".45"/>
-                  </linearGradient>
-                  <linearGradient id="muddy" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#b9a17c" stop-opacity=".72"/>
-                    <stop offset="1" stop-color="#826f55" stop-opacity=".9"/>
-                  </linearGradient>
-                  <linearGradient id="clear" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#b9e4f8" stop-opacity=".5"/>
-                    <stop offset="1" stop-color="#6bb5df" stop-opacity=".7"/>
-                  </linearGradient>
-                  <clipPath id="left-beaker"><path d="M73 48h112l-9 155q-2 19-20 19H102q-18 0-20-19Z"/></clipPath>
-                  <clipPath id="right-beaker"><path d="M275 48h112l-9 155q-2 19-20 19h-54q-18 0-20-19Z"/></clipPath>
-                </defs>
+<figure class="cover-art">
 
-                <ellipse cx="230" cy="238" rx="178" ry="13" fill="#6f94b5" opacity=".16"/>
+  <img
+    class="cover-image"
+    src="./images/blog/turbidity%20concept.jfif"
+    alt="Turbid water containing suspended particles"
+    loading="eager"
+  >
 
-                <g>
-                  <path d="M73 48h112l-9 155q-2 19-20 19h-54q-18 0-20-19Z" fill="url(#glass)" stroke="#6689a9" stroke-width="3"/>
-                  <g clip-path="url(#left-beaker)">
-                    <path d="M70 117q35-9 60 0t62 0v110H70Z" fill="url(#muddy)"/>
-                    <g fill="#6e5c45" opacity=".8">
-                      <circle cx="94" cy="135" r="3"/><circle cx="119" cy="155" r="2.5"/><circle cx="151" cy="132" r="3"/><circle cx="169" cy="168" r="2"/>
-                      <circle cx="101" cy="184" r="2"/><circle cx="139" cy="177" r="3"/><circle cx="160" cy="197" r="2.5"/><circle cx="121" cy="211" r="2"/>
-                      <circle cx="180" cy="145" r="1.8"/><circle cx="85" cy="166" r="1.8"/><circle cx="145" cy="146" r="1.6"/>
-                    </g>
-                  </g>
-                  <path d="M84 48h90" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-                  <path d="M92 66h8l-7 125" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
-                  <text x="129" y="26" text-anchor="middle" fill="#375c7d" font-size="14" font-weight="700">CLOUDY</text>
-                  <text x="129" y="257" text-anchor="middle" fill="#52708f" font-size="11" font-weight="700" letter-spacing="1.2">SUSPENDED PARTICLES</text>
-                </g>
+  <figcaption class="cover-caption">
+    A real-world illustration of water turbidity.
+  </figcaption>
 
-                <g>
-                  <path d="M275 48h112l-9 155q-2 19-20 19h-54q-18 0-20-19Z" fill="url(#glass)" stroke="#6689a9" stroke-width="3"/>
-                  <g clip-path="url(#right-beaker)">
-                    <path d="M272 117q35-9 60 0t62 0v110h-122Z" fill="url(#clear)"/>
-                    <path d="M285 134q22 8 45 0t47 0" stroke="#ffffff" stroke-width="3" fill="none" opacity=".8"/>
-                  </g>
-                  <path d="M286 48h90" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-                  <path d="M294 66h8l-7 125" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
-                  <text x="331" y="26" text-anchor="middle" fill="#375c7d" font-size="14" font-weight="700">CLEAR</text>
-                  <text x="331" y="257" text-anchor="middle" fill="#52708f" font-size="11" font-weight="700" letter-spacing="1.2">LOWER TURBIDITY</text>
-                </g>
-
-                <path d="M205 126h48m-10-8 10 8-10 8" stroke="#6b8eae" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-          <figcaption class="cover-caption">A simple visual comparison of water containing suspended particles and clearer water.</figcaption>
-        </figure>
+</figure>
 
         <div class="article-layout">
           <div class="article-content">
@@ -728,14 +696,16 @@
               <p>خلاصه اینکه آب فقط با نگاه کردن به رنگش قضاوت نمی‌شه و کدورت هم فقط «مقدار گل‌ولای» نیست. توی پست بعدی می‌ریم سراغ سؤال جذاب بعدی: مهندسا چطور این ذرات ریز و لجباز رو به هم می‌چسبونن تا راحت‌تر ته‌نشین و فیلتر بشن؟</p>
             </section>
 
-            <nav class="next-post" aria-label="Next article">
-              <div>
-                <span class="next-post-label">COMING NEXT · POST 02</span>
-                <h2>How Do We Make Tiny Particles Stick Together?</h2>
-              </div>
-              <a href="./blog.html">Back to Blog →</a>
-            </nav>
-          </div>
+<nav class="next-post" aria-label="Next article">
+  <div>
+    <span class="next-post-label">COMING NEXT · POST 02</span>
+    <h2>How Do We Make Tiny Particles Stick Together?</h2>
+  </div>
+
+  <a href="./how-particles-stick-together.html">
+    Read Next Article →
+  </a>
+</nav>
 
           <aside class="toc" aria-label="On this page">
             <h2>On this page</h2>

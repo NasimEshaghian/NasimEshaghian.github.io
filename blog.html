@@ -856,6 +856,338 @@
       .section-heading-row { align-items: flex-start; flex-direction: column; }
       .post-cover { min-height: 220px; }
     }
+
+
+    /* ==========================================
+       Blog UX refresh — clearer hierarchy, cards
+       and responsive article discovery
+       ========================================== */
+    :root {
+      --page: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f7f9fd;
+      --ink: #19283b;
+      --muted: #617187;
+      --line: #e1e8f1;
+      --blue: #1c5ec7;
+      --blue-soft: #edf3ff;
+      --navy: #101d30;
+      --navy-soft: #1c3b68;
+      --card-shadow: 0 12px 32px rgba(28, 47, 76, .06);
+      --card-shadow-hover: 0 18px 42px rgba(28, 47, 76, .11);
+    }
+
+    body { background: var(--page); }
+    main { padding: 38px clamp(24px, 3.2vw, 52px) 64px; }
+    .page-content { max-width: 1240px; }
+
+    .page-intro {
+      max-width: none;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      align-items: center;
+      gap: 28px;
+      margin: 0 0 38px;
+      padding: clamp(25px, 3vw, 38px);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #dce6f3;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 92% 10%, rgba(89, 143, 219, .13), transparent 34%),
+        linear-gradient(125deg, #ffffff 0%, #f7faff 100%);
+      box-shadow: var(--card-shadow);
+    }
+    .intro-copy { position: relative; z-index: 1; }
+    .page-eyebrow {
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      letter-spacing: 1.65px;
+    }
+    .page-intro h1 {
+      margin: 0 0 13px;
+      max-width: 800px;
+      font-size: clamp(32px, 3.7vw, 45px);
+      line-height: 1.12;
+      letter-spacing: -1.15px;
+    }
+    .intro-motto,
+    .intro-description { margin: 0; line-height: 1.7; }
+    .intro-motto { color: #344d6c; font-size: 16px; }
+    .intro-description { color: var(--muted); font-size: 14px; }
+    .intro-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .intro-topics span {
+      padding: 6px 10px;
+      border: 1px solid #dce6f3;
+      border-radius: 999px;
+      background: rgba(255,255,255,.78);
+      color: #4f6480;
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .blog-summary {
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 21px 23px;
+      border: 1px solid rgba(190, 209, 235, .8);
+      border-radius: 16px;
+      background: rgba(255,255,255,.76);
+      box-shadow: 0 8px 22px rgba(33, 70, 118, .045);
+    }
+    .summary-label {
+      color: #617b9e;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.35px;
+    }
+    .summary-number {
+      margin: 5px 0 0;
+      color: #1d4f96;
+      font-size: 49px;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+    .summary-caption { margin-top: 5px; color: #405874; font-size: 12px; font-weight: 700; }
+    .summary-footnote { margin-top: 10px; color: #718198; font-size: 10px; line-height: 1.5; }
+
+    .section-heading-row,
+    .roadmap-heading-row { margin-bottom: 17px; }
+    .section-heading-row h2,
+    .roadmap-heading-row h2 {
+      font-size: 23px;
+      letter-spacing: -.35px;
+    }
+    .section-heading-row p,
+    .roadmap-heading-row p { font-size: 13px; }
+    .section-kicker {
+      margin: 0 0 6px !important;
+      color: var(--blue) !important;
+      font-size: 10px !important;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .post-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .post-card {
+      min-width: 0;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      box-shadow: var(--card-shadow);
+    }
+    .post-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .post-cover {
+      min-height: 0;
+      height: auto;
+      aspect-ratio: 16 / 8.4;
+      padding: 17px;
+      background: linear-gradient(145deg, #eaf2fb 0%, #dce9f7 100%);
+    }
+    .post-cover::before { width: 230px; height: 230px; }
+    .post-cover::after { width: 170px; height: 170px; }
+    .water-illustration {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .post-card-content {
+      min-height: 285px;
+      padding: 22px 23px 23px;
+    }
+    .post-category {
+      padding: 5px 9px;
+      font-size: 9px;
+      letter-spacing: .8px;
+    }
+    .post-card h3 {
+      margin: 13px 0 8px;
+      font-size: clamp(19px, 1.7vw, 22px);
+      line-height: 1.3;
+    }
+    .post-subtitle { margin-bottom: 10px; font-size: 13px; line-height: 1.55; }
+    .post-excerpt { font-size: 13px; line-height: 1.7; }
+    .post-meta { gap: 8px 13px; margin-top: 15px; font-size: 11px; }
+    .post-card-actions { padding-top: 17px; gap: 11px; }
+    .read-link { padding: 9px 13px; font-size: 12px; border-radius: 8px; }
+    .language-note { font-size: 11px; }
+
+    .roadmap-section {
+      margin-top: 58px;
+      padding-top: 34px;
+      border-top: 1px solid var(--line);
+    }
+    .roadmap-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 0;
+      padding: 0;
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+    .roadmap-item {
+      min-width: 0;
+      min-height: 168px;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 16px;
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 5px 18px rgba(28, 47, 76, .035);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .roadmap-item[href]:hover {
+      transform: translateY(-3px);
+      border-color: #b9cce7;
+      box-shadow: var(--card-shadow);
+    }
+    .roadmap-item:focus-visible {
+      outline: 3px solid rgba(28, 94, 199, .25);
+      outline-offset: 3px;
+    }
+    .roadmap-number { margin-bottom: 9px; font-size: 9px; letter-spacing: 1.1px; }
+    .roadmap-item h3 { margin-bottom: 7px; font-size: 15px; line-height: 1.4; }
+    .roadmap-item p { font-size: 12px; line-height: 1.6; }
+    .roadmap-item::after {
+      content: "Read article  →";
+      display: inline-block;
+      margin-top: auto;
+      padding-top: 14px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .webinar-section {
+      margin-top: 64px;
+      padding-top: 38px;
+      border-top: 1px solid var(--line);
+    }
+    .webinar-feature {
+      border-radius: 18px;
+      box-shadow: var(--card-shadow);
+    }
+    .webinar-feature-grid {
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+      align-items: center;
+    }
+    .webinar-video-panel {
+      align-self: center;
+      width: 100%;
+      padding: 25px;
+      background: transparent;
+    }
+    .webinar-video-frame { border-radius: 12px; }
+    .webinar-video-caption { margin: 10px 1px 0; font-size: 11px; }
+    .webinar-details { padding: 30px 30px 30px 12px; }
+    .webinar-details h3 { font-size: clamp(20px, 2vw, 24px); }
+    .webinar-details > p { font-size: 13px; line-height: 1.7; }
+    .webinar-links { gap: 8px; }
+    .webinar-link { min-height: 36px; padding: 8px 11px; font-size: 11px; }
+
+    .page-footer {
+      margin-top: 58px;
+      padding-top: 22px;
+      font-size: 11px;
+    }
+
+    /* Dark theme refinements */
+    body.dark-mode {
+      --page: #0d1726;
+      --surface: #172438;
+      --surface-soft: #1b2b42;
+      --ink: #e7edf6;
+      --muted: #b3c0d0;
+      --line: #34445a;
+      --blue-soft: #213a5e;
+      --card-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+      --card-shadow-hover: 0 18px 42px rgba(0, 0, 0, .25);
+    }
+    body.dark-mode .page-intro {
+      border-color: #344a66;
+      background: radial-gradient(circle at 92% 10%, rgba(72, 116, 176, .14), transparent 34%), linear-gradient(125deg, #172438, #152238);
+    }
+    body.dark-mode .intro-motto { color: #d6e2f2; }
+    body.dark-mode .intro-topics span,
+    body.dark-mode .blog-summary { border-color: #3a506e; background: rgba(25, 42, 64, .82); }
+    body.dark-mode .intro-topics span { color: #c2d3e9; }
+    body.dark-mode .summary-number { color: #9fc3fa; }
+    body.dark-mode .summary-caption { color: #d3dfed; }
+    body.dark-mode .summary-label,
+    body.dark-mode .summary-footnote { color: #a6b8cf; }
+    body.dark-mode .post-cover { background: linear-gradient(145deg, #20334b 0%, #1b2c42 100%); }
+    body.dark-mode .roadmap-item { background: var(--surface); }
+    body.dark-mode .webinar-video-panel { background: transparent; }
+    body.dark-mode .webinar-link.secondary { color: #a9c9f8; border-color: #6086bb; }
+
+    @media (max-width: 1050px) {
+      .page-intro { grid-template-columns: minmax(0, 1fr) 185px; gap: 20px; }
+      .blog-summary { min-height: 155px; padding: 18px; }
+      .post-card-content { min-height: 305px; }
+      .roadmap-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .webinar-feature-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .webinar-video-panel { padding: 18px; }
+      .webinar-details { padding: 24px 22px 24px 8px; }
+    }
+    @media (max-width: 760px) {
+      main { margin-left: 0; padding: 26px 20px 48px; }
+      .page-intro { grid-template-columns: 1fr; gap: 18px; margin-bottom: 30px; padding: 25px 23px; }
+      .blog-summary { min-height: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; padding: 13px 15px; }
+      .summary-label { grid-column: 1 / -1; }
+      .summary-number { grid-row: 2 / span 2; font-size: 36px; }
+      .summary-caption { margin: 0; align-self: end; }
+      .summary-footnote { margin: 2px 0 0; }
+      .post-grid { grid-template-columns: 1fr; }
+      .post-cover { aspect-ratio: 16 / 8; }
+      .post-card-content { min-height: 0; padding: 21px; }
+      .post-card h3 { font-size: 21px; }
+      .roadmap-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .webinar-feature-grid { grid-template-columns: 1fr; }
+      .webinar-video-panel { padding: 16px 16px 8px; }
+      .webinar-details { padding: 18px 21px 23px; }
+      .webinar-speaker-grid { grid-template-columns: 1fr; }
+      .webinar-reflection { grid-template-columns: 1fr; }
+      .webinar-moderators { padding: 12px 0 0; border-left: 0; border-top: 1px solid #cfdaea; }
+    }
+    @media (max-width: 480px) {
+      main { padding: 22px 14px 40px; }
+      .page-intro { padding: 22px 18px; border-radius: 17px; }
+      .page-intro h1 { font-size: 32px; }
+      .intro-motto { font-size: 15px; }
+      .intro-description { font-size: 13px; }
+      .section-heading-row h2, .roadmap-heading-row h2 { font-size: 21px; }
+      .roadmap-list { grid-template-columns: 1fr; }
+      .roadmap-item { min-height: 145px; }
+      .webinar-video-panel { padding: 12px 12px 6px; }
+      .webinar-details { padding: 17px 17px 20px; }
+      .webinar-links { flex-direction: column; align-items: stretch; }
+      .webinar-link { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+
   </style>
 </head>
 
@@ -932,20 +1264,30 @@
   <main id="blog">
     <div class="page-content">
       <header class="page-intro">
-        <p class="page-eyebrow">MY LEARNING JOURNEY</p>
-        <h1>Notes on Water, Science &amp; AI</h1>
-<p>
-  <strong>Everything I learn, I share here.</strong>
-  <br>
-  A space for learning, exploring, and sharing ideas — one step at a time.
-</p>
+        <div class="intro-copy">
+          <p class="page-eyebrow">MY LEARNING JOURNEY</p>
+          <h1>Notes on Water, Science &amp; AI</h1>
+          <p class="intro-motto"><strong>Everything I learn, I share here.</strong></p>
+          <p class="intro-description">A space for learning, exploring, and sharing ideas — one step at a time.</p>
+          <div class="intro-topics" aria-label="Blog topics">
+            <span>Water Science</span>
+            <span>Machine Learning</span>
+            <span>Applied AI</span>
+          </div>
+        </div>
+        <aside class="blog-summary" aria-label="Learning journal overview">
+          <span class="summary-label">THE JOURNEY SO FAR</span>
+          <strong class="summary-number">09</strong>
+          <span class="summary-caption">articles in the learning path</span>
+          <span class="summary-footnote">From water fundamentals to explainable AI</span>
+        </aside>
       </header>
 
       <section aria-labelledby="latest-posts-heading">
         <div class="section-heading-row">
           <div>
-            <h2 id="latest-posts-heading">The Learning Journal</h2>
-            <p>Start with the basics and follow the path from water quality to applied AI.</p>
+            <h2 id="latest-posts-heading">Start Here</h2>
+            <p>Begin with water quality, then explore the treatment processes behind cleaner water.</p>
           </div>
         </div>
 
@@ -1026,20 +1368,13 @@
       <section class="roadmap-section" aria-labelledby="roadmap-heading">
         <div class="roadmap-heading-row">
           <div>
-            <h2 id="roadmap-heading">Explore More Articles</h2>
-            <p>Keep following the learning path from water treatment to applied AI.</p>
-          </div>
-          <div class="roadmap-controls" aria-label="Learning path controls">
-            <button class="roadmap-scroll-btn" id="roadmap-prev" type="button" aria-label="Scroll to previous articles" title="Previous articles">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <button class="roadmap-scroll-btn" id="roadmap-next" type="button" aria-label="Scroll to more articles" title="More articles">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
+            <p class="section-kicker">KEEP EXPLORING</p>
+            <h2 id="roadmap-heading">Continue the Learning Path</h2>
+            <p>Seven more articles connect water treatment, environmental data, and practical machine learning.</p>
           </div>
         </div>
 
-        <div class="roadmap-list" id="roadmap-list" tabindex="0" aria-label="More blog articles. Scroll horizontally to explore.">
+        <div class="roadmap-list" id="roadmap-list" aria-label="Articles 3 through 9">
           <a class="roadmap-item" href="./can-seeds-clean-dirty-water.html">
             <span class="roadmap-number">POST 03 · AVAILABLE</span>
             <h3>Can Seeds Help Clean Dirty Water?</h3>
@@ -1087,14 +1422,13 @@
 </a>
 
         </div>
-        <p class="roadmap-hint">Use the arrows or scroll horizontally to explore Posts 03–09.</p>
       </section>
 
       <!-- Independent webinar feature: separate from the numbered learning series -->
       <section class="webinar-section" id="iwa-webinar" aria-labelledby="webinar-heading">
         <div class="section-heading-row">
           <div>
-            <p class="page-eyebrow">INDEPENDENT FEATURES</p>
+            <p class="page-eyebrow">BEYOND THE LEARNING SERIES</p>
             <h2 id="webinar-heading">Webinars &amp; Event Notes</h2>
             <p>Ideas and practical lessons from conversations across the water sector.</p>
           </div>
@@ -1178,23 +1512,7 @@
       }
     });
 
-    // Horizontal learning-path controls
-    const roadmapList = document.getElementById("roadmap-list");
-    const roadmapPrev = document.getElementById("roadmap-prev");
-    const roadmapNext = document.getElementById("roadmap-next");
 
-    function scrollRoadmap(direction) {
-      if (!roadmapList) return;
-      const firstCard = roadmapList.querySelector(".roadmap-item");
-      const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
-      roadmapList.scrollBy({
-        left: direction * (cardWidth + 14) * 2,
-        behavior: "smooth"
-      });
-    }
-
-    roadmapPrev?.addEventListener("click", () => scrollRoadmap(-1));
-    roadmapNext?.addEventListener("click", () => scrollRoadmap(1));
   </script>
 </body>
 </html>

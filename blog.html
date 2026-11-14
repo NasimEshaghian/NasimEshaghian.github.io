@@ -1183,6 +1183,47 @@
       *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
     }
 
+  
+
+    /* Consistent image framing for the Start Here article cards */
+    .post-grid .post-card .post-cover {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      padding: 0;
+      overflow: hidden;
+      background: #e6eef8;
+    }
+
+    .post-grid .post-card .post-cover::before,
+    .post-grid .post-card .post-cover::after {
+      display: none;
+      content: none;
+    }
+
+    .post-grid .post-card .water-illustration {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: 0;
+    }
+
+    /* Keep the same image ratio on narrow screens as well */
+    @media (max-width: 760px) {
+      .post-grid .post-card .post-cover {
+        aspect-ratio: 16 / 9;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1335,7 +1376,9 @@
 <section aria-labelledby="roadmap-heading" class="roadmap-section">
 <div class="roadmap-heading-row">
 <div>
+<p class="section-kicker">Ten more articles connect water treatment, environmental data, and practical machine learning.</p>
 <h2 id="roadmap-heading">Continue the Learning Path</h2>
+<p>Seven more articles connect water treatment, environmental data, and practical machine learning.</p>
 </div>
 </div>
 <div aria-label="Articles 3 through 12" class="roadmap-list" id="roadmap-list">
@@ -1389,6 +1432,7 @@
 <div>
 <p class="page-eyebrow">BEYOND THE LEARNING SERIES</p>
 <h2 id="webinar-heading">Webinars &amp; Event Notes</h2>
+<p>Ideas and practical lessons from conversations across the water sector.</p>
 </div>
 </div>
 <article class="webinar-feature">
@@ -1398,7 +1442,7 @@
 <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/_wrEeUjhRk4?rel=0" title="The Application of Artificial Intelligence in Water and Wastewater Treatment — IWA Webinar, 16 April 2026">
 </iframe>
 </div>
-<p class="webinar-video-caption">Watch the full webinar on YouTube.</p>
+<p class="webinar-video-caption">Watch the full webinar on YouTube. The video is embedded from the original YouTube source.</p>
 </div>
 <div class="webinar-details">
 <span class="webinar-kicker">IWA WEBINAR · 16 APRIL 2026</span>

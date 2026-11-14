@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta name="description" content="Why ordinary machine-learning models can miss rare turbidity spikes, and how class imbalance, a 24-hour event target, cost-sensitive learning, and two-stage decision support help frame the problem."/>
+<meta content="#101d30" name="theme-color"/>
+<meta property="og:title" content="Why Is Predicting a Sudden Turbidity Spike So Difficult? | Notes on Water, Science &amp; AI"/>
+<meta property="og:description" content="A simple explanation of rare-event forecasting, class imbalance, SMOTE limitations for time series, and event-focused evaluation."/>
+<title>Why Is Predicting a Sudden Turbidity Spike So Difficult? | Notes on Water, Science &amp; AI</title>
+<style>
+    :root {
+      --navy: #101d30;
+      --navy-soft: #1c3b68;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --surface-soft: #f3f6fb;
+      --persian-bg: #f3f7fc;
+      --persian-border: #b9cbea;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    a { color: inherit; }
+
+    /* Shared portfolio sidebar */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      width: 250px;
+      height: 100vh;
+      min-height: 100vh;
+      overflow-y: auto;
+      padding: 20px 0 18px;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+    }
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -.4px;
+    }
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background .18s ease;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: var(--navy-soft);
+      color: #fff;
+    }
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg {
+      display: block;
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+    }
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 17px;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border: 0;
+      border-radius: 5px;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #b9d4f7; }
+    .sidebar-footer svg { display: block; width: 22px; height: 22px; }
+
+    /* Main article layout */
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 42px 42px 72px;
+    }
+    .page-content {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--blue); }
+    .back-link svg { width: 17px; height: 17px; }
+
+    .article-shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 8px 26px rgba(25, 45, 75, .045);
+    }
+    .article-header { padding: 34px 44px 28px; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.65px;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 820px;
+      margin: 0 0 13px;
+      color: var(--ink);
+      font-size: clamp(32px, 4vw, 46px);
+      line-height: 1.13;
+      letter-spacing: -1.05px;
+    }
+    .article-subtitle {
+      max-width: 790px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px 16px;
+      margin-top: 21px;
+      color: #718096;
+      font-size: 12px;
+    }
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #244b83;
+      font-weight: 700;
+    }
+    .cover-art {
+      margin: 0;
+      padding: 16px 34px 22px;
+      background: linear-gradient(145deg, #f1f6fc 0%, #e7f0fa 100%);
+      border-top: 1px solid #e6edf5;
+      border-bottom: 1px solid #e6edf5;
+    }
+    .cover-art svg {
+      display: block;
+      width: min(100%, 740px);
+      height: auto;
+      margin: 0 auto;
+    }
+    .cover-caption {
+      margin: 2px 0 0;
+      color: #74849a;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 34px;
+      align-items: start;
+      padding: 34px 44px 44px;
+    }
+    .article-content { min-width: 0; }
+    .article-content p {
+      margin: 0 0 18px;
+      color: #35465c;
+      font-size: 16px;
+      line-height: 1.85;
+    }
+    .article-content h2 {
+      margin: 36px 0 13px;
+      padding-top: 4px;
+      color: var(--ink);
+      font-size: 25px;
+      line-height: 1.3;
+      letter-spacing: -.3px;
+    }
+    .article-content h3 {
+      margin: 22px 0 9px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.4;
+    }
+    .article-content ul {
+      margin: 8px 0 22px;
+      padding-left: 22px;
+    }
+    .article-content li {
+      margin-bottom: 12px;
+      padding-left: 3px;
+      color: #35465c;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .article-content strong { color: #203653; }
+    .article-content a { color: var(--blue); text-underline-offset: 3px; }
+    .article-content blockquote {
+      margin: 20px 0 24px;
+      padding: 17px 20px;
+      border-left: 3px solid #7da4d5;
+      border-radius: 0 9px 9px 0;
+      background: #f2f6fb;
+      color: #425873;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .toc {
+      position: sticky;
+      top: 24px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
+    }
+    .toc h2 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+    .toc a {
+      display: block;
+      margin: 10px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      text-decoration: none;
+    }
+    .toc a:hover { color: var(--blue); }
+
+    .takeaway {
+      margin: 28px 0;
+      padding: 20px 22px;
+      border: 1px solid #d8e4f4;
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+      background: #f4f8fd;
+    }
+    .takeaway h2 {
+      margin: 0 0 8px;
+      padding: 0;
+      font-size: 17px;
+    }
+    .takeaway p {
+      margin: 0;
+      color: #405570;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .source-list { padding-left: 20px; }
+    .source-list li { font-size: 13px; color: var(--muted); }
+    .source-note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fafbfd;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .persian-section {
+      margin-top: 44px;
+      padding: 28px 30px;
+      border: 1px solid var(--persian-border);
+      border-radius: 14px;
+      background: var(--persian-bg);
+      direction: rtl;
+      text-align: right;
+    }
+    .persian-section h2 {
+      margin: 0 0 18px;
+      color: #1d477b;
+      font-size: 23px;
+      line-height: 1.5;
+    }
+    .persian-section h3 {
+      margin: 22px 0 9px;
+      color: #1d477b;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    .persian-section p {
+      margin: 0 0 17px;
+      color: #344b66;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 2.15;
+    }
+    .persian-section p:last-child { margin-bottom: 0; }
+    .persian-section strong { color: #193e6c; }
+    .persian-section ol {
+      margin: 8px 0 20px;
+      padding-right: 24px;
+      color: #344b66;
+    }
+    .persian-section li {
+      margin-bottom: 12px;
+      padding-right: 4px;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 2.05;
+    }
+    .persian-section a { color: #185abd; }
+
+    .next-post {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-top: 34px;
+      padding: 20px 22px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .next-post-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+    .next-post h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.4;
+    }
+    .next-post a {
+      flex: 0 0 auto;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .article-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 38px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: #8290a2;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .article-footer a { color: var(--blue); text-decoration: none; }
+
+    /* Dark mode follows the preference saved by the main portfolio pages. */
+    body.dark-mode {
+      --ink: #e7edf6;
+      --muted: #b3c0d0;
+      --line: #34445a;
+      --surface: #172438;
+      --page: #0d1726;
+      --surface-soft: #1b2b42;
+      --blue-soft: #213a5e;
+      --persian-bg: #1a2b43;
+      --persian-border: #344e70;
+      background: var(--page);
+      color: var(--ink);
+    }
+    body.dark-mode .article-shell,
+    body.dark-mode .next-post { background: var(--surface); border-color: var(--line); }
+    body.dark-mode h1,
+    body.dark-mode .article-content h2,
+    body.dark-mode .article-content h3,
+    body.dark-mode .toc h2,
+    body.dark-mode .next-post h2 { color: var(--ink); }
+    body.dark-mode .article-content p,
+    body.dark-mode .article-content li { color: #c3cfde; }
+    body.dark-mode .article-content strong { color: #e4edf8; }
+    body.dark-mode .article-subtitle,
+    body.dark-mode .article-meta { color: var(--muted); }
+    body.dark-mode .cover-art { background: linear-gradient(145deg, #1c2c41 0%, #172438 100%); border-color: var(--line); }
+    body.dark-mode .cover-caption { color: #a1afc2; }
+    body.dark-mode .toc { background: var(--surface-soft); border-color: var(--line); }
+    body.dark-mode .toc a { color: #b3c0d0; }
+    body.dark-mode .takeaway { background: #1a2b43; border-color: #344e70; }
+    body.dark-mode .takeaway p { color: #c7d6e9; }
+    body.dark-mode .source-note { background: #142033; border-color: var(--line); color: #b3c0d0; }
+    body.dark-mode .persian-section h2,
+    body.dark-mode .persian-section h3 { color: #b9d4f7; }
+    body.dark-mode .persian-section p,
+    body.dark-mode .persian-section li { color: #d1dbea; }
+    body.dark-mode .persian-section strong { color: #e3edfc; }
+    body.dark-mode .article-footer { border-color: var(--line); color: #a1afc2; }
+
+    @media (max-width: 1050px) {
+      main { padding: 34px 28px 58px; }
+      .article-layout { grid-template-columns: 1fr; }
+      .toc { position: static; order: -1; }
+      .toc-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+    }
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 14px 12px;
+      }
+      .sidebar-photo { width: 100px; height: 100px; margin: 6px auto 10px; }
+      .sidebar-name { font-size: 21px; }
+      .sidebar-menu {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin: 16px 0 0;
+        padding: 14px 0;
+      }
+      .sidebar-menu a { justify-content: center; gap: 7px; padding: 9px 5px; font-size: 12px; }
+      .sidebar-menu svg { width: 17px; height: 17px; flex-basis: 17px; }
+      .sidebar-footer { margin-top: 10px; padding-bottom: 8px; }
+      main { margin-left: 0; padding: 26px 16px 46px; }
+      .article-header { padding: 25px 22px 22px; }
+      .article-subtitle { font-size: 16px; }
+      .cover-art { padding: 12px 12px 16px; }
+      .article-layout { padding: 24px 22px 30px; gap: 24px; }
+      .article-content p { font-size: 15px; }
+      .article-content h2 { font-size: 22px; margin-top: 30px; }
+      .toc-list { grid-template-columns: 1fr; }
+      .persian-section { padding: 22px 19px; }
+      .persian-section h2 { font-size: 20px; }
+      .persian-section p,
+      .persian-section li { font-size: 14px; }
+    }
+    @media (max-width: 480px) {
+      main { padding: 22px 12px 38px; }
+      h1 { font-size: 31px; }
+      .article-layout { padding: 20px 17px 25px; }
+      .next-post { align-items: flex-start; flex-direction: column; }
+      .article-meta { gap: 8px 10px; }
+    }
+
+    /* Real data-image covers for Posts 05 and 06 */
+    .cover-photos.single {
+      display: block;
+      width: min(100%, 820px);
+      margin: 0 auto 10px;
+    }
+    .cover-photos.single img {
+      display: block;
+      width: 100%;
+      max-height: 370px;
+      margin: 0 auto;
+      border-radius: 10px;
+      object-fit: contain;
+      background: #e8eef5;
+    }
+    .cover-caption a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    body.dark-mode .cover-caption a { color: #c4d8f3; }
+
+</style>
+</head>
+<body>
+<!-- Shared portfolio navigation -->
+<aside class="sidebar">
+<img alt="Nasim Eshaghian" class="sidebar-photo" src="./personal image.png"/>
+<h2 class="sidebar-name">Nasim Eshaghian</h2>
+<p class="sidebar-role">AI / ML Engineer</p>
+<nav aria-label="Main navigation" class="sidebar-menu">
+<a href="./index.html#home">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M3 10 12 3l9 7"></path><path d="M5 9v12h5v-7h4v7h5V9"></path>
+</svg>
+<span>Home</span>
+</a>
+<a href="./about.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7h.01"></path>
+</svg>
+<span>About</span>
+</a>
+<a href="./projects.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="14" rx="2" width="18" x="3" y="7"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M12 12v3"></path>
+</svg>
+<span>Projects</span>
+</a>
+<a href="./resume.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 12h8M8 16h8"></path>
+</svg>
+<span>Resume</span>
+</a>
+<a aria-current="page" href="./blog.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="18" x="3" y="3"></rect><path d="M7 7h10M7 11h10M7 15h6M7 18h4"></path>
+</svg>
+<span>Blog</span>
+</a>
+</nav>
+<div class="sidebar-footer">
+<a aria-label="GitHub" href="https://github.com/NasimEshaghian" rel="noopener noreferrer" target="_blank" title="GitHub">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"></path>
+</svg>
+</a>
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" rel="noopener noreferrer" target="_blank" title="LinkedIn">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"></path>
+</svg>
+</a>
+<a aria-label="Email" href="mailto:nasimeshaghian@gmail.com" title="Email">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m3 6 9 7 9-7"></path>
+</svg>
+</a>
+<button aria-label="Toggle dark mode" aria-pressed="false" id="theme-toggle" title="Toggle dark mode" type="button">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"></path>
+</svg>
+</button>
+</div>
+</aside>
+<main id="article-top">
+<div class="page-content">
+<a class="back-link" href="./blog.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24"><path d="m15 18-6-6 6-6"></path><path d="M9 12h12"></path></svg>
+        Back to Blog
+      </a>
+<article class="article-shell">
+<header class="article-header">
+<p class="eyebrow">APPLIED MACHINE LEARNING · RARE EVENTS · POST 06</p>
+<h1>Why Is Predicting a Sudden Turbidity Spike So Difficult?</h1>
+<p class="article-subtitle">Why a model can look accurate on ordinary days and still miss the events that matter most—and how event-focused forecasting changes the problem.</p>
+<div class="article-meta">
+<span class="meta-pill">Learning Journal</span>
+<span>6–7 min read</span>
+<span>English + فارسی</span>
+</div>
+</header>
+<figure class="cover-art">
+<div class="cover-photos single">
+<img src="https://www.ladwp.com/sites/default/files/styles/coh_medium/public/2023-06/Fairmont%20WQ%20Graphs_Page_2.jpg?itok=t1vZGX-_" alt="Long-term turbidity time-series chart with several short-lived peaks" loading="eager" decoding="async">
+</div>
+<figcaption class="cover-caption">
+An illustrative long-term turbidity record from the Fairmont Sedimentation Project (2008–2018). It comes from a different water system and is not data from the project discussed here. Source: <a href="https://www.ladwp.com/community/construction-projects/other/fairmont-sedimentation-project" target="_blank" rel="noopener noreferrer">Los Angeles Department of Water and Power</a>.
+</figcaption>
+</figure>
+<div class="article-layout">
+<div class="article-content">
+<p>Imagine building a fire alarm that stays silent every day of the year. If fires are rare, the alarm may be “correct” on almost every day. But on the one day when a fire actually starts, it fails at the one job that matters.</p>
+<p>A similar problem appears when we try to predict sudden changes in raw-water turbidity. Most of the time, the water may remain within its ordinary range. A small number of periods contain sharp spikes, often linked to unusual combinations of rainfall, snowmelt, soil wetness, runoff, wind, and the movement of sediment through a watershed.</p>
+<p>At first, the task sounds straightforward: use historical turbidity and weather data to predict the next turbidity value. But when the events we care about are rare, a model can perform well on ordinary days and still be unreliable when conditions become unusual.</p>
+
+<h2 id="the-imbalance-problem">The Double Challenge: Limited Data and Rare Events</h2>
+<p>Large consumer applications may have millions of examples to learn from. Smaller environmental monitoring systems often have much shorter records, gaps, sensor issues, and only a limited number of extreme events.</p>
+<p>This creates two connected problems. First, there may not be many examples of the conditions that lead to a major turbidity spike. Second, the dataset can be <strong>highly imbalanced</strong>: normal observations greatly outnumber event observations.</p>
+<p>To see why that matters, imagine a simplified dataset containing 100 days: 95 ordinary days and 5 spike days. A classifier that predicts “no spike” every single day achieves <strong>95% accuracy</strong>. Yet it detects none of the five events. Its event recall is zero.</p>
+<p>The model has learned the easiest way to score well on the majority class—not necessarily the pattern that operators need it to detect.</p>
+
+<h2 id="why-average-error-can-mislead">Why Average Error Can Hide the Important Misses</h2>
+<p>A related issue appears in regression. A regression model is trained to predict a numerical value, such as turbidity in NTU. If most observations are calm and a small number are extreme, the overall loss can be dominated by ordinary conditions. A model may predict the baseline quite well while smoothing or underestimating the rare peaks.</p>
+<p>That does not mean regression is always the wrong tool. It means that the target, loss function, and evaluation strategy must reflect what matters in the application. A low average error does not automatically prove that a model can warn about extreme events.</p>
+<p>Consider two models. Model A predicts a calm value on every day. It can look respectable when most days are calm, but it misses every spike. Model B may be slightly less precise on some ordinary days but gives useful warnings before the rare high-turbidity periods. For an operational decision-support system, those two models are not equally useful—even if a single average metric makes their scores look similar.</p>
+
+<h2 id="why-not-smote">Why Not Just Create More Storm Examples?</h2>
+<p>One familiar approach to class imbalance is <strong>SMOTE</strong> (Synthetic Minority Over-sampling Technique). In its standard form, it creates synthetic minority-class examples by interpolating between existing observations in feature space.</p>
+<p>That can be useful in some tabular classification problems, but environmental time series bring an extra constraint: <strong>time and physical sequence matter</strong>. A turbidity spike is not just a row with a large number. It may follow several days of rainfall, increasing soil moisture, changing runoff, wind-driven mixing, and a travel delay between the watershed and the intake.</p>
+<p>Ordinary tabular oversampling does not automatically preserve that story. It can create feature combinations that are mathematically possible in a table but do not represent a coherent sequence of weather and hydrological conditions.</p>
+<p>This does not mean synthetic augmentation is always forbidden. Time-series-aware methods exist, but they need to preserve temporal structure and be validated carefully. In the methodology explored for this problem, the safer choice was to retain the real chronology and address the imbalance through cost-sensitive learning and event-focused evaluation instead of relying on ordinary SMOTE-generated rows.</p>
+
+<h2 id="change-the-target">Change the Question: From an Exact Number to a 24-Hour Warning</h2>
+<p>Another important decision is choosing what the model should predict. Asking for the exact turbidity at 2:00 PM tomorrow may not be the most useful question. A peak that happens at 1:00 PM instead of 2:00 PM could still create the same operational challenge.</p>
+<p>For advance warning, a more practical target is the <strong>maximum turbidity expected over the next 24 hours</strong>. At a prediction time <em>t</em>, the target can be written as:</p>
+<blockquote><strong>Y<sub>max</sub>(t) = max { T(t + Δ) : 0 &lt; Δ ≤ 24 hours }</strong></blockquote>
+<p>Here, T represents the observed turbidity and Δ represents a time step into the future. The target can then be compared with a <strong>site-specific critical threshold</strong>, defined by the facility's own operational requirements and engineering judgement.</p>
+<p>This reframes the problem around what a person needs to know: is a significant event likely during the next day, and how high might turbidity rise? It can create time to review conditions, prepare for jar testing, check chemical availability, and make decisions according to site procedures.</p>
+
+<h2 id="two-stage-approach">Splitting the Task into Two Stages</h2>
+<p>One model does not necessarily need to do everything. The methodology considered a two-stage, risk-aware decision-support design.</p>
+<h3>Stage 1 — The Watchdog: Spike Classification</h3>
+<p>A cost-sensitive <strong>XGBoost classifier</strong> estimates the probability that a turbidity spike will occur within the next 24 hours. Because missed events can be more consequential than unnecessary alerts, the learning process gives greater weight to the minority spike class. In XGBoost, a parameter such as <code>scale_pos_weight</code> can help increase the influence of positive event examples during training.</p>
+<h3>Stage 2 — The Estimator: Peak Magnitude</h3>
+<p>A second <strong>XGBoost regression model</strong> estimates how high the turbidity peak may become over the forecast window. Higher-turbidity observations can receive additional sample weight so that extreme conditions are not overwhelmed by the much larger number of ordinary observations.</p>
+<h3>The Decision-Support Layer</h3>
+<p>The two outputs can then be considered together: the event probability and the estimated peak magnitude. A separate decision layer applies site-configured safety logic and presents the result to a human operator.</p>
+<p>This design has an important limitation: if the first-stage classifier misses an event, the second stage may not be activated when it is needed. That is why the event detector must be evaluated carefully, and why the overall system should remain advisory. It is not an autonomous pump controller.</p>
+
+<h2 id="evaluate-the-right-thing">Evaluate the Events, Not Just the Average</h2>
+<p>When rare events matter, we need to look beyond accuracy and one global error score.</p>
+<ul>
+<li><strong>Recall:</strong> of all the real spike events, how many did the model detect?</li>
+<li><strong>Precision:</strong> when the model raises an alert, how often is it followed by a real event?</li>
+<li><strong>False negatives and false positives:</strong> how many events were missed, and how many unnecessary warnings were raised?</li>
+<li><strong>Lead time:</strong> how much useful notice did the warning provide?</li>
+<li><strong>Peak error:</strong> how far was the estimated maximum turbidity from the observed peak during event periods?</li>
+</ul>
+<p>Precision–recall analysis is especially useful when the positive class is rare, because it makes the trade-off between finding events and producing false alarms easier to inspect. Evaluation should also respect time order: training on the future and testing on the past would create an unrealistically optimistic result.</p>
+
+<h2 id="what-i-learned">What I Learned</h2>
+<p>This problem taught me that the hardest part of applied machine learning is sometimes not choosing the algorithm. It is deciding what success actually means.</p>
+<p>If the goal is simply to reduce average error, a model may focus on the many ordinary days. If the goal is to support people preparing for rare but important events, then the problem needs an event-based target, appropriate costs, careful validation, and metrics that reveal missed spikes.</p>
+<p>Changing the question from “What will the exact NTU be at one specific hour?” to “How likely is a significant spike in the next 24 hours, and how high could the peak be?” makes the modelling task much closer to the decision that needs to be made.</p>
+
+<section class="takeaway" aria-labelledby="takeaway-heading">
+<h2 id="takeaway-heading">The Main Takeaway</h2>
+<p>Rare turbidity spikes are difficult to predict because ordinary conditions dominate small historical datasets. A useful system needs to focus explicitly on event detection, peak magnitude, time-aware validation, and the cost of missed warnings—not just overall accuracy or average error.</p>
+</section>
+
+<h2 id="references">References and Further Reading</h2>
+<ol class="source-list">
+<li>Elkan, C. (2001). <em>The Foundations of Cost-Sensitive Learning.</em> Proceedings of the Seventeenth International Joint Conference on Artificial Intelligence, 973–978. <a href="https://ijcai.org/proceedings/2001/133" target="_blank" rel="noopener noreferrer">IJCAI proceedings</a>.</li>
+<li>Chen, T., &amp; Guestrin, C. (2016). <em>XGBoost: A Scalable Tree Boosting System.</em> Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. <a href="https://doi.org/10.1145/2939672.2939785" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/2939672.2939785</a>.</li>
+<li>Saito, T., &amp; Rehmsmeier, M. (2015). <em>The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets.</em> PLOS ONE, 10(3), e0118432. <a href="https://doi.org/10.1371/journal.pone.0118432" target="_blank" rel="noopener noreferrer">https://doi.org/10.1371/journal.pone.0118432</a>.</li>
+<li>Chawla, N. V., Bowyer, K. W., Hall, L. O., &amp; Kegelmeyer, W. P. (2002). <em>SMOTE: Synthetic Minority Over-sampling Technique.</em> Journal of Artificial Intelligence Research, 16, 321–357. <a href="https://doi.org/10.1613/jair.953" target="_blank" rel="noopener noreferrer">https://doi.org/10.1613/jair.953</a>.</li>
+</ol>
+<div class="source-note"><strong>A note on scope:</strong> The 95-normal / 5-spike example is illustrative, not a report of any facility's dataset. Event thresholds and alert decisions must be defined by qualified personnel using site-specific operating requirements. The two-stage design described here is a decision-support approach, not a claim of autonomous control or guaranteed event detection.</div>
+
+<section class="persian-section" lang="fa" dir="rtl" aria-labelledby="persian-heading">
+<h2 id="persian-heading">حالا به زبون خودمون! 🇮🇷</h2>
+<p>فرض کن یه سیستم اعلام حریق برای خونه طراحی کردی و طوری برنامه‌ریزی شده که همیشه بگه: «هیچ آتیشی نیست!» اگه توی بیشتر روزهای سال واقعاً آتیشی وجود نداشته باشه، این سیستم از نظر آماری خیلی وقت‌ها درست می‌گه؛ ولی دقیقاً همون روزی که باید آتش‌سوزی رو تشخیص بده، ممکنه هیچ هشداری نده. خب، این چه جور سیستم اعلام حریقیه؟!</p>
+<p>توی پیش‌بینی کدورت آب هم یه مشکل شبیه همین داریم. بیشتر روزها ممکنه شرایط آب نسبتاً عادی باشه و فقط تعداد کمی از روزها جهش شدید کدورت اتفاق بیفته. به این وضعیت می‌گن <strong>Class Imbalance یا عدم توازن کلاس‌ها</strong>؛ یعنی نمونه‌های عادی خیلی بیشتر از نمونه‌های بحرانی هستن.</p>
+<p>مثلاً فرض کن از ۱۰۰ روز، ۹۵ روز عادی و فقط ۵ روز همراه با جهش کدورت باشه. یه مدل ساده که هر روز بگه «جهشی در کار نیست»، ۹۵ درصد دقت می‌گیره! اما هیچ‌کدوم از اون پنج روز مهم رو پیدا نکرده. پس Accuracy به‌تنهایی نمی‌تونه بهمون بگه مدل واقعاً برای هشدار دادن خوبه یا نه.</p>
+<p>در مدل‌های رگرسیونی هم ممکنه یه اتفاق مشابه رخ بده. چون بیشتر داده‌ها مربوط به روزهای عادی هستن، مدل ممکنه مقدارهای معمولی رو خوب پیش‌بینی کنه، ولی قله‌های خیلی بلند رو کمتر از مقدار واقعی تخمین بزنه. پس باید عملکرد مدل رو در روزهای بحرانی جداگانه هم بررسی کنیم.</p>
+<p>یه راه معروف برای زیاد کردن نمونه‌های کلاس کم‌تعداد، روش <strong>SMOTE</strong> هست. این روش با ترکیب نمونه‌های موجود، نمونه‌های مصنوعی جدید می‌سازه. ولی داده‌های آب‌وهوا فقط چندتا عدد مستقل کنار هم نیستن؛ ترتیب زمانی و ارتباط فیزیکی دارن. مثلاً ممکنه چند روز بارندگی باعث خیس شدن خاک بشه، بعد رواناب شکل بگیره و با یه تأخیر، آب گل‌آلود به ورودی تصفیه‌خونه برسه.</p>
+<p>اگه بدون توجه به این ترتیب، چند ردیف مصنوعی بسازیم، ممکنه ترکیبی از بارش، رطوبت خاک و باد ایجاد کنیم که در دنیای واقعی اصلاً به اون شکل اتفاق نمی‌افته. این به معنی ممنوع بودن همه‌ی روش‌های داده‌سازی مصنوعی نیست؛ فقط یعنی برای داده‌های زمانی و فیزیکی باید خیلی محتاط بود و از روش‌هایی استفاده کرد که ساختار زمان رو حفظ می‌کنن.</p>
+<p>یه تصمیم مهم دیگه این بود که سؤال مدل رو عوض کنیم. به‌جای اینکه بپرسیم «فردا دقیقاً ساعت دو بعدازظهر کدورت چنده؟»، بپرسیم: <strong>«در ۲۴ ساعت آینده بیشترین کدورت چقدر می‌شه و احتمال اینکه از حد بحرانیِ تعیین‌شده برای همون تصفیه‌خونه عبور کنه چقدره؟»</strong></p>
+<p>این سؤال برای اپراتور کاربردی‌تره، چون بهش زمان می‌ده شرایط رو بررسی کنه، آزمایش جار انجام بده، موجودی مواد شیمیایی رو چک کنه و طبق دستورالعمل‌های مجموعه تصمیم بگیره.</p>
+<p>برای همین، در روش پیشنهادی کار رو به دو مرحله تقسیم می‌کنیم:</p>
+<ol>
+<li><strong>مدل اول، نگهبان:</strong> با یک طبقه‌بند مثل XGBoost تخمین می‌زنیم احتمال جهش کدورت در ۲۴ ساعت آینده چقدره. چون از دست دادن یک رخداد واقعی می‌تونه مهم‌تر از یک هشدار اشتباه باشه، هنگام آموزش به نمونه‌های بحرانی وزن بیشتری می‌دیم.</li>
+<li><strong>مدل دوم، تخمین‌زن:</strong> وقتی ریسک بالا بود، یک مدل رگرسیونی تخمین می‌زنه حداکثر کدورت در اون بازه ممکنه به چه عددی برسه.</li>
+</ol>
+<p>در نهایت، یه لایه‌ی تصمیم‌یار خروجی این دو مدل رو کنار هم می‌ذاره و نتیجه رو در اختیار اپراتور انسانی قرار می‌ده. این سیستم قرار نیست خودش پمپ‌ها رو کنترل کنه یا جای تصمیم اپراتور رو بگیره.</p>
+<p>چیزی که من از این مسئله یاد گرفتم اینه که همیشه بهترین مدل، مدلی نیست که فقط کمترین خطای میانگین رو داشته باشه. باید از خودمون بپرسیم: «قراره این مدل دقیقاً به چه تصمیمی کمک کنه؟» گاهی مهم‌ترین موفقیت مدل اینه که همون چند روز نادر و مهم رو از دست نده.</p>
+</section>
+
+<nav class="next-post" aria-label="Next article">
+<div>
+<span class="next-post-label">COMING NEXT · POST 07</span>
+<h2>Why Can Missing One Warning Be Worse Than Ten False Alarms?</h2>
+</div>
+<a href="./blog.html#roadmap-heading">Explore the learning path →</a>
+</nav>
+</div>
+<aside class="toc" aria-label="On this page">
+<h2>On this page</h2>
+<div class="toc-list">
+<a href="#the-imbalance-problem">Small data and rare events</a>
+<a href="#why-average-error-can-mislead">Why average error misleads</a>
+<a href="#why-not-smote">Why not SMOTE?</a>
+<a href="#change-the-target">The 24-hour target</a>
+<a href="#two-stage-approach">The two-stage approach</a>
+<a href="#evaluate-the-right-thing">How to evaluate</a>
+<a href="#what-i-learned">What I learned</a>
+<a href="#references">References</a>
+<a href="#persian-heading">حالا به زبون خودمون!</a>
+</div>
+</aside>
+</div>
+</article>
+<footer class="article-footer">
+<span>Notes on Water, Science &amp; AI · A personal learning journal</span>
+<a href="./blog.html">← Back to all articles</a>
+</footer>
+</div>
+</main>
+<script>
+    const themeButton = document.getElementById("theme-toggle");
+
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
+
+    try {
+      setDarkMode(localStorage.getItem("theme") === "dark");
+    } catch (error) {
+      setDarkMode(false);
+    }
+
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+      try {
+        localStorage.setItem("theme", enabled ? "dark" : "light");
+      } catch (error) {
+        // Dark mode remains available for the current page.
+      }
+    });
+  </script>
+</body>
+</html>

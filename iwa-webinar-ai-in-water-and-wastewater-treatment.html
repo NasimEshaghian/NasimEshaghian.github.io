@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta name="description" content="A beginner-friendly guide to the 16 April 2026 IWA webinar on AI in water and wastewater treatment: sensor data quality, pipe-risk prediction, membrane filtration, and trustworthy AI."/>
+<meta content="#101d30" name="theme-color"/>
+<meta property="og:title" content="Where Can AI Actually Help in Water and Wastewater Treatment? | Notes on Water, Science &amp; AI"/>
+<meta property="og:description" content="Three real-world perspectives from an International Water Association webinar on AI for wastewater operations, water infrastructure, and membrane filtration."/>
+<title>Where Can AI Actually Help in Water and Wastewater Treatment? | Notes on Water, Science &amp; AI</title>
+<style>
+    :root {
+      --navy: #101d30;
+      --navy-soft: #1c3b68;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --surface-soft: #f3f6fb;
+      --persian-bg: #f3f7fc;
+      --persian-border: #b9cbea;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    a { color: inherit; }
+
+    /* Shared portfolio sidebar */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      width: 250px;
+      height: 100vh;
+      min-height: 100vh;
+      overflow-y: auto;
+      padding: 20px 0 18px;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+    }
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -.4px;
+    }
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
+    }
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background .18s ease;
+    }
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: var(--navy-soft);
+      color: #fff;
+    }
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+    .sidebar-menu svg {
+      display: block;
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+    }
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 17px;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border: 0;
+      border-radius: 5px;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #b9d4f7; }
+    .sidebar-footer svg { display: block; width: 22px; height: 22px; }
+
+    /* Main article layout */
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 42px 42px 72px;
+    }
+    .page-content {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--blue); }
+    .back-link svg { width: 17px; height: 17px; }
+
+    .article-shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 8px 26px rgba(25, 45, 75, .045);
+    }
+    .article-header { padding: 34px 44px 28px; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.65px;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 820px;
+      margin: 0 0 13px;
+      color: var(--ink);
+      font-size: clamp(32px, 4vw, 46px);
+      line-height: 1.13;
+      letter-spacing: -1.05px;
+    }
+    .article-subtitle {
+      max-width: 790px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px 16px;
+      margin-top: 21px;
+      color: #718096;
+      font-size: 12px;
+    }
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #244b83;
+      font-weight: 700;
+    }
+    .cover-art {
+      margin: 0;
+      padding: 16px 34px 22px;
+      background: linear-gradient(145deg, #f1f6fc 0%, #e7f0fa 100%);
+      border-top: 1px solid #e6edf5;
+      border-bottom: 1px solid #e6edf5;
+    }
+    .cover-art svg {
+      display: block;
+      width: min(100%, 740px);
+      height: auto;
+      margin: 0 auto;
+    }
+    .cover-caption {
+      margin: 2px 0 0;
+      color: #74849a;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 34px;
+      align-items: start;
+      padding: 34px 44px 44px;
+    }
+    .article-content { min-width: 0; }
+    .article-content p {
+      margin: 0 0 18px;
+      color: #35465c;
+      font-size: 16px;
+      line-height: 1.85;
+    }
+    .article-content h2 {
+      margin: 36px 0 13px;
+      padding-top: 4px;
+      color: var(--ink);
+      font-size: 25px;
+      line-height: 1.3;
+      letter-spacing: -.3px;
+    }
+    .article-content h3 {
+      margin: 22px 0 9px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.4;
+    }
+    .article-content ul {
+      margin: 8px 0 22px;
+      padding-left: 22px;
+    }
+    .article-content li {
+      margin-bottom: 12px;
+      padding-left: 3px;
+      color: #35465c;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .article-content strong { color: #203653; }
+    .article-content a { color: var(--blue); text-underline-offset: 3px; }
+    .article-content blockquote {
+      margin: 20px 0 24px;
+      padding: 17px 20px;
+      border-left: 3px solid #7da4d5;
+      border-radius: 0 9px 9px 0;
+      background: #f2f6fb;
+      color: #425873;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .toc {
+      position: sticky;
+      top: 24px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
+    }
+    .toc h2 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+    .toc a {
+      display: block;
+      margin: 10px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      text-decoration: none;
+    }
+    .toc a:hover { color: var(--blue); }
+
+    .takeaway {
+      margin: 28px 0;
+      padding: 20px 22px;
+      border: 1px solid #d8e4f4;
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+      background: #f4f8fd;
+    }
+    .takeaway h2 {
+      margin: 0 0 8px;
+      padding: 0;
+      font-size: 17px;
+    }
+    .takeaway p {
+      margin: 0;
+      color: #405570;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .source-list { padding-left: 20px; }
+    .source-list li { font-size: 13px; color: var(--muted); }
+    .source-note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fafbfd;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .persian-section {
+      margin-top: 44px;
+      padding: 28px 30px;
+      border: 1px solid var(--persian-border);
+      border-radius: 14px;
+      background: var(--persian-bg);
+      direction: rtl;
+      text-align: right;
+    }
+    .persian-section h2 {
+      margin: 0 0 18px;
+      color: #1d477b;
+      font-size: 23px;
+      line-height: 1.5;
+    }
+    .persian-section h3 {
+      margin: 22px 0 9px;
+      color: #1d477b;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    .persian-section p {
+      margin: 0 0 17px;
+      color: #344b66;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 2.15;
+    }
+    .persian-section p:last-child { margin-bottom: 0; }
+    .persian-section strong { color: #193e6c; }
+    .persian-section ol {
+      margin: 8px 0 20px;
+      padding-right: 24px;
+      color: #344b66;
+    }
+    .persian-section li {
+      margin-bottom: 12px;
+      padding-right: 4px;
+      font-family: Tahoma, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 2.05;
+    }
+    .persian-section a { color: #185abd; }
+
+    .next-post {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-top: 34px;
+      padding: 20px 22px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .next-post-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+    .next-post h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.4;
+    }
+    .next-post a {
+      flex: 0 0 auto;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .article-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 38px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: #8290a2;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .article-footer a { color: var(--blue); text-decoration: none; }
+
+    /* Dark mode follows the preference saved by the main portfolio pages. */
+    body.dark-mode {
+      --ink: #e7edf6;
+      --muted: #b3c0d0;
+      --line: #34445a;
+      --surface: #172438;
+      --page: #0d1726;
+      --surface-soft: #1b2b42;
+      --blue-soft: #213a5e;
+      --persian-bg: #1a2b43;
+      --persian-border: #344e70;
+      background: var(--page);
+      color: var(--ink);
+    }
+    body.dark-mode .article-shell,
+    body.dark-mode .next-post { background: var(--surface); border-color: var(--line); }
+    body.dark-mode h1,
+    body.dark-mode .article-content h2,
+    body.dark-mode .article-content h3,
+    body.dark-mode .toc h2,
+    body.dark-mode .next-post h2 { color: var(--ink); }
+    body.dark-mode .article-content p,
+    body.dark-mode .article-content li { color: #c3cfde; }
+    body.dark-mode .article-content strong { color: #e4edf8; }
+    body.dark-mode .article-subtitle,
+    body.dark-mode .article-meta { color: var(--muted); }
+    body.dark-mode .cover-art { background: linear-gradient(145deg, #1c2c41 0%, #172438 100%); border-color: var(--line); }
+    body.dark-mode .cover-caption { color: #a1afc2; }
+    body.dark-mode .toc { background: var(--surface-soft); border-color: var(--line); }
+    body.dark-mode .toc a { color: #b3c0d0; }
+    body.dark-mode .takeaway { background: #1a2b43; border-color: #344e70; }
+    body.dark-mode .takeaway p { color: #c7d6e9; }
+    body.dark-mode .source-note { background: #142033; border-color: var(--line); color: #b3c0d0; }
+    body.dark-mode .persian-section h2,
+    body.dark-mode .persian-section h3 { color: #b9d4f7; }
+    body.dark-mode .persian-section p,
+    body.dark-mode .persian-section li { color: #d1dbea; }
+    body.dark-mode .persian-section strong { color: #e3edfc; }
+    body.dark-mode .article-footer { border-color: var(--line); color: #a1afc2; }
+
+    @media (max-width: 1050px) {
+      main { padding: 34px 28px 58px; }
+      .article-layout { grid-template-columns: 1fr; }
+      .toc { position: static; order: -1; }
+      .toc-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+    }
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 14px 12px;
+      }
+      .sidebar-photo { width: 100px; height: 100px; margin: 6px auto 10px; }
+      .sidebar-name { font-size: 21px; }
+      .sidebar-menu {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin: 16px 0 0;
+        padding: 14px 0;
+      }
+      .sidebar-menu a { justify-content: center; gap: 7px; padding: 9px 5px; font-size: 12px; }
+      .sidebar-menu svg { width: 17px; height: 17px; flex-basis: 17px; }
+      .sidebar-footer { margin-top: 10px; padding-bottom: 8px; }
+      main { margin-left: 0; padding: 26px 16px 46px; }
+      .article-header { padding: 25px 22px 22px; }
+      .article-subtitle { font-size: 16px; }
+      .cover-art { padding: 12px 12px 16px; }
+      .article-layout { padding: 24px 22px 30px; gap: 24px; }
+      .article-content p { font-size: 15px; }
+      .article-content h2 { font-size: 22px; margin-top: 30px; }
+      .toc-list { grid-template-columns: 1fr; }
+      .persian-section { padding: 22px 19px; }
+      .persian-section h2 { font-size: 20px; }
+      .persian-section p,
+      .persian-section li { font-size: 14px; }
+    }
+    @media (max-width: 480px) {
+      main { padding: 22px 12px 38px; }
+      h1 { font-size: 31px; }
+      .article-layout { padding: 20px 17px 25px; }
+      .next-post { align-items: flex-start; flex-direction: column; }
+      .article-meta { gap: 8px 10px; }
+    }
+  
+
+    /* Real photographic cover images for Post 04 */
+
+    .cover-photos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      width: min(100%, 740px);
+      margin: 0 auto 10px;
+    }
+    .cover-photos img {
+      display: block;
+      width: 100%;
+      height: 235px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #e8eef5;
+    }
+    .cover-caption a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    body.dark-mode .cover-caption a { color: #c4d8f3; }
+    @media (max-width: 560px) {
+      .cover-photos { grid-template-columns: 1fr; gap: 12px; }
+      .cover-photos img { height: auto; max-height: 250px; object-fit: contain; }
+    }
+
+
+    /* Embedded webinar video */
+    .video-embed {
+      width: min(100%, 900px);
+      margin: 0 auto 10px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #0b1422;
+      box-shadow: 0 8px 24px rgba(10, 25, 45, .12);
+    }
+    .video-embed iframe {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+    }
+    .cover-caption a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    .article-content .plain-list { margin-top: 8px; }
+    .article-content .plain-list li { margin-bottom: 8px; }
+    .article-content .section-note {
+      margin: 18px 0 22px;
+      padding: 15px 18px;
+      border-left: 3px solid #7da4d5;
+      border-radius: 0 9px 9px 0;
+      background: #f2f6fb;
+      color: #425873;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    body.dark-mode .article-content .section-note {
+      background: #1a2b43;
+      color: #c7d6e9;
+    }
+    body.dark-mode .video-embed { box-shadow: 0 8px 24px rgba(0, 0, 0, .3); }
+    .speaker-label {
+      display: inline-block;
+      margin: 4px 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .4px;
+    }
+    .article-content h2 { scroll-margin-top: 24px; }
+    @media (max-width: 560px) {
+      .video-embed { border-radius: 8px; }
+    }
+
+</style>
+</head>
+<body>
+<!-- Shared portfolio navigation -->
+<aside class="sidebar">
+<img alt="Nasim Eshaghian" class="sidebar-photo" src="./personal image.png"/>
+<h2 class="sidebar-name">Nasim Eshaghian</h2>
+<p class="sidebar-role">AI / ML Engineer</p>
+<nav aria-label="Main navigation" class="sidebar-menu">
+<a href="./index.html#home">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M3 10 12 3l9 7"></path><path d="M5 9v12h5v-7h4v7h5V9"></path>
+</svg>
+<span>Home</span>
+</a>
+<a href="./about.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7h.01"></path>
+</svg>
+<span>About</span>
+</a>
+<a href="./projects.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="14" rx="2" width="18" x="3" y="7"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12a22 22 0 0 0 18 0M12 12v3"></path>
+</svg>
+<span>Projects</span>
+</a>
+<a href="./resume.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 12h8M8 16h8"></path>
+</svg>
+<span>Resume</span>
+</a>
+<a aria-current="page" href="./blog.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="18" x="3" y="3"></rect><path d="M7 7h10M7 11h10M7 15h6M7 18h4"></path>
+</svg>
+<span>Blog</span>
+</a>
+</nav>
+<div class="sidebar-footer">
+<a aria-label="GitHub" href="https://github.com/NasimEshaghian" rel="noopener noreferrer" target="_blank" title="GitHub">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"></path>
+</svg>
+</a>
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" rel="noopener noreferrer" target="_blank" title="LinkedIn">
+<svg aria-hidden="true" fill="currentColor" viewbox="0 0 24 24">
+<path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"></path>
+</svg>
+</a>
+<a aria-label="Email" href="mailto:nasimeshaghian@gmail.com" title="Email">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m3 6 9 7 9-7"></path>
+</svg>
+</a>
+<button aria-label="Toggle dark mode" aria-pressed="false" id="theme-toggle" title="Toggle dark mode" type="button">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"></path>
+</svg>
+</button>
+</div>
+</aside>
+<main id="article-top">
+<div class="page-content">
+<a class="back-link" href="./blog.html">
+<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24"><path d="m15 18-6-6 6-6"></path><path d="M9 12h12"></path></svg>
+        Back to Blog
+      </a>
+<article class="article-shell">
+<header class="article-header">
+<p class="eyebrow">INDEPENDENT FEATURE · WATER &amp; WASTEWATER AI</p>
+<h1>Where Can AI Actually Help in Water and Wastewater Treatment?</h1>
+<p class="article-subtitle">Three real-world perspectives from an International Water Association webinar on unreliable sensors, ageing pipes, membrane science, and the importance of engineering knowledge.</p>
+<div class="article-meta">
+<span class="meta-pill">IWA Webinar Notes</span>
+<span>16 April 2026</span>
+<span>10–12 min read</span>
+<span>English + فارسی</span>
+</div>
+</header>
+<figure class="cover-art">
+<div class="video-embed">
+<iframe
+  src="https://www.youtube-nocookie.com/embed/_wrEeUjhRk4?rel=0"
+  title="The Application of Artificial Intelligence (AI) in Water and Wastewater Treatment — IWA Webinar, 16 April 2026"
+  loading="eager"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen>
+</iframe>
+</div>
+<figcaption class="cover-caption">
+Watch the full webinar above. <a href="https://www.youtube.com/watch?v=_wrEeUjhRk4" target="_blank" rel="noopener noreferrer">Open the recording on YouTube</a> · Hosted by the International Water Association (IWA), 16 April 2026.
+</figcaption>
+</figure>
+<div class="article-layout">
+<div class="article-content">
+<p>On 16 April 2026, the International Water Association (IWA) hosted a webinar with a question that sounds simple but has many different answers: <strong>How can artificial intelligence actually help water and wastewater systems?</strong></p>
+
+<p>The session attracted strong interest. The organisers said that all 500 available registration places had been filled and that they had received nearly 2,000 registration requests. Three speakers joined the webinar, each looking at a different part of the water sector: wastewater treatment processes, underground water infrastructure, and membrane filtration.</p>
+
+<p>What made this webinar interesting to me was that the speakers did not focus only on algorithms or impressive technology. They described practical engineering problems and showed where data analysis and machine learning could help. This article walks through those examples from the beginning, so it should also make sense if you are new to water engineering or artificial intelligence.</p>
+
+<h2 id="who-spoke">Who took part in the webinar?</h2>
+<p>The three presentations were delivered by:</p>
+<ul class="plain-list">
+<li><strong>Professor Peter Vanrolleghem</strong>, Université Laval, Canada — machine learning and data quality in wastewater treatment.</li>
+<li><strong>Dr. Nicolas St-Gelais</strong>, Co-founder and Scientific Director at CANN Forecast, Canada — AI for water infrastructure and asset management.</li>
+<li><strong>Professor Ruobin Dai</strong>, Tongji University, China — data- and knowledge-driven machine learning for membrane filtration.</li>
+</ul>
+<p>The webinar was moderated by <strong>Wen Ma</strong> from Université de Sherbrooke, Canada, and <strong>Yumeng Zhao</strong> from Harbin Institute of Technology, China.</p>
+
+<h2 id="why-ai-water">Why would water systems need AI in the first place?</h2>
+<p>A water or wastewater treatment plant is not a single machine. It is a collection of connected processes, tanks, pumps, pipes, sensors, filters, and control systems. Each part produces information that helps engineers understand whether the system is operating as expected.</p>
+<p>For example, a treatment plant may need to know how much water is entering, how much pollution it contains, whether the treatment process is stable, and whether its equipment is working properly. Some of this information is measured automatically by sensors; some is recorded by operators; and some is stored in reports and databases.</p>
+<p>AI can help find patterns in this information, detect unusual behaviour, estimate values that were not measured, or support decisions. But there is an important condition: the information going into a model must be trustworthy, and the model must be suitable for the engineering problem.</p>
+<blockquote><strong>A useful starting point:</strong> AI is not a substitute for understanding a water system. It is a set of tools that can help engineers make better use of the information the system produces.</blockquote>
+
+<h2 id="wastewater-data">1. Peter Vanrolleghem: Before using AI, make sure the data can be trusted</h2>
+<span class="speaker-label">WASTEWATER OPERATIONS · SENSOR DATA · PROCESS MODELLING</span>
+<p>Professor Peter Vanrolleghem began with a reality that anyone working with industrial measurements will recognise: sensors do not always behave perfectly, especially when they are installed in difficult environments.</p>
+
+<h3 id="sensor-problems">Why can wastewater sensor data be unreliable?</h3>
+<p>Imagine putting a sensor into a wastewater stream to measure ammonia or suspended solids. In a laboratory, the sensor may look clean and precise. In a real plant, it is exposed to water containing solids, grease, biological material, and other substances that can collect on its surface.</p>
+<p>Over time, this can affect the measurements. A sensor may slowly drift away from the correct value, produce noisy readings, generate an unusual spike, or stop reporting altogether. Engineers may also have periods when no measurement is available.</p>
+<p>These problems have different names:</p>
+<ul class="plain-list">
+<li><strong>Noise:</strong> small, rapid fluctuations that do not necessarily reflect a real process change.</li>
+<li><strong>Bias:</strong> a measurement that is consistently too high or too low.</li>
+<li><strong>Drift:</strong> a gradual change in sensor behaviour over time.</li>
+<li><strong>Outlier:</strong> a value that is very different from the surrounding pattern and needs investigation.</li>
+<li><strong>Missing data:</strong> a period for which no valid measurement is available.</li>
+</ul>
+<p>In one full-scale wastewater example from Denmark, the presentation showed that about 8% of suspended-solids measurements had to be treated as doubtful or invalid. The speaker also referred to a wider range reported in the literature, where a substantial share of wastewater sensor data may need checking before it can be used confidently.</p>
+<p>This matters because machine learning models learn from the examples they receive. If faulty sensor readings are treated as true measurements, a model can learn the wrong patterns.</p>
+
+<h3 id="automated-quality">Can machine learning help detect faulty measurements?</h3>
+<p>One traditional way to check sensor data is to write rules. For example, an engineer might define a plausible measurement range or flag a value that changes too quickly. These checks can be useful, but different sensors and processes may need different settings. Maintaining many hand-tuned rules can become difficult.</p>
+<p>The presentation discussed research using machine learning to automate parts of this data-treatment process. One example involved neural networks designed to recognise patterns in time-series measurements. An LSTM, short for <strong>Long Short-Term Memory</strong>, is a type of neural network built to learn relationships across sequences.</p>
+<p>Think of a sensor that normally follows a repeating daily pattern. A sequence model can learn what its usual behaviour looks like and help flag readings that do not fit that pattern. The flagged values still need engineering review; an unusual value is not automatically a sensor fault, because real process events can also cause sudden changes.</p>
+
+<h3 id="influent-generation">Generating missing information about wastewater inflow</h3>
+<p>Another example was about <strong>influent</strong>, the wastewater entering a treatment plant. Its flow rate and pollutant concentrations change throughout the day, across the week, and between seasons.</p>
+<p>Rainfall can add water to sewer networks. Snowmelt can increase flows in spring. Household water use follows daily routines, while industrial activity can change the type and amount of pollution entering the plant.</p>
+<p>It is not always practical to measure every parameter continuously. Some plants collect certain laboratory measurements only on selected days. This creates gaps in the historical record.</p>
+<p>The research example described in the webinar used weather information, historical measurements, and repeating patterns to generate continuous influent time series. A technique called the <strong>Fourier Transform</strong> was used to identify recurring patterns, such as daily or seasonal cycles. A neural network could then use rainfall and temperature together with those learned patterns to estimate flow and pollutant concentrations.</p>
+<p>One example involved ammonia measurements that were not collected every day, including weekend gaps. The model was used to estimate those missing values and create a more continuous series for analysis.</p>
+<div class="section-note"><strong>Why this is useful:</strong> A model that estimates a missing value does not turn that estimate into a direct measurement. The result should be labelled as modelled data and checked before it is used in engineering decisions.</div>
+
+<h3 id="n2o-modelling">Understanding nitrous oxide emissions</h3>
+<p>Professor Vanrolleghem also discussed research on <strong>nitrous oxide (N₂O)</strong>, a greenhouse gas that can be produced during biological nitrogen-removal processes in wastewater treatment.</p>
+<p>Engineers want to understand when and why N₂O is produced so that treatment plants can monitor emissions and investigate ways to reduce them. Mechanistic models try to describe the underlying biological and chemical processes using equations. These models are valuable, but they can be difficult to calibrate because many processes interact and some parameters are uncertain.</p>
+<p>The research example compared several machine learning approaches, including k-Nearest Neighbors (kNN), Deep Neural Networks (DNN), and <strong>AdaBoost</strong>. In the seasonal validation example shown during the talk, AdaBoost generalised better than some of the more complex alternatives. The deeper models produced predictions that did not match the observed seasonal behaviour as reliably in that comparison.</p>
+<p>The point was not that AdaBoost is always better than deep learning. It was that the algorithm should be selected based on the available data, the process, and how well the model performs on data it has not seen before.</p>
+
+<h3 id="sensor-importance">When a model points engineers back to the physical process</h3>
+<p>One especially interesting example involved removing a nitrite measurement from a model. After that input was removed, a dissolved-oxygen sensor located in the same physical area became more important to the model's predictions.</p>
+<p>This gave the researchers a clue: the two measurements could contain related information about what was happening in that part of the treatment system. The model did not prove that dissolved oxygen caused the same effect as nitrite. Instead, it highlighted a relationship that engineers could examine using their knowledge of the plant.</p>
+<p>This is a useful distinction. <strong>A variable that helps a model predict an outcome is not automatically the physical cause of that outcome.</strong> Prediction can reveal patterns, while process knowledge and further investigation are needed to interpret them.</p>
+
+<h2 id="infrastructure-ai">2. Nicolas St-Gelais: Using AI to identify water pipes at risk of failure</h2>
+<span class="speaker-label">WATER INFRASTRUCTURE · ASSET MANAGEMENT · RISK PRIORITISATION</span>
+<p>The second presentation moved from treatment processes to the underground infrastructure that carries drinking water to homes and businesses.</p>
+
+<h3 id="pipe-breaks">Why do water pipes break?</h3>
+<p>Cities depend on extensive networks of underground pipes. Some have been in service for decades. Over time, pipes can deteriorate because of material, corrosion, soil conditions, pressure changes, temperature cycles, traffic loads, installation conditions, and previous damage.</p>
+<p>When a water main breaks, the problem is not limited to the cost of repairing the pipe. Residents may lose water service, streets may need to close, traffic can be disrupted, and treated water may be lost.</p>
+
+<h3 id="age-based-replacement">Why replacing the oldest pipes first can be misleading</h3>
+<p>A simple strategy is to replace the oldest pipes first. It sounds logical: if a pipe has been underground for a very long time, perhaps it is more likely to fail.</p>
+<p>But age alone does not tell the whole story. In the Montreal example discussed in the webinar, groups of cast-iron pipes with very different ages showed very different break patterns. Some older groups had relatively low break rates, while a younger group had a much higher rate.</p>
+<p>This suggests that pipes made from the same material and installed in different conditions can behave differently. Other information—such as break history, diameter, soil, pressure, and local conditions—can add important context.</p>
+
+<h3 id="intellipipes">How InteliPipes approaches the problem</h3>
+<p>Dr. St-Gelais described <strong>InteliPipes</strong>, a machine learning approach developed to help identify vulnerable pipes and support replacement priorities.</p>
+<p>Depending on what information a utility has available, the model can consider factors such as:</p>
+<ul class="plain-list">
+<li>Pipe material, installation year, length, and diameter.</li>
+<li>Previous break and repair history.</li>
+<li>Pressure and operating information.</li>
+<li>Soil and environmental conditions.</li>
+<li>Other infrastructure or local information available to the municipality.</li>
+</ul>
+<p>The model looks for patterns among pipes that behave in similar ways. These groups are sometimes described as <strong>cohorts</strong>. The resulting risk information can help a municipality decide which parts of its network deserve closer attention.</p>
+
+<h3 id="montreal-example">What did the Montreal case study show?</h3>
+<p>The speaker described a prospective evaluation with the City of Montreal. A relatively small group of pipes identified as high risk—about 14 miles, representing less than 1% of the network discussed—was followed over the subsequent period.</p>
+<p>According to the presentation, this group accounted for around <strong>14% of recorded breaks in 2021</strong> and <strong>22% in 2022</strong>. The talk used this example to show how risk-based prioritisation can identify a concentrated share of future failures, rather than distributing replacement decisions according to age alone.</p>
+<p>These figures belong to that particular case study and its evaluation. They should not be treated as a guaranteed result for every city or every pipe network.</p>
+
+<h3 id="asset-planning">From predicting failures to planning investments</h3>
+<p>Identifying a high-risk pipe is only one part of asset management. A municipality still has to decide what action to take and when.</p>
+<p>Should the pipe be replaced? Could it be repaired or relined? How much money is available this year? Is the road above it already scheduled for reconstruction? What happens if the budget changes?</p>
+<p>The presentation described moving toward more dynamic asset-management planning: combining information about asset condition with optimisation tools that help utilities compare investment scenarios over time. Rather than relying only on a static plan that is updated every few years, a utility can explore how different budgets and maintenance options may affect future risk.</p>
+
+<h3 id="utility-rag">Can an AI assistant answer questions about a city's infrastructure?</h3>
+<p>Utilities store information in many formats. Some information is in structured databases—for example, pipe material, installation year, or length. Other information is buried in PDF reports, technical documents, regulations, and maintenance records.</p>
+<p>A utility employee might want to ask, “How many cast-iron pipes were installed between 1950 and 1970?” or “Which high-risk pipes are near this school?” Finding the answer manually may require searching multiple systems.</p>
+<p>The team explored using a specialised AI assistant to make this information easier to query. But general-purpose language models can produce plausible-sounding answers that are not supported by the records. This is called <strong>hallucination</strong>.</p>
+<p>For a technical or operational question, an unsupported answer is a serious problem. The team therefore combined two kinds of retrieval:</p>
+<ul class="plain-list">
+<li><strong>Structured data retrieval:</strong> obtaining values and records directly from databases, where the system can query, filter, count, or map assets.</li>
+<li><strong>Document retrieval with RAG:</strong> finding relevant passages in reports and documents, then giving those passages to the language model as evidence for its response.</li>
+</ul>
+<p>RAG stands for <strong>Retrieval-Augmented Generation</strong>. In plain language, the system looks up relevant information first, then asks the language model to prepare an answer based on what was retrieved. The presentation also described using a knowledge graph to organise relationships between document content and infrastructure information.</p>
+<p>The team evaluated its system using a benchmark of around 10,000 questions collected from utility users. In that specific test, a standard language-model approach achieved about 90% accuracy, while the specialised retrieval-based system achieved more than 99% according to the presentation.</p>
+<div class="section-note"><strong>Important:</strong> These are results from the team's own benchmark and use case. They do not mean that every RAG system will be more than 99% accurate. The most useful part of this design is that users can inspect the source behind an answer instead of being asked to trust an unsupported response.</div>
+
+<h2 id="membrane-ai">3. Ruobin Dai: Teaching machine learning the science of membrane filtration</h2>
+<span class="speaker-label">MEMBRANE TECHNOLOGY · MICROPOLLUTANTS · DATA-KNOWLEDGE LEARNING</span>
+<p>The third presentation focused on membrane filtration, a different part of water treatment.</p>
+
+<h3 id="what-is-membrane">What is a membrane?</h3>
+<p>Think of a coffee filter. It lets liquid pass through while holding back larger coffee grounds. Water-treatment membranes use a related idea, but they can separate much smaller substances. Processes such as <strong>nanofiltration (NF)</strong> and <strong>reverse osmosis (RO)</strong> are used in applications where very fine separation is needed.</p>
+<p>The presentation focused on polyamide membranes and the removal of organic micropollutants. These are trace amounts of chemical substances that may be present in water, including residues from pharmaceuticals and other organic compounds.</p>
+<p>The challenge is that a membrane does not reject every molecule for exactly the same reason. Rejection can depend on molecular size, membrane properties, electrical charge, chemical affinity, and operating conditions.</p>
+
+<h3 id="membrane-mechanisms">What determines whether a molecule passes through?</h3>
+<p>Several mechanisms can work together:</p>
+<ul class="plain-list">
+<li><strong>Size exclusion:</strong> a molecule may be too large to pass through the available membrane pathways.</li>
+<li><strong>Electrostatic interactions:</strong> the charge of a molecule and the charge of the membrane surface can influence whether the molecule is attracted or repelled.</li>
+<li><strong>Hydrophobic interactions and affinity:</strong> chemical properties can affect how a molecule interacts with the membrane material.</li>
+<li><strong>Operating conditions:</strong> factors such as pH and solution chemistry can change the behaviour of the molecule or membrane.</li>
+</ul>
+<p>Because these mechanisms interact, predicting membrane rejection is not simply a matter of comparing the molecule's size with the membrane's pore size.</p>
+
+<h3 id="small-data">The small-data challenge</h3>
+<p>Professor Dai explained that the researchers collected approximately 2,400 data points from scientific literature for their modelling task. For a complex process with many interacting features, this is a relatively small dataset.</p>
+<p>Machine learning models need examples to learn from. When the dataset is small, a model may struggle to identify which relationships are reliable and which are just patterns specific to the limited examples it has seen.</p>
+<p>The researchers therefore used an approach described as <strong>data-knowledge co-driven machine learning</strong>. The basic idea is to combine measured data with scientific knowledge about how the process works.</p>
+
+<h3 id="knowledge-features">Turning scientific relationships into useful model features</h3>
+<p>For example, instead of giving the model molecular size and membrane pore size only as separate numbers, the researchers created a feature that expresses the relationship between them. This helps represent the size-exclusion mechanism more directly.</p>
+<p>They also engineered features related to electrical interactions between molecular charge and membrane surface charge. Another descriptor, <strong>logD</strong>, was used to represent aspects of a molecule's distribution behaviour and hydrophobicity under specified chemical conditions.</p>
+<p>The purpose of these features is not to make the dataset look more complicated. It is to give the model information that reflects known scientific relationships, so it can learn from the data in a more meaningful way.</p>
+
+<h3 id="causal-analysis">Going beyond prediction: tracing the pathways behind an effect</h3>
+<p>The presentation also discussed causal analysis. A predictive model may tell us that pH is important for membrane rejection. But that does not automatically explain how pH affects the result.</p>
+<p>Does pH change the membrane's surface charge? Does it change the contaminant molecule's charge? Does it affect another chemical property? These are different pathways.</p>
+<p>The researchers used a causal-inference approach that included <strong>Double Machine Learning</strong> to examine direct and indirect relationships among variables. The analysis suggested that pH influenced rejection more strongly through changes in membrane surface properties than through some of the other pathways considered in the study.</p>
+<p>This kind of analysis can help researchers move from asking “Which input is important for prediction?” toward asking “Through which physical or chemical pathway might this variable influence the process?” The interpretation still depends on the assumptions and quality of the causal analysis, but it gives researchers a more structured way to investigate mechanisms.</p>
+
+<h3 id="llm-vs-ml">Can a large language model outperform XGBoost?</h3>
+<p>One of the most interesting comparisons in the presentation involved large language models such as GPT and conventional machine learning algorithms such as XGBoost, CatBoost, and LightGBM.</p>
+<p>The task was to predict membrane rejection from structured numerical data. The initial language-model experiments did not perform as well as the conventional machine learning approaches. Fine-tuning improved the language models, but in the comparison shown in the webinar they still performed below the traditional models.</p>
+<p>One possible explanation discussed was that language models are especially effective at finding patterns in text, while this task involved structured numerical relationships. Converting numerical tables into text can also introduce extra complexity or lose some of the structure that conventional tabular models handle directly.</p>
+<p>The conclusion was not that language models are useless in science. It was that <strong>the best model depends on the task</strong>. For a structured numerical prediction problem, a well-chosen tree-based algorithm may be more suitable than a much larger language model.</p>
+
+<h2 id="panel-discussion">4. What did the speakers say about the future of AI in water?</h2>
+<p>During the final panel discussion, the moderators raised questions that connected the three presentations.</p>
+
+<h3 id="ai-replace-models">Will AI replace traditional engineering models?</h3>
+<p>The speakers did not suggest that machine learning should simply replace conventional process models. They discussed ways in which the approaches could complement one another.</p>
+<p>For example, an AI model might estimate the difference between a mechanistic model's prediction and the measured plant behaviour. Machine learning could also be combined with physical equations or used to improve parts of an existing model.</p>
+<p>Traditional models remain useful because they represent engineering and scientific understanding. The choice should depend on the purpose of the model, the available data, and the process being studied.</p>
+
+<h3 id="skills">What skills should students and engineers develop?</h3>
+<p>The panel also discussed career paths for people who want to work where AI meets water engineering.</p>
+<p>The speakers highlighted the value of combining different strengths. Water and environmental engineers understand the treatment processes. Data scientists bring statistics and machine learning knowledge. Software developers help turn a model into a tool that people can actually use.</p>
+<p>Programming is useful and can be learned through courses, online resources, and small practical projects. But technical coding ability alone is not enough. People also need the scientific or engineering knowledge to question a model's output and recognise when it does not make sense.</p>
+
+<h3 id="trust">Can we trust AI with essential services?</h3>
+<p>The speakers emphasised careful validation and critical thinking. Water systems provide an essential public service, so it is not enough for a model to look impressive in a demonstration. Its limits need to be understood, and the people using its output need a way to check it.</p>
+<p>Nicolas St-Gelais cautioned against promising that AI can predict everything. Peter Vanrolleghem made a similar point: it is better to be realistic about what a model can do, explain its limitations, and then deliver reliable results.</p>
+<blockquote><strong>“Under-promise and over-deliver.”</strong> The idea is simple: make realistic claims, test carefully, and build trust through performance rather than hype.</blockquote>
+
+<h2 id="what-i-learned">5. What I learned from this webinar</h2>
+<p>What I appreciated most was the range of problems covered. The three talks were about different parts of the water sector, but they repeatedly returned to a few shared principles.</p>
+<ul class="plain-list">
+<li><strong>Data quality comes first.</strong> A sophisticated model cannot automatically correct unreliable measurements or poorly organised information.</li>
+<li><strong>Engineering knowledge matters.</strong> Understanding the physical, chemical, and biological process helps us build meaningful features and interpret model outputs.</li>
+<li><strong>More complex does not always mean better.</strong> A smaller or simpler algorithm may be more suitable for a particular dataset and task.</li>
+<li><strong>Prediction is only one part of a solution.</strong> Results become useful when they can be connected to a real decision, explained to users, and checked against evidence.</li>
+<li><strong>Human judgement remains essential.</strong> AI can provide information and support decisions, but engineers must still understand the system and take responsibility for how the information is used.</li>
+</ul>
+<p>This webinar was especially meaningful to me because it connects closely with the work I have been exploring in AI-assisted drinking-water treatment decision support. It reinforced something I have gradually learned through applied projects: building a model is only one part of an engineering solution.</p>
+<p>We also need to understand what the model is predicting, why its output might make sense, where it might fail, and how an engineer can use that information responsibly.</p>
+
+<section class="takeaway" aria-labelledby="takeaway-heading">
+<h2 id="takeaway-heading">The Main Takeaway</h2>
+<p>AI can help water professionals detect unreliable measurements, estimate missing data, understand treatment processes, prioritise infrastructure maintenance, and investigate complex filtration mechanisms. But successful applications depend on reliable data, scientific knowledge, appropriate models, careful validation, and people who understand the systems they work with. The goal is not to replace water engineers with AI; it is to give them better information and better tools for making decisions.</p>
+</section>
+
+<h2 id="references">References and Further Reading</h2>
+<ol class="source-list">
+<li>International Water Association (IWA). (16 April 2026). <em>The Application of Artificial Intelligence (AI) in Water and Wastewater Treatment.</em> <a href="https://www.iwa-network.org/learn/the-application-of-artificial-intelligence-ai-in-water-and-wastewater-treatment-1" target="_blank" rel="noopener noreferrer">Official webinar page</a>.</li>
+<li><em>Webinar recording:</em> <a href="https://www.youtube.com/watch?v=_wrEeUjhRk4" target="_blank" rel="noopener noreferrer">The Application of Artificial Intelligence (AI) in Water and Wastewater Treatment</a>.</li>
+<li>Therrien, J. D., Nicolai, N., &amp; Vanrolleghem, P. A. (2020). A critical review of the data pipeline: How wastewater system operation flows from data to intelligence. <em>Water Science &amp; Technology</em>, 82(12), 2613–2634. <a href="https://doi.org/10.2166/wst.2020.393" target="_blank" rel="noopener noreferrer">https://doi.org/10.2166/wst.2020.393</a>.</li>
+<li>Khalil, M., AlSayed, A., Liu, Y., &amp; Vanrolleghem, P. A. (2023). Machine learning for modeling N₂O emissions from wastewater treatment plants: Aligning model performance, complexity, and interpretability. <em>Water Research</em>, 245, 120667.</li>
+<li>Vanrolleghem, P. A., Khalil, M., Serrao, M., Sparks, J., &amp; Therrien, J. D. (2025). Machine learning in wastewater: Opportunities and challenges — “not everything is a nail!”. <em>Current Opinion in Biotechnology</em>, 93, 103271.</li>
+<li>Wang, H., et al. (2024). Research on data-knowledge co-driven machine learning for rejection of trace organic contaminants by polyamide membranes. <em>Environmental Science &amp; Technology</em>, 58(13), 5878–5888. <a href="https://doi.org/10.1021/acs.est.3c08523" target="_blank" rel="noopener noreferrer">https://doi.org/10.1021/acs.est.3c08523</a>.</li>
+</ol>
+<div class="source-note"><strong>Editorial note:</strong> This article is an accessible summary of the webinar presentations and discussion, not a word-for-word transcript. Technical examples and reported results are attributed to the speakers' presentations and should be understood within their specific study or benchmark settings. The webinar registration figures describe registration requests, not the number of attendees. The article is independent commentary and is not an official IWA publication.</div>
+
+<section class="persian-section" lang="fa" dir="rtl" aria-labelledby="persian-heading">
+<h2 id="persian-heading">حالا به زبون خودمون! 🇮🇷</h2>
+<p>موضوع این وبینار یه سؤال خیلی ساده بود: هوش مصنوعی واقعاً کجای تصفیه آب و فاضلاب به درد می‌خوره؟ نه اینکه فقط یه الگوریتم اجرا کنیم و بگیم «ما هم AI داریم!»؛ بلکه واقعاً چه مشکلی رو می‌تونه حل کنه؟</p>
+<p>توی این وبینار که انجمن بین‌المللی آب (IWA) برگزار کرده بود، سه نفر از دانشگاه و صنعت درباره‌ی تجربه‌های واقعی‌شون صحبت کردن. جالب بود که هر کدوم از یه بخش متفاوت صنعت آب اومده بودن، اما حرف‌های مشترک زیادی داشتن.</p>
+<h3>۱. اول از همه، داده‌ها باید قابل اعتماد باشن!</h3>
+<p>پروفسور Peter Vanrolleghem از دانشگاه لاوال درباره‌ی تصفیه‌خونه‌های فاضلاب صحبت کرد. اولین نکته‌ای که گفت خیلی واقعی بود: سنسورهای تصفیه‌خونه همیشه درست و حسابی کار نمی‌کنن.</p>
+<p>فرض کن یه سنسور داریم که باید مقدار آمونیاک آب رو اندازه بگیره. این سنسور توی محیط فاضلاب نصب شده؛ جایی که پر از مواد مختلف، لجن و رسوباته. طبیعیه که بعد از مدتی کثیف بشه، عدد اشتباه بده یا حتی کلاً از کار بیفته.</p>
+<p>در نتیجه، دیتایی که از سنسور می‌گیریم ممکنه نویز داشته باشه، به‌مرور منحرف بشه، مقدار پرت بده یا بعضی وقت‌ها اصلاً چیزی ثبت نکنه. توی یکی از مثال‌های ارائه‌شده از یه تصفیه‌خونه در دانمارک، حدود ۸ درصد اندازه‌گیری‌های مواد معلق مشکوک یا نامعتبر تشخیص داده شده بودن.</p>
+<p>حالا اگه همین داده‌های خراب رو بدون بررسی وارد مدل کنیم چی می‌شه؟ مدل ممکنه الگوی اشتباه یاد بگیره. برای همین قبل از اینکه بریم سراغ آموزش مدل، باید تا جای ممکن کیفیت داده رو بررسی کنیم.</p>
+<h3>آیا هوش مصنوعی می‌تونه داده‌ی خراب رو تشخیص بده؟</h3>
+<p>یکی از راه‌هایی که درباره‌ش صحبت شد استفاده از مدل‌های یادگیری ماشین برای تشخیص رفتار غیرعادی سنسورها بود. مثلاً LSTM یه نوع شبکه عصبیه که می‌تونه الگوهای زمانی رو یاد بگیره.</p>
+<p>فرض کن سنسور هر روز یه الگوی تقریباً مشخص داره. مدل می‌تونه رفتار معمول اون رو یاد بگیره و وقتی یه عدد خیلی متفاوت می‌بینه، علامت بده که این مقدار نیاز به بررسی داره. البته هر عدد غیرعادی الزاماً خرابی سنسور نیست؛ ممکنه واقعاً توی فرآیند یه اتفاق مهم افتاده باشه. پس تشخیص مدل باید بررسی بشه.</p>
+<h3>وقتی داده نداریم، می‌تونیم تخمین بزنیم؟</h3>
+<p>یه مثال دیگه درباره‌ی Influent یا همون فاضلاب ورودی به تصفیه‌خونه بود. مقدار و کیفیت این آب همیشه ثابت نیست. بارندگی، ذوب برف، مصرف آب مردم و فعالیت صنایع روی جریان و غلظت آلاینده‌ها اثر می‌ذارن.</p>
+<p>حالا تصور کن تصفیه‌خونه آخر هفته‌ها مقدار آمونیاک رو اندازه‌گیری نکنه. دیتاست ما چندتا خونه‌ی خالی خواهد داشت. پژوهشگرها از اطلاعات بارندگی و دما و الگوهای تکرارشونده‌ی داده‌های قبلی استفاده کردن تا این مقادیر رو تخمین بزنن و یک سری زمانی پیوسته‌تر بسازن.</p>
+<p>یکی از ابزارها Fourier Transform بود؛ ابزاری که کمک می‌کنه الگوهای تکراری مثل تغییرات روزانه یا فصلی رو تشخیص بدیم. بعد مدل می‌تونه از این الگوها برای تخمین مقادیر استفاده کنه.</p>
+<p>البته یه نکته مهم: مقداری که مدل تخمین می‌زنه، اندازه‌گیری واقعی سنسور نیست. باید مشخص باشه که اون مقدار تخمینیه و قبل از استفاده‌ی عملی بررسی شده.</p>
+<h3>مدل ساده‌تر گاهی بهتر جواب می‌ده!</h3>
+<p>مثال بعدی درباره‌ی گاز N₂O یا نیتروس اکسید بود که ممکنه در فرآیندهای بیولوژیکی تصفیه فاضلاب تولید بشه و یک گاز گلخانه‌ای محسوب می‌شه.</p>
+<p>پژوهشگرها مدل‌های مختلفی مثل KNN، شبکه عصبی عمیق و AdaBoost رو مقایسه کرده بودن. توی مثال اعتبارسنجی فصلی که در وبینار نمایش داده شد، AdaBoost بهتر از بعضی مدل‌های پیچیده‌تر عمل کرده بود.</p>
+<p>این یعنی چی؟ یعنی قرار نیست همیشه پیچیده‌ترین مدل بهترین باشه. باید ببینیم مدل روی داده‌هایی که قبلاً ندیده چقدر خوب کار می‌کنه.</p>
+<p>یه نکته جالب دیگه هم بود: وقتی سنسور نیتریت از ورودی مدل حذف شد، اهمیت سنسور اکسیژنی که در همون محدوده فیزیکی نصب شده بود بیشتر شد. این موضوع یه سرنخ به پژوهشگرها داد که این دو اندازه‌گیری ممکنه اطلاعات مرتبطی از اون بخش فرآیند داشته باشن. اما این به معنی اثبات رابطه علت و معلولی نیست؛ فقط یه سرنخه برای بررسی بیشتر.</p>
+<h3>۲. پیش‌بینی اینکه کدوم لوله آب ممکنه بترکه!</h3>
+<p>سخنران دوم، Nicolas St-Gelais از شرکت CANN Forecast بود. موضوعش درباره‌ی لوله‌های آب زیرزمینی و مدیریت دارایی‌های شهری بود.</p>
+<p>شهرها کیلومترها لوله آب دارن. بعضی لوله‌ها چندین دهه قدمت دارن و به‌مرور ممکنه به خاطر خوردگی، فشار، جنس خاک، تغییرات دما یا سابقه خرابی ضعیف بشن.</p>
+<p>روش ساده اینه که بگیم «قدیمی‌ترین لوله‌ها رو اول عوض کنیم». اما آیا هر لوله قدیمی حتماً پرریسک‌تره؟ نه! ممکنه یه لوله چدنی ۱۲۰ ساله هنوز وضعیت خوبی داشته باشه، ولی یه لوله‌ی ۵۰ ساله چند بار شکسته باشه.</p>
+<p>پس سن به‌تنهایی کافی نیست. باید اطلاعات دیگه‌ای مثل جنس لوله، قطر، طول، سابقه شکستگی، فشار آب و شرایط محیطی رو هم بررسی کنیم.</p>
+<h3>InteliPipes چطور کمک می‌کنه؟</h3>
+<p>مدلی که معرفی شد، InteliPipes بود. این مدل اطلاعات لوله‌ها رو بررسی می‌کنه و سعی می‌کنه لوله‌هایی رو که رفتار مشابهی دارن در گروه‌هایی قرار بده. به این گروه‌ها Cohort می‌گن.</p>
+<p>بعد با توجه به الگوهای خرابی، به شهرداری کمک می‌کنه بفهمه کدوم گروه‌ها باید زودتر بررسی یا تعویض بشن.</p>
+<p>در یک مطالعه‌ی موردی در مونترال، بخش کوچکی از شبکه که مدل پرریسک تشخیص داده بود، حدود ۱۴ درصد شکستگی‌های سال ۲۰۲۱ و ۲۲ درصد شکستگی‌های سال ۲۰۲۲ رو به خودش اختصاص داده بود. این عددها مربوط به همون پروژه هستن، نه تضمینی برای همه‌ی شهرها.</p>
+<p>این یعنی می‌شه به‌جای اینکه فقط بر اساس سن تصمیم بگیریم، اطلاعات بیشتری داشته باشیم تا بودجه‌ی محدود شهری رو هوشمندانه‌تر خرج کنیم.</p>
+<h3>می‌شه از دیتابیس و PDFها سؤال پرسید؟</h3>
+<p>بخش جالب دیگه درباره‌ی ساخت یک دستیار هوشمند برای اطلاعات شهرداری‌ها بود. فرض کن کارمند شهرداری بخواد بدونه چند کیلومتر لوله چدنی بین سال‌های ۱۹۵۰ تا ۱۹۷۰ نصب شده. این اطلاعات ممکنه توی چندتا دیتابیس و گزارش PDF پراکنده باشه.</p>
+<p>مدل‌های زبانی مثل ChatGPT می‌تونن به سؤال جواب بدن، اما گاهی جواب‌هایی می‌سازن که قانع‌کننده به نظر می‌رسن ولی درست نیستن. به این مشکل Hallucination می‌گن.</p>
+<p>برای کم کردن این مشکل، تیم از دو روش استفاده کرده بود: یکی گرفتن اطلاعات مستقیم از دیتابیس‌های ساختاریافته، و دیگری استفاده از RAG برای جست‌وجو در اسناد و گزارش‌ها.</p>
+<p>RAG یعنی سیستم قبل از جواب دادن، اول منابع مرتبط رو پیدا می‌کنه و بعد جواب رو بر اساس همون منابع می‌سازه. نکته‌ی مهم این بود که کاربر می‌تونست منبع جواب رو هم ببینه.</p>
+<p>توی آزمون اختصاصی تیم با حدود ۱۰ هزار سؤال، روش عمومی حدود ۹۰ درصد دقت داشت، اما سیستم تخصصی خودشون به بیش از ۹۹ درصد رسید. این نتیجه فقط مربوط به همون آزمون و کاربرده، نه همه‌ی سیستم‌های RAG.</p>
+<h3>۳. مدل یادگیری ماشین باید علم پشت فرآیند رو هم بفهمه</h3>
+<p>سخنران سوم، پروفسور Ruobin Dai از دانشگاه Tongji بود و درباره‌ی غشاهای تصفیه آب صحبت کرد.</p>
+<p>غشا رو مثل یه فیلتر خیلی دقیق تصور کن. توی فیلتر قهوه، تفاله‌ها پشت فیلتر می‌مونن و مایع عبور می‌کنه. اما غشاهای Nanofiltration و Reverse Osmosis می‌تونن مواد خیلی ریز و حل‌شده در آب رو هم جدا کنن.</p>
+<p>سؤال پژوهشگرها این بود که چرا بعضی مولکول‌ها از غشا عبور می‌کنن و بعضی‌ها نه؟ جواب فقط به اندازه‌ی مولکول مربوط نیست. بار الکتریکی، ویژگی‌های شیمیایی و شرایطی مثل pH هم اهمیت دارن.</p>
+<p>پژوهشگرها برای این مسئله حدود ۲۴۰۰ نقطه داده از مقالات علمی جمع کرده بودن. برای چنین فرآیند پیچیده‌ای این مقدار خیلی زیاد نیست.</p>
+<h3>چطور دانش علمی رو وارد مدل کنیم؟</h3>
+<p>به‌جای اینکه فقط داده‌های خام رو به مدل بدن، ویژگی‌هایی ساختن که رابطه‌های علمی رو بهتر نشون می‌دادن. مثلاً نسبت اندازه‌ی مولکول به اندازه‌ی منافذ غشا، تعامل بار الکتریکی مولکول و سطح غشا، و ویژگی شیمیایی logD.</p>
+<p>این رویکرد رو Data-Knowledge Co-Driven Machine Learning می‌گن؛ یعنی مدل هم از داده یاد می‌گیره و هم از دانشی که درباره‌ی فیزیک و شیمی فرآیند داریم.</p>
+<h3>فقط پیش‌بینی نکنیم؛ بفهمیم چرا!</h3>
+<p>پژوهشگرها از روش‌های تحلیل علّی مثل Double Machine Learning هم استفاده کردن تا بررسی کنن متغیرهایی مثل pH از چه مسیرهایی روی حذف آلاینده‌ها اثر می‌ذارن.</p>
+<p>مثلاً pH ممکنه بار سطحی غشا رو تغییر بده یا روی بار مولکول اثر بذاره. این دو مسیر با هم فرق دارن. هدف این نوع تحلیل اینه که بفهمیم کدوم مسیر سهم بیشتری در نتیجه داره، نه اینکه فقط بگیم pH برای مدل مهمه.</p>
+<h3>آیا GPT از XGBoost بهتره؟</h3>
+<p>تیم مدل‌های زبانی بزرگی مثل GPT رو با الگوریتم‌هایی مثل XGBoost و CatBoost مقایسه کرده بود. مدل‌های زبانی بعد از Fine-tuning بهتر شدن، اما در مقایسه‌ی ارائه‌شده هنوز کمی پایین‌تر از الگوریتم‌های سنتی بودن.</p>
+<p>چرا؟ چون مسئله پیش‌بینی عدد از داده‌های جدولی بود، نه نوشتن متن. مدل‌های زبانی برای متن فوق‌العاده‌ان، اما برای هر نوع داده‌ای بهترین انتخاب نیستن.</p>
+<p>پس همیشه بزرگ‌تر بودن مدل به معنی بهتر بودنش نیست. باید ابزار رو بر اساس مسئله انتخاب کنیم.</p>
+<h3>۴. جمع‌بندی پنل پایانی</h3>
+<p>در بخش پرسش‌وپاسخ، یکی از سؤال‌ها این بود که آیا AI قراره جای مدل‌های مهندسی و ریاضی سنتی رو بگیره؟ پاسخ کلی این بود که نه لزوماً. خیلی وقت‌ها بهترین راه، ترکیب مدل‌های فیزیکی و یادگیری ماشینه.</p>
+<p>مثلاً AI می‌تونه خطای یک مدل ریاضی رو تخمین بزنه و به بهتر شدن نتیجه کمک کنه. یا می‌شه دانش فیزیکی رو وارد ویژگی‌های مدل یادگیری ماشین کرد.</p>
+<p>درباره‌ی مهارت‌های موردنیاز هم تأکید شد که دانش مهندسی، شناخت فرآیند و توانایی بررسی خروجی مدل خیلی مهمه. برنامه‌نویسی رو می‌شه یاد گرفت، اما فهمیدن اینکه مدل چه چیزی رو پیش‌بینی می‌کنه و آیا جوابش منطقیه یا نه، به دانش زمینه‌ای نیاز داره.</p>
+<p>در نهایت، سخنران‌ها گفتن که نباید بدون اعتبارسنجی به خروجی AI اعتماد کنیم. یه جمله‌ی خیلی خوب هم مطرح شد: <strong>Under-promise and over-deliver</strong>؛ یعنی کمتر وعده بده، ولی نتیجه‌ی قابل اعتماد ارائه کن.</p>
+<h3>چیزی که من از این وبینار یاد گرفتم</h3>
+<p>برای من جذاب‌ترین بخش این بود که با وجود تفاوت موضوع‌ها، همه به چند اصل مشترک رسیدن: داده‌ی قابل اعتماد، شناخت فرآیند، انتخاب درست مدل و اعتبارسنجی.</p>
+<p>این موضوع خیلی به تجربه‌ی خودم در پروژه‌های AI مرتبط با تصفیه آب نزدیکه. ساختن مدل فقط یه قسمت از کاره. باید بفهمیم چی رو پیش‌بینی می‌کنیم، چرا مدل این خروجی رو داده و چطور قراره از اون خروجی در تصمیم‌گیری مهندسی استفاده بشه.</p>
+<p>به نظرم چیزی که از همه ارزشمندتره، ترکیب دانش مهندسی و مهارت‌های داده‌ایه. چون AI قرار نیست جای مهندس آب رو بگیره؛ قراره اطلاعات بهتری در اختیارش بذاره تا تصمیم بهتری بگیره.</p>
+</section>
+
+<nav class="next-post" aria-label="Back to blog">
+<div>
+<span class="next-post-label">INDEPENDENT WEBINAR FEATURE</span>
+<h2>Explore more learning notes and event reflections.</h2>
+</div>
+<a href="./blog.html#iwa-webinar">Back to Blog →</a>
+</nav>
+</div>
+<aside aria-label="On this page" class="toc">
+<h2>On this page</h2>
+<div class="toc-list">
+<a href="#who-spoke">Who took part?</a>
+<a href="#why-ai-water">Why water needs AI</a>
+<a href="#wastewater-data">Wastewater data quality</a>
+<a href="#sensor-problems">Sensor problems</a>
+<a href="#influent-generation">Missing influent data</a>
+<a href="#n2o-modelling">N₂O modelling</a>
+<a href="#infrastructure-ai">Water infrastructure AI</a>
+<a href="#intellipipes">InteliPipes</a>
+<a href="#utility-rag">RAG for utilities</a>
+<a href="#membrane-ai">Membrane filtration</a>
+<a href="#knowledge-features">Knowledge-driven features</a>
+<a href="#causal-analysis">Causal analysis</a>
+<a href="#llm-vs-ml">LLMs vs. ML</a>
+<a href="#panel-discussion">Panel discussion</a>
+<a href="#what-i-learned">What I learned</a>
+<a href="#references">References</a>
+<a href="#persian-heading">حالا به زبون خودمون!</a>
+</div>
+</aside>
+</div>
+</article>
+<footer class="article-footer">
+<span>Notes on Water, Science &amp; AI · A personal learning journal</span>
+<a href="./blog.html">← Back to all articles</a>
+</footer>
+</div>
+</main>
+<script>
+    const themeButton = document.getElementById("theme-toggle");
+
+    function setDarkMode(enabled) {
+      document.body.classList.toggle("dark-mode", enabled);
+      themeButton.setAttribute("aria-pressed", String(enabled));
+    }
+
+    try {
+      setDarkMode(localStorage.getItem("theme") === "dark");
+    } catch (error) {
+      setDarkMode(false);
+    }
+
+    themeButton.addEventListener("click", function () {
+      const enabled = !document.body.classList.contains("dark-mode");
+      setDarkMode(enabled);
+      try {
+        localStorage.setItem("theme", enabled ? "dark" : "light");
+      } catch (error) {
+        // Dark mode remains available for the current page.
+      }
+    });
+  </script>
+</body>
+</html>

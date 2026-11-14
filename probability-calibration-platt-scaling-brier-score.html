@@ -672,9 +672,8 @@
 <li>Brier, G. W. (1950). <em>Verification of Forecasts Expressed in Terms of Probability.</em> Monthly Weather Review, 78(1), 1–3. <a href="https://doi.org/10.1175/1520-0493(1950)078%3C0001%3AVOFEIT%3E2.0.CO%3B2" rel="noopener noreferrer" target="_blank">https://doi.org/10.1175/1520-0493(1950)078&lt;0001:VOFEIT&gt;2.0.CO;2</a>.</li>
 <li>Elkan, C. (2001). <em>The Foundations of Cost-Sensitive Learning.</em> <a href="https://ijcai.org/proceedings/2001/133" rel="noopener noreferrer" target="_blank">Official IJCAI paper page</a>.</li>
 </ol>
-<p class="source-note">This article describes general calibration methods. Project-specific Brier Scores, calibration curves, alert cut-offs, and operational settings are not published here.</p>
 <section aria-labelledby="persian-heading" class="persian-section" dir="rtl" lang="fa">
-<h2 id="persian-heading">حالا به زبون خودمون! 🇮🇷</h2>
+<h2 id="persian-heading">حالا به زبون خودمون</h2>
 <p>وقتی مجری هواشناسی می‌گه «فردا ۸۰ درصد احتمال بارندگی هست»، ما یه برداشت مشخص داریم: اگه صد بار توی شرایط مشابه چنین پیش‌بینی‌ای انجام بشه، انتظار داریم تقریباً توی ۸۰ بارش بارون بیاد.</p>
 <p>حالا فرض کن داشبورد هوش مصنوعی می‌گه «احتمال جهش کدورت: ۰.۸۰». آیا واقعاً باید به این عدد اعتماد کنیم؟ نه لزوماً! ممکنه مدل فقط یه امتیاز بالا تولید کرده باشه یا خروجی احتمال‌مانندش با واقعیت هماهنگ نباشه. به این موضوع می‌گیم <strong>Probability Calibration</strong>.</p>
 <p>جان پلات در سال ۱۹۹۹ روشی معرفی کرد که به اسم <strong>Platt Scaling</strong> شناخته می‌شه. ایده‌اش اینه که مدل اصلی رو دوباره آموزش ندیم؛ خروجی مدل رو به یه تابع سیگموئید می‌دیم و دو پارامترش رو با داده‌ای جدا از داده‌ی آموزش تنظیم می‌کنیم تا خروجی بهتر با فراوانی واقعی اتفاق‌ها جور دربیاد.</p>

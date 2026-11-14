@@ -530,6 +530,217 @@
     .page-footer a { color: var(--blue); text-decoration: none; }
     .page-footer a:hover { text-decoration: underline; }
 
+    /* Independent webinar and event feature */
+    .webinar-section {
+      margin-top: 56px;
+      padding-top: 38px;
+      border-top: 1px solid var(--line);
+    }
+
+    .webinar-section .section-heading-row { margin-bottom: 19px; }
+
+    .webinar-feature {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: 0 8px 24px rgba(25, 45, 75, .045);
+    }
+
+    .webinar-feature-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+      gap: 0;
+    }
+
+    .webinar-video-panel {
+      padding: 18px;
+      background: #eaf1f9;
+    }
+
+    .webinar-video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 11px;
+      background: #0b1729;
+      box-shadow: 0 6px 20px rgba(12, 28, 48, .16);
+    }
+
+    .webinar-video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .webinar-video-caption {
+      margin: 10px 2px 0;
+      color: #526579;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .webinar-details { padding: 26px 27px 24px; }
+
+    .webinar-kicker {
+      display: inline-block;
+      margin-bottom: 11px;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .webinar-details h3 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: clamp(20px, 2.2vw, 25px);
+      line-height: 1.3;
+    }
+
+    .webinar-details > p {
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .webinar-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 0 0 17px;
+    }
+
+    .webinar-meta span {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .webinar-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .webinar-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 9px 13px;
+      border: 1px solid var(--blue);
+      border-radius: 9px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .webinar-link:hover { background: #124b9e; transform: translateY(-1px); }
+
+    .webinar-link.secondary {
+      background: transparent;
+      color: var(--blue);
+    }
+
+    .webinar-link.secondary:hover { background: var(--blue-soft); }
+
+    .webinar-speakers-wrap { padding: 22px 24px 24px; }
+
+    .webinar-speakers-heading {
+      margin: 0 0 13px;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .webinar-speaker-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .webinar-speaker {
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--surface-soft);
+    }
+
+    .webinar-speaker h4 {
+      margin: 0 0 4px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .webinar-speaker .speaker-affiliation {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.5;
+    }
+
+    .webinar-speaker p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .webinar-reflection {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(230px, .72fr);
+      gap: 18px;
+      align-items: start;
+      margin: 0 24px 24px;
+      padding: 17px 19px;
+      border: 1px solid #d8e4f4;
+      border-radius: 11px;
+      background: #f3f7fc;
+    }
+
+    .webinar-reflection h4 {
+      margin: 0 0 6px;
+      color: #203653;
+      font-size: 13px;
+    }
+
+    .webinar-reflection p {
+      margin: 0;
+      color: #4c6079;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .webinar-moderators {
+      padding-left: 17px;
+      border-left: 1px solid #cfdaea;
+    }
+
+    .webinar-moderators strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #203653;
+      font-size: 12px;
+    }
+
+    .webinar-moderators p { font-size: 11px; }
+
     /* Dark mode */
     body.dark-mode {
       --ink: #e7edf6;
@@ -572,14 +783,42 @@
     body.dark-mode .page-footer { border-color: var(--line); color: #a1afc2; }
     body.dark-mode .post-cover { background: linear-gradient(145deg, #20334b 0%, #1b2c42 52%, #172438 100%); }
     body.dark-mode .post-cover-label { color: #b5c8df; }
+    body.dark-mode .webinar-feature { border-color: var(--line); background: var(--surface); }
+    body.dark-mode .webinar-video-panel { background: #101d30; }
+    body.dark-mode .webinar-video-caption { color: #a1afc2; }
+    body.dark-mode .webinar-details h3,
+    body.dark-mode .webinar-speakers-heading,
+    body.dark-mode .webinar-speaker h4 { color: var(--ink); }
+    body.dark-mode .webinar-details > p,
+    body.dark-mode .webinar-speaker p { color: var(--muted); }
+    body.dark-mode .webinar-meta span { border-color: var(--line); color: var(--muted); }
+    body.dark-mode .webinar-speaker { border-color: var(--line); background: var(--surface-soft); }
+    body.dark-mode .webinar-reflection { border-color: #344e70; background: #1a2b43; }
+    body.dark-mode .webinar-reflection h4,
+    body.dark-mode .webinar-moderators strong { color: #dce9fb; }
+    body.dark-mode .webinar-reflection p { color: #c7d6e9; }
+    body.dark-mode .webinar-moderators { border-color: #344e70; }
+    body.dark-mode .webinar-link.secondary { color: #a9c9f8; border-color: #6086bb; }
+
 
     /* Responsive layout */
     @media (max-width: 1050px) {
+      .webinar-feature-grid { grid-template-columns: 1fr; }
+      .webinar-video-panel { padding: 16px; }
+      .webinar-details { padding: 23px 24px; }
+      .webinar-speaker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .webinar-reflection { grid-template-columns: 1fr; }
+      .webinar-moderators { padding: 12px 0 0; border-left: 0; border-top: 1px solid #cfdaea; }
+
       main { padding: 38px 30px 60px; }
       .post-card { grid-template-columns: minmax(240px, .8fr) minmax(0, 1.2fr); }
     }
 
     @media (max-width: 760px) {
+      .webinar-speaker-grid { grid-template-columns: 1fr; }
+      .webinar-speakers-wrap { padding: 20px 18px; }
+      .webinar-reflection { margin: 0 18px 18px; padding: 15px; }
+
       .sidebar {
         position: relative;
         width: 100%;
@@ -605,6 +844,11 @@
     }
 
     @media (max-width: 480px) {
+      .webinar-video-panel { padding: 10px; }
+      .webinar-details { padding: 20px 18px; }
+      .webinar-links { flex-direction: column; align-items: stretch; }
+      .webinar-link { width: 100%; }
+
       main { padding: 25px 15px 42px; }
       .page-intro h1 { font-size: 34px; }
       .page-intro p:last-child { font-size: 14px; }
@@ -836,6 +1080,101 @@
           </a>
         </div>
         <p class="roadmap-hint">Use the arrows or scroll horizontally to explore more posts.</p>
+      </section>
+
+      <!-- Independent webinar feature: separate from the numbered learning series -->
+      <section class="webinar-section" id="iwa-webinar" aria-labelledby="webinar-heading">
+        <div class="section-heading-row">
+          <div>
+            <p class="page-eyebrow">INDEPENDENT FEATURES</p>
+            <h2 id="webinar-heading">Webinars &amp; Event Notes</h2>
+            <p>Ideas and practical lessons from conversations across the water sector.</p>
+          </div>
+        </div>
+
+        <article class="webinar-feature">
+          <div class="webinar-feature-grid">
+            <div class="webinar-video-panel">
+              <div class="webinar-video-frame">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/_wrEeUjhRk4?rel=0"
+                  title="The Application of Artificial Intelligence in Water and Wastewater Treatment — IWA Webinar, 16 April 2026"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen>
+                </iframe>
+              </div>
+              <p class="webinar-video-caption">Watch the full webinar on YouTube. The video is embedded from the original YouTube source.</p>
+            </div>
+
+            <div class="webinar-details">
+              <span class="webinar-kicker">IWA WEBINAR · 16 APRIL 2026</span>
+              <h3>The Application of Artificial Intelligence (AI) in Water and Wastewater Treatment</h3>
+              <div class="webinar-meta">
+                <span>Online event</span>
+                <span>90 minutes</span>
+                <span>English</span>
+              </div>
+              <p>
+                Hosted by the International Water Association (IWA), this webinar brought together
+                academic and industry perspectives on how AI can support modelling, real-time
+                monitoring, and operational decision-making—from treatment processes to urban
+                water infrastructure.
+              </p>
+              <p>
+                I found this session especially relevant to my own work on AI-assisted drinking-water
+                treatment. The talks connected machine learning with the practical realities of water
+                systems: imperfect measurements, complex physical processes, limited data, and the
+                need for decisions that engineers can trust.
+              </p>
+              <div class="webinar-links">
+                <a class="webinar-link" href="https://www.youtube.com/watch?v=_wrEeUjhRk4" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+                <a class="webinar-link secondary" href="https://www.iwa-network.org/learn/the-application-of-artificial-intelligence-ai-in-water-and-wastewater-treatment-1" target="_blank" rel="noopener noreferrer">Official IWA event page ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="webinar-speakers-wrap">
+            <h4 class="webinar-speakers-heading">Who shared their work?</h4>
+            <div class="webinar-speaker-grid">
+              <section class="webinar-speaker" aria-label="Peter Vanrolleghem">
+                <h4>Prof. Peter Vanrolleghem</h4>
+                <span class="speaker-affiliation">Université Laval · Canada</span>
+                <p>Discussed data quality in wastewater treatment, unreliable sensors, and how machine learning can help monitor and understand complex treatment processes.</p>
+              </section>
+
+              <section class="webinar-speaker" aria-label="Nicolas St-Gelais">
+                <h4>Dr. Nicolas St-Gelais</h4>
+                <span class="speaker-affiliation">Cofounder &amp; Scientific Director, CANN Forecast · Canada</span>
+                <p>Presented AI applications for water infrastructure, including moving beyond pipe age to identify risk and support more informed maintenance decisions.</p>
+              </section>
+
+              <section class="webinar-speaker" aria-label="Ruobin Dai">
+                <h4>Prof. Ruobin Dai</h4>
+                <span class="speaker-affiliation">Tongji University · China</span>
+                <p>Explored data- and knowledge-driven machine learning for membrane filtration, showing why physical and chemical knowledge matters when data are limited.</p>
+              </section>
+            </div>
+          </div>
+
+          <div class="webinar-reflection">
+            <div>
+              <h4>What made this webinar meaningful to me</h4>
+              <p>
+                The three talks approached water from different angles, but they shared an important
+                message: successful AI is not just about choosing a powerful algorithm. It also depends
+                on trustworthy data, an understanding of the engineering system, and human judgement.
+                That is closely aligned with the kind of work I have been exploring in drinking-water
+                treatment decision support.
+              </p>
+            </div>
+            <div class="webinar-moderators">
+              <strong>Moderators</strong>
+              <p>Wen Ma · Université de Sherbrooke, Canada<br>Yumeng Zhao · Harbin Institute of Technology, China</p>
+            </div>
+          </div>
+        </article>
       </section>
 
       <footer class="page-footer">

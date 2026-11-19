@@ -1239,26 +1239,30 @@
       });
 
       // 4. Video fallback handling
-      const videoEl = document.getElementById("chatbotVideo");
-      const fallbackEl = document.getElementById("videoFallbackMessage");
+const videoEl = document.getElementById("chatbotVideo");
+const fallbackEl = document.getElementById("videoFallbackMessage");
 
-      function showVideoFallback() {
-        if (fallbackEl) {
-          fallbackEl.classList.add("is-visible");
-        }
-      }
+function showVideoFallback() {
+  if (fallbackEl) {
+    fallbackEl.classList.add("is-visible");
+  }
+}
 
-      if (videoEl) {
-        videoEl.addEventListener("error", showVideoFallback);
-        const sources = videoEl.querySelectorAll("source");
-        sources.forEach((src) => {
-          src.addEventListener("error", showVideoFallback);
-        });
-        if (videoEl.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-          showVideoFallback();
-        }
-      }
-    })();
+function hideVideoFallback() {
+  if (fallbackEl) {
+    fallbackEl.classList.remove("is-visible");
+  }
+}
+
+if (videoEl && fallbackEl) {
+  // Show the message only if the video actually fails
+  videoEl.addEventListener("error", showVideoFallback);
+
+  // Hide the message once the video loads successfully
+  videoEl.addEventListener("loadedmetadata", hideVideoFallback);
+  videoEl.addEventListener("canplay", hideVideoFallback);
+}
+      })();
   </script>
 </body>
 </html>

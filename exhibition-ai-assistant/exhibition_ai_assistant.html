@@ -1,670 +1,735 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exhibition AI Assistant — Technical Portfolio Case Study</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A Persian exhibition assistant built with n8n, RAG, Ollama, and Supabase.">
+  <title>Exhibition AI Assistant | Nasim Eshaghian</title>
   <style>
+
     :root {
-      --bg-canvas: #090d16;
-      --bg-elevated: #101624;
-      --bg-card: #131b2c;
-      --bg-code: #070b12;
-      --border-subtle: #223049;
-      --border-strong: #32476b;
-      --text-primary: #e8eef7;
-      --text-secondary: #9fb0c8;
-      --text-muted: #7688a3;
-      --accent-cyan: #38bdf8;
-      --accent-cyan-soft: rgba(56, 189, 248, 0.12);
-      --accent-cyan-border: rgba(56, 189, 248, 0.35);
-      --status-ok: #34d399;
-      --status-ok-bg: rgba(52, 211, 153, 0.12);
-      --status-ok-border: rgba(52, 211, 153, 0.35);
-      --status-sim: #fbbf24;
-      --status-sim-bg: rgba(251, 191, 36, 0.12);
-      --status-sim-border: rgba(251, 191, 36, 0.35);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --container-max: 1140px;
+      --navy: #101d30;
+      --blue: #185abd;
+      --blue-soft: #eaf0ff;
+      --ink: #1c2b3d;
+      --muted: #596a7e;
+      --line: #dfe6f0;
+      --surface: #ffffff;
+      --page: #f7f9fc;
+      --green: #26745a;
+      --green-soft: #eaf5ef;
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
-      background-color: var(--bg-canvas);
-      color: var(--text-primary);
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
     }
 
-    a {
-      color: var(--accent-cyan);
-      text-decoration: none;
+    a { color: inherit; }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 10;
+      width: 250px;
+      min-height: 100vh;
+      padding: 20px 0 18px;
+      overflow-y: auto;
+      background: var(--navy);
+      color: #ffffff;
+      text-align: center;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .sidebar-photo {
+      display: block;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto 20px;
+      border: 2px solid #718096;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
-    a:focus-visible,
-    button:focus-visible {
-      outline: 2px solid var(--accent-cyan);
-      outline-offset: 2px;
+    .sidebar-name {
+      margin: 0 12px 6px;
+      color: #ffffff;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.4px;
     }
 
-    .container {
-      width: 100%;
-      max-width: var(--container-max);
-      margin: 0 auto;
-      padding: 0 20px;
+    .sidebar-role {
+      margin: 0 12px;
+      color: #dbe4f0;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
-    /* Top Navigation */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background-color: rgba(9, 13, 22, 0.9);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border-subtle);
+    .sidebar-menu {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 28px 16px 0;
+      padding: 20px 0;
     }
 
-    .header-inner {
+    .sidebar-menu::before,
+    .sidebar-menu::after {
+      position: absolute;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: #52647e;
+      content: "";
+    }
+
+    .sidebar-menu::before { top: 0; }
+    .sidebar-menu::after { bottom: 0; }
+
+    .sidebar-menu a {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      min-height: 60px;
-      padding: 8px 0;
-      flex-wrap: wrap;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      color: #f1f5f9;
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a:focus-visible,
+    .sidebar-menu a[aria-current="page"] {
+      background: #1c3b68;
+      color: #ffffff;
+    }
+
+    .sidebar-menu a[aria-current="page"] { font-weight: 600; }
+
+    .sidebar-menu svg {
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 24px;
+      padding: 0 12px 12px;
+    }
+
+    .sidebar-footer a,
+    .sidebar-footer button {
+      display: inline-flex;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .sidebar-footer a:hover,
+    .sidebar-footer button:hover { color: #93c5fd; }
+
+    .sidebar-footer svg { width: 21px; height: 21px; }
+
+    main {
+      min-height: 100vh;
+      margin-left: 250px;
+      padding: 42px 42px 70px;
+    }
+
+    .page-content {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
     }
 
     .back-link {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      padding: 5px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      background-color: var(--bg-elevated);
-    }
-
-    .back-link:hover {
-      border-color: var(--accent-cyan);
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 14px;
       text-decoration: none;
     }
 
-    .section-nav {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-      font-size: 0.82rem;
+    .back-link:hover { color: var(--blue); }
+
+    .back-link svg { width: 17px; height: 17px; }
+
+    .hero {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 8px 28px rgba(24, 45, 75, 0.05);
     }
 
-    .section-nav a {
-      color: var(--text-secondary);
-      white-space: nowrap;
-      padding: 4px 2px;
+    .hero-image {
+      display: block;
+      width: 100%;
+      max-height: 390px;
+      aspect-ratio: 16 / 7;
+      background: #e8f0f5;
+      object-fit: cover;
+      object-position: center;
     }
 
-    .section-nav a:hover {
-      color: var(--accent-cyan);
-      text-decoration: none;
-    }
-
-    /* Sections */
-    main > section {
-      padding: 56px 0;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    main > section:last-child {
-      border-bottom: none;
-    }
-
-    .hero-section {
-      padding-top: 48px;
-      padding-bottom: 52px;
-    }
+    .hero-body { padding: 30px 34px 32px; }
 
     .eyebrow {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
       text-transform: uppercase;
-      color: var(--accent-cyan);
-      background-color: var(--accent-cyan-soft);
-      border: 1px solid var(--accent-cyan-border);
-      padding: 4px 10px;
-      border-radius: 999px;
     }
 
-    h1 {
-      margin: 14px 0 8px;
-      font-size: clamp(1.95rem, 3.8vw, 2.75rem);
+    .hero h1 {
+      max-width: 900px;
+      margin: 0 0 14px;
+      color: #172a40;
+      font-size: clamp(30px, 3.2vw, 42px);
       line-height: 1.18;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.8px;
+    }
+
+    .hero-description {
+      max-width: 900px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      border: 1px solid #cde6d8;
+      border-radius: 30px;
+      background: var(--green-soft);
+      color: #23684f;
+      font-size: 12px;
       font-weight: 700;
     }
 
-    .hero-subtitle {
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #29966a;
+    }
+
+    .meta-text {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section { margin-top: 38px; }
+
+    .section-heading {
       margin: 0 0 14px;
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--accent-cyan);
+      color: #1c3047;
+      font-size: 23px;
+      line-height: 1.3;
     }
 
-    .hero-lead {
-      margin: 0 0 20px;
-      max-width: 780px;
-      font-size: 1.02rem;
-      color: var(--text-secondary);
+    .section-lead {
+      max-width: 920px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
     }
 
-    .tech-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .tech-tag {
-      font-size: 0.8rem;
-      color: var(--text-primary);
-      background-color: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      padding: 5px 10px;
-      border-radius: var(--radius-sm);
-    }
-
-    h2 {
-      margin: 0 0 8px;
-      font-size: clamp(1.4rem, 2.4vw, 1.8rem);
-      line-height: 1.25;
-      letter-spacing: -0.015em;
-    }
-
-    .section-intro {
-      margin: 0 0 24px;
-      max-width: 780px;
-      color: var(--text-secondary);
-      font-size: 0.96rem;
-    }
-
-    h3 {
-      margin: 0 0 8px;
-      font-size: 1.04rem;
-      line-height: 1.35;
-    }
-
-    .card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 20px;
-    }
-
-    .card p:last-child,
-    .card ul:last-child {
-      margin-bottom: 0;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .grid-3 {
+    .overview-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
+      margin-top: 20px;
     }
 
-    @media (max-width: 900px) {
-      .grid-3 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .overview-card,
+    .phase-card,
+    .principle-card {
+      min-width: 0;
+      padding: 21px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
     }
 
-    @media (max-width: 680px) {
-      .grid-2,
-      .grid-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    ul.detail-list {
-      margin: 6px 0 0;
-      padding-left: 18px;
-      color: var(--text-secondary);
-      font-size: 0.93rem;
-    }
-
-    ul.detail-list li {
-      margin-bottom: 6px;
-    }
-
-    ul.detail-list strong {
-      color: var(--text-primary);
-    }
-
-    /* Architecture Diagram Controls & Viewport */
-    .diagram-panel {
-      background-color: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-    }
-
-    .diagram-controls {
-      display: flex;
-      flex-wrap: wrap;
+    .card-icon {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
       margin-bottom: 14px;
+      border-radius: 12px;
+      background: var(--blue-soft);
+      color: var(--blue);
     }
 
-    .view-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .card-icon svg { width: 22px; height: 22px; }
+
+    .overview-card h3,
+    .phase-card h3,
+    .principle-card h3 {
+      margin: 0 0 8px;
+      color: #20364d;
+      font-size: 17px;
+      line-height: 1.4;
     }
 
-    .tab-btn {
-      appearance: none;
-      background-color: var(--bg-card);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 7px 12px;
-      font-size: 0.84rem;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    .tab-btn:hover {
-      color: var(--text-primary);
-      border-color: var(--border-strong);
-    }
-
-    .tab-btn[aria-selected="true"] {
-      color: var(--text-primary);
-      background-color: var(--accent-cyan-soft);
-      border-color: var(--accent-cyan);
-      font-weight: 600;
-    }
-
-    .zoom-toolbar {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .zoom-btn {
-      appearance: none;
-      background-color: var(--bg-card);
-      color: var(--text-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 6px 10px;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-
-    .zoom-btn:hover {
-      border-color: var(--accent-cyan);
-    }
-
-    .zoom-readout {
-      min-width: 46px;
-      text-align: center;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .diagram-scroll {
-      background-color: var(--bg-code);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      overflow-x: auto;
-      overflow-y: auto;
-      max-height: 560px;
-    }
-
-    .diagram-stage {
-      display: inline-block;
-      min-width: 100%;
-      transform-origin: top left;
-      transition: transform 0.15s ease;
-    }
-
-    .diagram-caption {
-      margin-top: 10px;
-      font-size: 0.84rem;
-      color: var(--text-secondary);
-    }
-
-    /* How It Works Steps */
-    .steps-flow {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .stage-item {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-left: 3px solid var(--accent-cyan);
-      border-radius: var(--radius-md);
-      padding: 16px 18px;
-    }
-
-    .stage-header {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .stage-num {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .stage-desc {
+    .overview-card p,
+    .phase-card p,
+    .principle-card p {
       margin: 0;
-      color: var(--text-secondary);
-      font-size: 0.93rem;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
     }
 
-    .stage-nodes {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border-subtle);
-      font-size: 0.84rem;
-      color: var(--text-muted);
+    .phase-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
     }
 
-    .stage-nodes strong {
-      color: var(--text-secondary);
-    }
-
-    /* Video Section */
-    .video-frame {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-    }
-
-    .video-el {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      display: block;
-      border-radius: var(--radius-md);
-      background-color: var(--bg-code);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .video-notice {
-      display: none;
-      margin-top: 12px;
-      padding: 14px 16px;
-      border-radius: var(--radius-md);
-      background-color: var(--status-sim-bg);
-      border: 1px solid var(--status-sim-border);
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-
-    .video-notice.is-visible {
-      display: block;
-    }
-
-    /* Badges */
-    .badge {
+    .phase-label {
       display: inline-block;
-      font-size: 0.74rem;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-    }
-
-    .badge-implemented {
-      color: var(--status-ok);
-      background-color: var(--status-ok-bg);
-      border: 1px solid var(--status-ok-border);
-    }
-
-    .badge-simulated {
-      color: var(--status-sim);
-      background-color: var(--status-sim-bg);
-      border: 1px solid var(--status-sim-border);
-    }
-
-    /* Code */
-    pre {
-      margin: 14px 0 0;
-      padding: 14px 16px;
-      background-color: var(--bg-code);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      overflow-x: auto;
-      font-size: 0.82rem;
-      line-height: 1.55;
-      color: #d6e4f7;
-    }
-
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 0.86em;
-    }
-
-    /* Sandbox & Privacy Callout */
-    .sandbox-callout {
-      background-color: var(--bg-card);
-      border: 1px solid var(--status-sim-border);
-      border-left: 4px solid var(--status-sim);
-      border-radius: var(--radius-md);
-      padding: 20px;
-    }
-
-    /* Modal */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 60;
-      background-color: rgba(5, 8, 15, 0.92);
-      padding: 20px;
-      overflow: auto;
-    }
-
-    .modal-backdrop.is-open {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .modal-bar {
-      width: 100%;
-      max-width: 1200px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
       margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
     }
 
-    .modal-body {
-      width: 100%;
-      max-width: 1200px;
-      background-color: var(--bg-code);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+    .phase-card ul {
+      margin: 13px 0 0;
+      padding-left: 19px;
+      color: var(--muted);
+    }
+
+    .phase-card li {
+      margin-bottom: 7px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .workflow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin-top: 18px;
       padding: 18px;
-      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfcfe;
     }
 
-    .site-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 24px 0;
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .workflow-step {
+      padding: 9px 12px;
+      border: 1px solid #d9e5f7;
+      border-radius: 8px;
+      background: #eef4ff;
+      color: #254b7d;
+      font-size: 12px;
+      font-weight: 600;
     }
+
+    .workflow-arrow { color: #8291a3; font-size: 15px; }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .principle-card { padding: 18px 20px; }
+
+    .note {
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: 1px solid #d7e7df;
+      border-left: 4px solid #388566;
+      border-radius: 10px;
+      background: #f0f7f3;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #245d47;
+      font-size: 14px;
+    }
+
+    .note p {
+      margin: 0;
+      color: #526b60;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .confidentiality {
+      margin-top: 34px;
+      padding: 20px 22px;
+      border: 1px solid #eadfca;
+      border-radius: 13px;
+      background: #fcf8ef;
+    }
+
+    .confidentiality h2 {
+      margin: 0 0 8px;
+      color: #715b32;
+      font-size: 17px;
+    }
+
+    .confidentiality p {
+      margin: 0;
+      color: #74674f;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .tech-stack span {
+      padding: 7px 12px;
+      border: 1px solid #dce5ef;
+      border-radius: 25px;
+      background: #ffffff;
+      color: #38516b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 42px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: #758397;
+      font-size: 12px;
+    }
+
+    .page-footer a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* Dark mode */
+    body.dark-mode {
+      --ink: #e5eaf1;
+      --muted: #b7c4d3;
+      --line: #35445a;
+      --surface: #1b2738;
+      --page: #111827;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    body.dark-mode .hero h1,
+    body.dark-mode .section-heading,
+    body.dark-mode .overview-card h3,
+    body.dark-mode .phase-card h3,
+    body.dark-mode .principle-card h3 {
+      color: #edf3fa;
+    }
+
+    body.dark-mode .hero,
+    body.dark-mode .overview-card,
+    body.dark-mode .phase-card,
+    body.dark-mode .principle-card {
+      background: var(--surface);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .workflow {
+      background: #172337;
+      border-color: var(--line);
+    }
+
+    body.dark-mode .workflow-step,
+    body.dark-mode .tech-stack span {
+      background: #263b59;
+      border-color: #3b5578;
+      color: #dce9fb;
+    }
+
+    body.dark-mode .note {
+      background: #1b332c;
+      border-color: #315f4d;
+    }
+
+    body.dark-mode .note strong { color: #a8ddc2; }
+    body.dark-mode .note p { color: #c2d9ce; }
+
+    body.dark-mode .confidentiality {
+      background: #342d20;
+      border-color: #63543a;
+    }
+
+    body.dark-mode .confidentiality h2 { color: #f0d9a9; }
+    body.dark-mode .confidentiality p { color: #d8c9a9; }
+
+    body.dark-mode .status-pill {
+      background: #1b3b30;
+      border-color: #315e4c;
+      color: #b9e4cf;
+    }
+
+    body.dark-mode .page-footer { border-color: var(--line); }
+
+    @media (max-width: 1100px) {
+      .overview-grid,
+      .phase-list { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 18px 0;
+      }
+
+      .sidebar-photo {
+        width: 112px;
+        height: 112px;
+        margin-top: 0;
+      }
+
+      .sidebar-name { font-size: 22px; }
+      .sidebar-menu { max-width: 420px; margin: 20px auto 0; padding-right: 14px; padding-left: 14px; }
+      .sidebar-footer { margin-top: 16px; }
+
+      main {
+        margin-left: 0;
+        padding: 28px 18px 48px;
+      }
+
+      .hero-body { padding: 23px 21px 25px; }
+      .hero-image { aspect-ratio: 16 / 9; }
+      .hero-description { font-size: 14px; }
+      .principles-grid { grid-template-columns: 1fr; }
+      .section { margin-top: 30px; }
+      .section-heading { font-size: 21px; }
+    }
+  
+
+/* Exhibition case study additions — uses the same light portfolio theme as Aqua. */
+.case-hero-image {
+  display: block;
+  width: 100%;
+  height: 330px;
+  object-fit: contain;
+  object-position: center;
+  background: #f4f6fa;
+  border-bottom: 1px solid var(--line);
+}
+.case-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+.case-tags span { padding:6px 11px; border:1px solid #dce5ef; border-radius:20px; background:#fff; color:#38516b; font-size:12px; font-weight:600; }
+.case-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:18px; }
+.case-card { min-width:0; padding:20px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+.case-card h3 { margin:0 0 8px; color:#20364d; font-size:17px; }
+.case-card p { margin:0; color:var(--muted); font-size:14px; line-height:1.7; }
+.case-section { margin-top:38px; }
+.case-section h2 { margin:0 0 10px; color:#1c3047; font-size:23px; line-height:1.3; }
+.case-intro { max-width:900px; margin:0 0 18px; color:var(--muted); font-size:15px; line-height:1.8; }
+.diagram-panel { padding:18px; border:1px solid var(--line); border-radius:15px; background:#fff; box-shadow:0 5px 20px rgba(24,45,75,.04); }
+.diagram-toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.view-tabs,.zoom-toolbar { display:flex; flex-wrap:wrap; gap:7px; align-items:center; }
+.tab-btn,.zoom-btn { border:1px solid #dce5ef; border-radius:8px; padding:7px 11px; background:#f7f9fc; color:#38516b; font-size:13px; cursor:pointer; }
+.tab-btn[aria-selected="true"] { border-color:#185abd; background:#eaf0ff; color:#185abd; font-weight:700; }
+.zoom-btn:hover,.tab-btn:hover { border-color:#185abd; }
+.zoom-readout { min-width:42px; text-align:center; color:var(--muted); font-size:12px; }
+.diagram-scroll { overflow:auto; max-height:570px; padding:12px; border:1px solid #dfe6f0; border-radius:10px; background:#f7f9fc; }
+.diagram-stage { display:inline-block; min-width:100%; transform-origin:top left; }
+#workflowSvg { display:block; max-width:none; height:auto; }
+.diagram-caption { margin:10px 0 0; color:var(--muted); font-size:13px; }
+.steps-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:18px; }
+.step-card { display:flex; gap:13px; padding:17px; border:1px solid var(--line); border-radius:13px; background:#fff; }
+.step-number { flex:0 0 32px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:var(--blue-soft); color:var(--blue); font-weight:700; font-size:13px; }
+.step-card h3 { margin:0 0 5px; color:#20364d; font-size:16px; }
+.step-card p { margin:0; color:var(--muted); font-size:14px; line-height:1.65; }
+.video-frame { padding:14px; border:1px solid var(--line); border-radius:15px; background:#fff; }
+.video-el { display:block; width:100%; max-height:650px; aspect-ratio:16/9; border-radius:10px; background:#101d30; }
+.video-notice { display:none; margin-top:12px; padding:12px 14px; border:1px solid #ead9ae; border-radius:9px; background:#fcf8ef; color:#715b32; font-size:13px; }
+.video-notice.is-visible { display:block; }
+.notice { margin-top:18px; padding:18px 20px; border:1px solid #ead9ae; border-left:4px solid #c18a2b; border-radius:12px; background:#fcf8ef; }
+.notice h3 { margin:0 0 6px; color:#715b32; font-size:16px; }
+.notice p { margin:0; color:#74674f; font-size:14px; line-height:1.7; }
+.file-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.file-links a { display:inline-flex; align-items:center; gap:7px; padding:9px 13px; border:1px solid #dce5ef; border-radius:9px; background:#fff; color:#185abd; font-size:13px; font-weight:600; text-decoration:none; }
+.file-links a:hover { background:#eaf0ff; }
+.case-footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:42px; padding-top:20px; border-top:1px solid var(--line); color:#758397; font-size:12px; }
+.case-footer a { color:var(--blue); text-decoration:none; }
+.case-footer a:hover { text-decoration:underline; }
+#diagramModal { display:none; position:fixed; inset:0; z-index:70; padding:24px; overflow:auto; background:rgba(16,29,48,.92); }
+#diagramModal.is-open { display:block; }
+#modalInner { max-width:1250px; margin:auto; padding:14px; border-radius:12px; background:#fff; }
+#modalClose { display:block; margin:0 0 12px auto; border:1px solid #dce5ef; border-radius:8px; padding:7px 12px; background:#f7f9fc; color:#20364d; cursor:pointer; }
+#modalInner svg { width:100%; height:auto; }
+@media (max-width: 1100px) { .case-grid { grid-template-columns:1fr; } }
+@media (max-width: 760px) {
+  .case-hero-image { height:230px; }
+  .steps-list { grid-template-columns:1fr; }
+  .diagram-toolbar { align-items:flex-start; }
+  .diagram-scroll { max-height:460px; }
+  #diagramModal { padding:10px; }
+}
+
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="back-link" href="../projects.html">&larr; Back to Portfolio</a>
-      <nav class="section-nav" aria-label="Case study navigation">
-        <a href="#overview">Overview</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#chatbot-in-action">Chatbot in Action</a>
-        <a href="#features">Features</a>
-        <a href="#tech-stack">Tech Stack</a>
-        <a href="#implementation">Implementation</a>
-        <a href="#sandbox-privacy">Sandbox &amp; Privacy</a>
-        <a href="#outcomes">Outcomes</a>
-      </nav>
+<aside class="sidebar">
+    <img class="sidebar-photo" src="../personal image.png" alt="Nasim Eshaghian">
+    <h2 class="sidebar-name">Nasim Eshaghian</h2>
+    <p class="sidebar-role">AI / ML Engineer</p>
+
+    <nav class="sidebar-menu" aria-label="Main navigation">
+      <a href="../index.html#home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10 12 3l9 7"/><path d="M5 9v12h5v-7h4v7h5V9"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="../about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7h.01"/>
+        </svg>
+        <span>About</span>
+      </a>
+      <a href="../projects.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12a22 22 0 0 0 18 0M12 12v3"/>
+        </svg>
+        <span>Projects</span>
+      </a>
+      <a href="../resume.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 12h8M8 16h8"/>
+        </svg>
+        <span>Resume</span>
+      </a>
+      <a href="../blog.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h10M7 15h6M7 18h4"/>
+        </svg>
+        <span>Blog</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="https://github.com/NasimEshaghian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/nasim-eshaghian-b10ba165/" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.75H4.98V9.2h2.95ZM6.45 7.9a1.71 1.71 0 1 1 0-3.42 1.71 1.71 0 0 1 0 3.42Zm12.3 10.85H15.8V14.1c0-1.11-.02-2.54-1.55-2.54-1.55 0-1.79 1.21-1.79 2.46v4.73H9.51V9.2h2.83v1.3h.04c.39-.74 1.36-1.52 2.79-1.52 2.99 0 3.58 1.97 3.58 4.53Z"/></svg>
+      </a>
+      <a href="mailto:nasimeshaghian@gmail.com" aria-label="Email" title="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg>
+      </button>
     </div>
-  </header>
+  </aside>
 
-  <main>
-    <!-- 1. HERO -->
-    <section id="hero" class="hero-section">
-      <div class="container">
-        <span class="eyebrow">AI/ML Engineering Case Study &bull; n8n &amp; RAG</span>
+<main id="exhibition-project">
+  <div class="page-content">
+    <a class="back-link" href="../projects.html">&larr; Back to Projects</a>
+
+    <header class="hero">
+      <img class="case-hero-image" src="assets/chatbot_demo_poster.jpg" alt="Exhibition AI Assistant chat demo">
+      <div class="hero-body">
+        <p class="eyebrow">AI Application / Workflow Automation</p>
         <h1>Exhibition AI Assistant</h1>
-        <p class="hero-subtitle">An Intelligent RAG-Powered Exhibition Concierge</p>
-        <p class="hero-lead">
-          An AI-powered conversational assistant designed to help exhibition visitors discover relevant booths, explore events, navigate exhibition halls, and create personalized visiting plans.
-        </p>
-
-        <div class="tech-tags" aria-label="Technology tags">
-          <span class="tech-tag">n8n</span>
-          <span class="tech-tag">Ollama</span>
-          <span class="tech-tag">Qwen (qwen3:4b-instruct)</span>
-          <span class="tech-tag">Nomic Embeddings</span>
-          <span class="tech-tag">Supabase</span>
-          <span class="tech-tag">Vector Search</span>
-          <span class="tech-tag">Google Drive</span>
-          <span class="tech-tag">LangChain Nodes</span>
-          <span class="tech-tag">Webhooks</span>
-          <span class="tech-tag">HTML / CSS / JS</span>
+        <p class="hero-description">A Persian chatbot that helps exhibition visitors find companies, check events, and get answers about the exhibition.</p>
+        <div class="status-row">
+          <span class="status-pill"><span class="status-dot"></span> Portfolio Case Study</span>
+          <span class="meta-text">My work: AI workflow design and chatbot development</span>
         </div>
-
-        <div class="card">
-          <h3>Case Study Scope</h3>
-          <p style="color: var(--text-secondary);">
-            Built from <code>exhibition_ai_assistant_portfolio.json</code>, <code>exhibition_demo_booking.json</code>, and <code>exhibition_workflow_architecture.mmd</code>, this page documents how JSON exhibition records are ingested into a Supabase vector store (<code>mcp_rag</code>) and served through an anonymous session-based Persian chat workflow with an isolated sandbox booking sub-workflow.
-          </p>
+        <div class="case-tags" aria-label="Technology stack">
+          <span>n8n</span><span>RAG</span><span>Ollama</span><span>Qwen</span><span>Supabase</span><span>Google Drive</span>
         </div>
+      </div>
+    </header>
+
+    <section class="case-section" id="overview">
+      <h2>About the Project</h2>
+      <p class="case-intro">Exhibition information can be spread across many files. This assistant brings that information together, so visitors can ask questions in Persian instead of searching through files and schedules.</p>
+      <div class="case-grid">
+        <article class="case-card"><h3>Find Companies</h3><p>Visitors can search for companies and find their booth and hall details.</p></article>
+        <article class="case-card"><h3>Check Events</h3><p>Visitors can ask about talks, sessions, dates, and times.</p></article>
+        <article class="case-card"><h3>Ask in Persian</h3><p>The chatbot answers in Persian using the exhibition information provided to it.</p></article>
       </div>
     </section>
 
-    <!-- 2. PROJECT OVERVIEW -->
-    <section id="overview">
-      <div class="container">
-        <h2>Project Overview</h2>
-        <p class="section-intro">
-          Exhibition visitors need fast, structured answers about exhibitors, hall navigation, and schedules without sifting through disconnected JSON files or registering personal accounts.
-        </p>
-
-        <div class="grid-2">
-          <div class="card">
-            <h3>Problem</h3>
-            <p style="color: var(--text-secondary);">
-              Exhibition information spans multiple datasets—booth locations, hall access paths and maps, general logistics, and event schedules—making manual lookup slow and prone to mixed or ungrounded answers when handled by an unguided model.
-            </p>
+    <section class="case-section" id="architecture">
+      <h2>Workflow</h2>
+      <p class="case-intro">The workflow has two main parts: preparing exhibition information and answering visitor questions. The booking part is only a demo.</p>
+      <div class="diagram-panel">
+        <div class="diagram-toolbar">
+          <div class="view-tabs" role="tablist" aria-label="Workflow views">
+            <button type="button" class="tab-btn" role="tab" aria-selected="true" data-view="complete">Full Workflow</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-view="ingestion">Data Preparation</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-view="chat">Chatbot</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-view="booking">Demo Booking</button>
           </div>
-          <div class="card">
-            <h3>Objectives</h3>
-            <ul class="detail-list">
-              <li>Separate knowledge ingestion from live visitor chat traffic.</li>
-              <li>Ground Persian responses in retrieved vector records with metadata tagging.</li>
-              <li>Enforce single-category responses, accurate booth/hall filtering, and separate hall maps.</li>
-              <li>Support anonymous session memory and isolate event booking in a sandbox sub-workflow.</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Target Users</h3>
-            <ul class="detail-list">
-              <li><strong>Exhibition Visitors:</strong> Finding booths by interest, looking up exact booth numbers and halls, checking access paths and hall maps, and browsing events.</li>
-              <li><strong>Technical Reviewers:</strong> Auditing workflow orchestration, RAG retrieval, anonymous session handling, and sandbox isolation.</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Key Capabilities</h3>
-            <ul class="detail-list">
-              <li>Automated JSON ingestion from Google Drive into Supabase (<code>mcp_rag</code>).</li>
-              <li>Anonymous session-keyed buffer memory via <code>POST /exhibition-chat</code>.</li>
-              <li>Persian AI Agent orchestration using <code>qwen3:4b-instruct</code> and <code>nomic-embed-text:latest</code>.</li>
-              <li>Standalone sandbox booking sub-workflow (<code>exhibition_demo_booking.json</code>) writing to <code>demo_bookings</code>.</li>
-            </ul>
+          <div class="zoom-toolbar">
+            <button type="button" class="zoom-btn" id="zoomOutBtn" aria-label="Zoom out">−</button>
+            <span class="zoom-readout" id="zoomReadout">100%</span>
+            <button type="button" class="zoom-btn" id="zoomInBtn" aria-label="Zoom in">+</button>
+            <button type="button" class="zoom-btn" id="zoomResetBtn">Reset</button>
+            <button type="button" class="zoom-btn" id="fullViewBtn">Full view</button>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- 3. WORKFLOW ARCHITECTURE -->
-    <section id="architecture">
-      <div class="container">
-        <h2>Workflow Architecture</h2>
-        <p class="section-intro">
-          Interactive SVG representation derived from <code>exhibition_workflow_architecture.mmd</code> and the validated workflow JSON files. Switch views to inspect each subsystem.
-        </p>
-
-        <div class="diagram-panel">
-          <div class="diagram-controls">
-            <div class="view-tabs" role="tablist" aria-label="Architecture diagram views">
-              <button type="button" class="tab-btn" role="tab" aria-selected="true" data-view="complete">Complete Workflow</button>
-              <button type="button" class="tab-btn" role="tab" aria-selected="false" data-view="ingestion">Knowledge Ingestion</button>
-              <button type="button" class="tab-btn" role="tab" aria-selected="false" data-view="chat">Main Chat Workflow</button>
-              <button type="button" class="tab-btn" role="tab" aria-selected="false" data-view="booking">Booking Sub-workflow</button>
-            </div>
-
-            <div class="zoom-toolbar">
-              <button type="button" class="zoom-btn" id="zoomOutBtn" aria-label="Zoom out">-</button>
-              <span class="zoom-readout" id="zoomReadout">100%</span>
-              <button type="button" class="zoom-btn" id="zoomInBtn" aria-label="Zoom in">+</button>
-              <button type="button" class="zoom-btn" id="zoomResetBtn">Reset</button>
-              <button type="button" class="zoom-btn" id="fullViewBtn">Full View</button>
-            </div>
-          </div>
-
-          <div class="diagram-scroll" id="diagramScroll">
-            <div class="diagram-stage" id="diagramStage">
-              <!-- Crisp SVG architecture matching exhibition_workflow_architecture.mmd & workflow JSONs -->
-              <svg id="workflowSvg" viewBox="0 0 1120 620" width="1120" height="620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exhibition AI Assistant Workflow Diagram">
+        <div class="diagram-scroll" id="diagramScroll">
+          <div class="diagram-stage" id="diagramStage"><svg id="workflowSvg" viewBox="0 0 1120 620" width="1120" height="620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exhibition AI Assistant Workflow Diagram">
                 <defs>
                   <marker id="arr-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                     <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#38bdf8" />
@@ -827,442 +892,173 @@
                   <line x1="850" y1="502" x2="850" y2="524" stroke="#34d399" stroke-width="1.4" marker-end="url(#arr-green)" />
                   <line x1="1012" y1="442" x2="1012" y2="524" stroke="#9fb0c8" stroke-width="1.3" marker-end="url(#arr-cyan)" />
                 </g>
-              </svg>
-            </div>
-          </div>
-
-          <p class="diagram-caption" id="diagramCaption">
-            Showing: Complete Workflow — Knowledge ingestion into <code>mcp_rag</code>, anonymous chat pipeline via <code>POST /exhibition-chat</code>, and sandbox booking sub-workflow (<code>demo_bookings</code>).
-          </p>
+              </svg></div>
         </div>
+        <p class="diagram-caption" id="diagramCaption">Full workflow: exhibition data is saved for search, then used by the chatbot to answer visitors.</p>
+      </div>
+      <div class="file-links">
+        <a href="workflows/exhibition_ai_assistant_portfolio.json" download>Download main workflow</a>
+        <a href="workflows/exhibition_demo_booking.json" download>Download demo booking workflow</a>
+        <a href="docs/exhibition_workflow_architecture.mmd" download>Download diagram source</a>
       </div>
     </section>
 
-    <!-- 4. HOW IT WORKS -->
-    <section id="how-it-works">
-      <div class="container">
-        <h2>How It Works</h2>
-        <p class="section-intro">
-          Stage-by-stage breakdown of the portfolio workflow architecture and its corresponding n8n nodes.
-        </p>
-
-        <div class="steps-flow">
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">01</span><h3>Google Drive JSON Sources</h3></div>
-            <p class="stage-desc">Scheduled triggers monitor designated Google Drive files for booth directories, general exhibition logistics, and event schedules so knowledge updates occur independently of visitor chat traffic.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Booths Drive Trigger</code>, <code>General Info Drive Trigger</code>, <code>Events Drive Trigger</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">02</span><h3>Download and Extraction</h3></div>
-            <p class="stage-desc">Each triggered branch downloads the source file from Google Drive and parses its JSON content into structured n8n items for downstream processing.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Download Booths JSON</code>, <code>Extract Booths JSON</code>, <code>Download General Info JSON</code>, <code>Extract General Info JSON</code>, <code>Download Events JSON</code>, <code>Extract Events JSON</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">03</span><h3>Data Normalization and Metadata Tagging</h3></div>
-            <p class="stage-desc">Code nodes clean missing or inconsistent fields, build readable Persian text payloads, and attach category tags (<code>booth_info</code>, <code>general_info</code>, <code>events</code>) plus structured attributes such as hall, booth number, access path, map URL, and event schedule fields.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Normalize Booths &amp; Metadata</code>, <code>Normalize General Info &amp; Metadata</code>, <code>Normalize Events &amp; Metadata</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">04</span><h3>Default Data Loader</h3></div>
-            <p class="stage-desc">Prepares normalized document content and maps 16 metadata fields into LangChain document objects for vector store insertion.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Default Data Loader</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">05</span><h3>Nomic Embeddings through Ollama</h3></div>
-            <p class="stage-desc">Generates dense vector representations via Ollama using <code>nomic-embed-text:latest</code> for both document ingestion and runtime similarity queries.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Nomic Embeddings (Ollama)</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">06</span><h3>Supabase Vector Storage (mcp_rag)</h3></div>
-            <p class="stage-desc">Inserts embedded documents and metadata into the <code>mcp_rag</code> table in Supabase configured with the <code>match_documents</code> retrieval function.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Supabase Vector Store (Ingest)</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">07</span><h3>Visitor Chat Webhook (POST /exhibition-chat)</h3></div>
-            <p class="stage-desc">Receives incoming HTTP POST requests from the chat interface containing a visitor message and optional session identifier.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Visitor Chat Webhook</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">08</span><h3>Anonymous Session Normalization and Validation</h3></div>
-            <p class="stage-desc">Normalizes or generates an anonymous <code>sessionId</code> without requiring phone numbers or user accounts, trims message text, and blocks empty messages with a <code>400</code> JSON response.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Normalize Anonymous Session</code>, <code>Validate Chat Input</code>, <code>Respond Validation Error</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">09</span><h3>Session-Based Memory</h3></div>
-            <p class="stage-desc">Maintains recent conversational context per anonymous <code>sessionId</code> so follow-up questions about booth paths, maps, or event selection stay coherent across turns.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Anonymous Session Memory</code> (<code>@n8n/n8n-nodes-langchain.memoryBufferWindow</code>)</div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">10</span><h3>Qwen Chat Model</h3></div>
-            <p class="stage-desc">Provides language generation through Ollama using <code>qwen3:4b-instruct</code> configured for deterministic/low-variance Persian responses.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Qwen Chat Model (Ollama)</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">11</span><h3>Exhibition AI Agent</h3></div>
-            <p class="stage-desc">Coordinates retrieval, session memory, and sandbox booking tools while enforcing Persian replies, grounding in retrieved knowledge, single-category-per-message formatting, exact booth/hall filtering, and separate hall-map display.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Exhibition AI Agent</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">12</span><h3>Knowledge Retrieval Tool</h3></div>
-            <p class="stage-desc">Exposes <code>mcp_rag</code> as a vector retrieval tool to the agent (<code>topK: 10</code>) backed by <code>Nomic Embeddings (Ollama)</code>.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Knowledge Base Retrieval Tool</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">13</span><h3>JSON Response and Error Handling</h3></div>
-            <p class="stage-desc">Returns structured JSON (<code>{ ok, mode, sessionId, reply }</code>) on success or routes agent errors to a fallback JSON response (HTTP <code>500</code>) instead of leaving the webhook hanging.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Respond Chat Success</code>, <code>Respond Agent Error</code></div>
-          </div>
-
-          <div class="stage-item">
-            <div class="stage-header"><span class="stage-num">14</span><h3>Sandbox-Only Booking Sub-Workflow</h3></div>
-            <p class="stage-desc">Invoked by the agent's booking tool when a visitor supplies required booking fields for a demo reservation; validates inputs, enforces <code>booking_mode = "sandbox"</code>, generates a <code>DEMO-...</code> ID, and stores simulated records in <code>demo_bookings</code>.</p>
-            <div class="stage-nodes"><strong>n8n Nodes:</strong> <code>Sandbox Demo Booking Tool</code> (main workflow) &rarr; <code>Sub-Workflow Trigger</code>, <code>Validate &amp; Build Sandbox Record</code>, <code>Check Required Fields</code>, <code>Save Sandbox Demo Booking</code>, <code>Format Sandbox Confirmation</code>, <code>Format Validation Error</code> (<code>exhibition_demo_booking.json</code>)</div>
-          </div>
-        </div>
+    <section class="case-section" id="how-it-works">
+      <h2>How It Works</h2>
+      <p class="case-intro">Here is the process in five simple steps.</p>
+      <div class="steps-list">
+        <article class="step-card"><span class="step-number">1</span><div><h3>Read the Data</h3><p>n8n reads the exhibition files from Google Drive. The files contain company, hall, and event information.</p></div></article>
+        <article class="step-card"><span class="step-number">2</span><div><h3>Prepare the Data</h3><p>n8n cleans the information and adds labels so it can be found more easily.</p></div></article>
+        <article class="step-card"><span class="step-number">3</span><div><h3>Save for Search</h3><p>Ollama creates text embeddings, and Supabase stores them for later search.</p></div></article>
+        <article class="step-card"><span class="step-number">4</span><div><h3>Receive a Question</h3><p>The chatbot sends the visitor's message to n8n. A session ID helps keep the recent chat history together.</p></div></article>
+        <article class="step-card"><span class="step-number">5</span><div><h3>Give an Answer</h3><p>Qwen uses the related exhibition information to create a Persian answer.</p></div></article>
+        <article class="step-card"><span class="step-number">6</span><div><h3>Test a Booking</h3><p>A separate workflow can save a sample booking. It does not make a real reservation.</p></div></article>
       </div>
     </section>
 
-    <!-- 5. CHATBOT IN ACTION -->
-    <section id="chatbot-in-action">
-      <div class="container">
-        <h2>Chatbot in Action</h2>
-        <p class="section-intro">
-          Screen recording of the Exhibition AI Assistant chat interface demonstrating Persian responses and workflow interaction.
-        </p>
-
-        <div class="video-frame">
-          <video
-            id="chatbotVideo"
-            class="video-el"
-            controls
-            preload="metadata"
-            poster="assets/chatbot_demo_poster.jpg"
-          >
-            <source src="assets/chatbot_demo.MP4" type="video/mp4" />
-            Your browser does not support embedded HTML5 video.
-          </video>
-
-          <div id="videoFallbackMessage" class="video-notice" role="status">
-            <strong>Demonstration video not found at expected path:</strong> Place your recording at <code>assets/chatbot_demo.mp4</code> (and an optional poster image at <code>assets/chatbot_demo_poster.jpg</code>) relative to <code>exhibition_ai_assistant.html</code>.
-          </div>
-        </div>
+    <section class="case-section" id="chatbot-in-action">
+      <h2>Chatbot in Action</h2>
+      <p class="case-intro">This short video shows the chatbot answering exhibition questions in Persian.</p>
+      <div class="video-frame">
+        <video id="chatbotVideo" class="video-el" controls preload="metadata" poster="assets/chatbot_demo_poster.jpg">
+          <source src="assets/chatbot_demo.mp4" type="video/mp4">
+          Your browser does not support video playback.
+        </video>
+        <div id="videoFallbackMessage" class="video-notice" role="status">The video could not be loaded. Please check that <code>assets/chatbot_demo.mp4</code> is uploaded next to this page's assets folder.</div>
       </div>
     </section>
 
-    <!-- 6. CORE FEATURES -->
-    <section id="features">
-      <div class="container">
-        <h2>Core Features</h2>
-        <p class="section-intro">
-          Implemented capabilities in the workflow files are explicitly separated from sandbox/simulated features.
-        </p>
-
-        <div class="grid-3">
-          <div class="card">
-            <span class="badge badge-implemented">Implemented</span>
-            <h3>Persian Conversational AI</h3>
-            <p style="color: var(--text-secondary);">
-              Configured to respond in Persian and apply single-category-per-message structure across general info, booths, paths/maps, and events.
-            </p>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-implemented">Implemented</span>
-            <h3>RAG &amp; Knowledge Retrieval</h3>
-            <p style="color: var(--text-secondary);">
-              Retrieves exhibition documents from Supabase (<code>mcp_rag</code>) using <code>nomic-embed-text:latest</code> embeddings and <code>qwen3:4b-instruct</code>.
-            </p>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-implemented">Implemented</span>
-            <h3>Booth, Hall, Map &amp; Event Guidance</h3>
-            <p style="color: var(--text-secondary);">
-              Supports interest-based booth discovery, exact booth/hall lookup, access paths, separate Markdown hall maps, and event listings.
-            </p>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-implemented">Implemented</span>
-            <h3>Anonymous Session Memory</h3>
-            <p style="color: var(--text-secondary);">
-              Uses a normalized or generated anonymous <code>sessionId</code> with buffer window memory without requiring phone numbers or login.
-            </p>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-simulated">Sandbox / Simulated</span>
-            <h3>Demo Event Booking</h3>
-            <p style="color: var(--text-secondary);">
-              Executes <code>exhibition_demo_booking.json</code> to validate required fields, enforce <code>booking_mode = "sandbox"</code>, generate a <code>DEMO-...</code> ID, and record simulated rows in <code>demo_bookings</code>.
-            </p>
-          </div>
-
-          <div class="card">
-            <span class="badge badge-simulated">Sandbox / Simulated</span>
-            <h3>Placeholder External Config</h3>
-            <p style="color: var(--text-secondary);">
-              Credential IDs, Drive file IDs, webhook IDs, and hall map URLs are replaced with placeholders for local/portfolio setup.
-            </p>
-          </div>
-        </div>
+    <section class="case-section" id="features">
+      <h2>Main Features</h2>
+      <div class="case-grid">
+        <article class="case-card"><h3>Persian Chat</h3><p>Visitors can ask questions in Persian and receive Persian answers.</p></article>
+        <article class="case-card"><h3>Exhibition Search</h3><p>The assistant can look up company, hall, and event information from its knowledge base.</p></article>
+        <article class="case-card"><h3>Chat Memory</h3><p>A visitor can ask follow-up questions in the same anonymous session.</p></article>
       </div>
     </section>
 
-    <!-- 7. TECHNOLOGY STACK -->
-    <section id="tech-stack">
-      <div class="container">
-        <h2>Technology Stack</h2>
-        <p class="section-intro">
-          Role of each technology present in the validated portfolio workflow and case study page.
-        </p>
-
-        <div class="grid-2">
-          <div class="card">
-            <ul class="detail-list">
-              <li><strong>n8n:</strong> Orchestrates scheduled ingestion triggers, webhook endpoints, JavaScript transformation nodes, error routing, and sub-workflow calls.</li>
-              <li><strong>Ollama:</strong> Hosts local/self-hosted model inference for both chat generation and text embeddings.</li>
-              <li><strong>Qwen (<code>qwen3:4b-instruct</code>):</strong> Powers the chat language model connected to the Exhibition AI Agent.</li>
-              <li><strong>Nomic Embeddings (<code>nomic-embed-text:latest</code>):</strong> Generates vector embeddings during ingestion and retrieval.</li>
-              <li><strong>Supabase &amp; Vector Search:</strong> Stores vector documents in <code>mcp_rag</code> (via <code>match_documents</code>) and sandbox booking records in <code>demo_bookings</code>.</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <ul class="detail-list">
-              <li><strong>Google Drive:</strong> Source repository for exhibition JSON files (booths, general info, and events).</li>
-              <li><strong>LangChain Components (in n8n):</strong> Provide the AI Agent, Buffer Window Memory, Default Data Loader, and Supabase Vector Store tool nodes.</li>
-              <li><strong>Webhooks:</strong> Expose <code>POST /exhibition-chat</code> to accept visitor messages and return JSON responses.</li>
-              <li><strong>HTML / CSS / JavaScript:</strong> Implements this standalone case study page, interactive architecture viewer, and local video player.</li>
-            </ul>
-          </div>
-        </div>
+    <section class="case-section" id="tech-stack">
+      <h2>Tools I Used</h2>
+      <p class="case-intro">These are the main tools used in the workflow.</p>
+      <div class="tech-stack">
+        <span>n8n — connects the steps</span>
+        <span>Ollama — runs the AI models</span>
+        <span>Qwen — writes the answers</span>
+        <span>Nomic — creates embeddings</span>
+        <span>Supabase — stores searchable data</span>
+        <span>Google Drive — stores source files</span>
       </div>
     </section>
 
-    <!-- 8. TECHNICAL IMPLEMENTATION -->
-    <section id="implementation">
-      <div class="container">
-        <h2>Technical Implementation</h2>
-        <p class="section-intro">
-          Core data contracts and orchestration mechanisms across the ingestion, retrieval, session, webhook, and sub-workflow layers.
-        </p>
-
-        <div class="grid-2">
-          <div class="card">
-            <h3>RAG, Metadata &amp; Vector Retrieval</h3>
-            <p style="color: var(--text-secondary);">
-              Ingestion nodes normalize booth, general info, and event JSON records into <code>content</code> strings and <code>metadata</code> objects tagged with <code>type</code> (<code>booth_info</code>, <code>general_info</code>, <code>events</code>) plus filterable attributes (<code>hall</code>, <code>booth_number</code>, <code>access_path</code>, <code>map_url</code>, <code>event_id</code>, <code>start_date</code>, <code>start_time</code>, <code>end_time</code>). At query time, <code>Knowledge Base Retrieval Tool</code> queries <code>mcp_rag</code> with <code>topK: 10</code> using embeddings from <code>Nomic Embeddings (Ollama)</code>.
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>Session Memory, Webhooks &amp; AI Agent</h3>
-            <p style="color: var(--text-secondary);">
-              <code>Normalize Anonymous Session</code> extracts or creates an anonymous <code>sessionId</code>, <code>Validate Chat Input</code> rejects empty inputs with HTTP <code>400</code>, and <code>Anonymous Session Memory</code> scopes conversation history by that <code>sessionId</code>. <code>Exhibition AI Agent</code> orchestrates <code>Qwen Chat Model (Ollama)</code> and its tools, returning structured JSON via <code>Respond Chat Success</code> or <code>Respond Agent Error</code>.
-            </p>
-          </div>
-        </div>
-
-        <pre><code>// Sandbox booking payload &amp; output fields (exhibition_demo_booking.json)
-{
-  "full_name": "Visitor Full Name",
-  "event_name": "Workshop or Session Title",
-  "event_date": "2025-10-23",
-  "start_time": "10:00",
-  "end_time": "11:30",
-  "event_location": "Hall / Room",
-  "booking_mode": "sandbox",
-  "booking_status": "simulated_confirmed",
-  "booking_id": "DEMO-1730000000000-XXXXXX"
-}</code></pre>
+    <section class="case-section" id="implementation">
+      <h2>What I Built</h2>
+      <div class="case-grid">
+        <article class="case-card"><h3>Data Flow</h3><p>I connected the exhibition files to a search system, so the assistant can find useful information.</p></article>
+        <article class="case-card"><h3>Chat Flow</h3><p>I connected the chat interface to n8n, the AI model, and the stored information.</p></article>
+        <article class="case-card"><h3>Separate Demo Booking</h3><p>I kept the sample booking process separate from any real booking service.</p></article>
       </div>
     </section>
 
-    <!-- 9. SANDBOX & PRIVACY NOTICE -->
-    <section id="sandbox-privacy">
-      <div class="container">
-        <h2>Sandbox &amp; Privacy Notice</h2>
-        <div class="sandbox-callout">
-          <p style="margin: 0 0 10px; font-weight: 600;">
-            This portfolio demonstration uses an independent sandbox environment. Booking operations are simulated and do not create real exhibition reservations. Company-specific production systems, credentials, and private data are not included.
-          </p>
-          <ul class="detail-list">
-            <li><strong>Anonymous Sessions:</strong> Visitors use session-keyed chat without phone number registration or personal authentication.</li>
-            <li><strong>Simulated Booking Only:</strong> Event reservations enforce <code>booking_mode = "sandbox"</code>, assign a <code>DEMO-...</code> identifier, and write solely to the <code>demo_bookings</code> table.</li>
-            <li><strong>No Live Availability Claimed:</strong> This static case study page does not imply a live, publicly hosted chatbot endpoint unless configured and running on your own n8n and Ollama instance.</li>
-          </ul>
-        </div>
+    <section class="case-section" id="sandbox-privacy">
+      <div class="notice">
+        <h3>Demo Notice</h3>
+        <p>This is a portfolio demo. It does not make real exhibition bookings. The booking example only saves a sample record in a separate test table. The chat does not ask visitors to register with a phone number.</p>
       </div>
     </section>
 
-    <!-- 10. OUTCOMES & ENGINEERING LEARNINGS -->
-    <section id="outcomes">
-      <div class="container">
-        <h2>Outcomes &amp; Engineering Learnings</h2>
-        <div class="card">
-          <ul class="detail-list">
-            <li><strong>Eliminated Workflow Duplication:</strong> Consolidated redundant agents, duplicate ingestion chains, and conflicting webhook definitions into a single maintainable workflow graph.</li>
-            <li><strong>Enforced Clean Data &amp; Sandbox Boundaries:</strong> Removed hardcoded visitor identifiers and isolated demo booking logic into a dedicated sub-workflow with explicit field validation and error fallbacks.</li>
-            <li><strong>Portable Portfolio Packaging:</strong> Structured workflow JSONs with clear configuration placeholders and documented external dependencies (n8n credentials, Supabase tables/RPC, and Ollama models) for reproducible setup.</li>
-          </ul>
-        </div>
-      </div>
+    <section class="case-section" id="outcomes">
+      <h2>Project Summary</h2>
+      <p class="case-intro">This project shows how exhibition information can be connected to a Persian chatbot. It combines data preparation, AI search, and chat in one workflow.</p>
     </section>
-  </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      Exhibition AI Assistant Case Study &bull; <a href="../projects.html">Back to Portfolio</a>
-    </div>
-  </footer>
-
-  <!-- Full-size diagram modal -->
-  <div class="modal-backdrop" id="diagramModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-bar">
-      <strong id="modalTitle" style="color: var(--text-primary); font-size: 0.95rem;">Workflow Architecture — Full View</strong>
-      <button type="button" class="zoom-btn" id="closeModalBtn">Close</button>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
+    <footer class="case-footer">
+      <span>Exhibition AI Assistant · AI / ML Portfolio</span>
+      <a href="../projects.html">Back to Projects</a>
+    </footer>
   </div>
+</main>
 
-  <script>
-    (function () {
-      // 1. Architecture view tabs
-      const viewMeta = {
-        complete: {
-          caption: "Showing: Complete Workflow — Knowledge ingestion into mcp_rag, anonymous chat pipeline via POST /exhibition-chat, and sandbox booking sub-workflow (demo_bookings).",
-          layers: { ingestion: "1", chat: "1", booking: "1" }
-        },
-        ingestion: {
-          caption: "Showing: Knowledge Ingestion — Google Drive JSON sources normalized with metadata, embedded via Nomic Embeddings (Ollama), and inserted into Supabase (mcp_rag).",
-          layers: { ingestion: "1", chat: "0.2", booking: "0.2" }
-        },
-        chat: {
-          caption: "Showing: Main Chat Workflow — Visitor Chat Webhook (POST /exhibition-chat), anonymous session handling, buffer memory, RAG retrieval tool, Qwen chat model, and JSON responses.",
-          layers: { ingestion: "0.2", chat: "1", booking: "0.2" }
-        },
-        booking: {
-          caption: "Showing: Booking Sub-workflow (exhibition_demo_booking.json) — Validates required fields, enforces booking_mode = \"sandbox\", generates a DEMO-... ID, and saves to demo_bookings.",
-          layers: { ingestion: "0.2", chat: "0.2", booking: "1" }
-        }
-      };
+<div id="diagramModal" role="dialog" aria-modal="true" aria-label="Workflow diagram full view">
+  <div id="modalInner"><button id="modalClose" type="button">Close</button><div id="modalDiagram"></div></div>
+</div>
 
-      const layerEls = {
-        ingestion: document.getElementById("layer-ingestion"),
-        chat: document.getElementById("layer-chat"),
-        booking: document.getElementById("layer-booking")
-      };
-
-      const captionEl = document.getElementById("diagramCaption");
-      const tabButtons = document.querySelectorAll(".tab-btn[data-view]");
-
-      tabButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const viewKey = btn.getAttribute("data-view");
-          const cfg = viewMeta[viewKey];
-          if (!cfg) return;
-
-          tabButtons.forEach((b) => b.setAttribute("aria-selected", b === btn ? "true" : "false"));
-          Object.keys(layerEls).forEach((k) => {
-            if (layerEls[k]) {
-              layerEls[k].style.opacity = cfg.layers[k];
-            }
-          });
-          if (captionEl) {
-            captionEl.textContent = cfg.caption;
-          }
-        });
-      });
-
-      // 2. Zoom controls
-      let zoomScale = 1;
-      const stageEl = document.getElementById("diagramStage");
-      const zoomReadout = document.getElementById("zoomReadout");
-
-      function updateZoom(nextScale) {
-        zoomScale = Math.min(1.75, Math.max(0.7, Number(nextScale.toFixed(2))));
-        if (stageEl) {
-          stageEl.style.transform = `scale(${zoomScale})`;
-        }
-        if (zoomReadout) {
-          zoomReadout.textContent = `${Math.round(zoomScale * 100)}%`;
-        }
-      }
-
-      document.getElementById("zoomInBtn").addEventListener("click", () => updateZoom(zoomScale + 0.15));
-      document.getElementById("zoomOutBtn").addEventListener("click", () => updateZoom(zoomScale - 0.15));
-      document.getElementById("zoomResetBtn").addEventListener("click", () => updateZoom(1));
-
-      // 3. Full-view modal
-      const modal = document.getElementById("diagramModal");
-      const modalBody = document.getElementById("modalBody");
-      const sourceSvg = document.getElementById("workflowSvg");
-
-      document.getElementById("fullViewBtn").addEventListener("click", () => {
-        if (!sourceSvg || !modalBody || !modal) return;
-        const cloned = sourceSvg.cloneNode(true);
-        cloned.removeAttribute("id");
-        cloned.style.maxWidth = "none";
-        cloned.style.height = "auto";
-        modalBody.innerHTML = "";
-        modalBody.appendChild(cloned);
-        modal.classList.add("is-open");
-      });
-
-      document.getElementById("closeModalBtn").addEventListener("click", () => {
-        modal.classList.remove("is-open");
-      });
-
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.classList.remove("is-open");
-        }
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal.classList.contains("is-open")) {
-          modal.classList.remove("is-open");
-        }
-      });
-
-      // 4. Video fallback handling
-const videoEl = document.getElementById("chatbotVideo");
-const fallbackEl = document.getElementById("videoFallbackMessage");
-
-function showVideoFallback() {
-  if (fallbackEl) {
-    fallbackEl.classList.add("is-visible");
+<script>
+(function () {
+  // Aqua page theme toggle
+  const themeButton = document.getElementById('theme-toggle');
+  if (themeButton) {
+    function setDarkMode(enabled) {
+      document.body.classList.toggle('dark-mode', enabled);
+      themeButton.setAttribute('aria-pressed', String(enabled));
+    }
+    try { setDarkMode(localStorage.getItem('theme') === 'dark'); }
+    catch { setDarkMode(false); }
+    themeButton.addEventListener('click', function () {
+      const enabled = !document.body.classList.contains('dark-mode');
+      setDarkMode(enabled);
+      try { localStorage.setItem('theme', enabled ? 'dark' : 'light'); } catch {}
+    });
   }
-}
 
-function hideVideoFallback() {
-  if (fallbackEl) {
-    fallbackEl.classList.remove("is-visible");
+  // Workflow tabs
+  const views = {
+    complete: { caption: 'Full workflow: exhibition data is saved for search, then used by the chatbot to answer visitors.', layers: { ingestion: 1, chat: 1, booking: 1 } },
+    ingestion: { caption: 'Data preparation: n8n reads the company, exhibition, and event files and saves them in Supabase.', layers: { ingestion: 1, chat: .16, booking: .16 } },
+    chat: { caption: 'Chatbot: a visitor sends a message, the AI finds related information, and Qwen prepares an answer.', layers: { ingestion: .16, chat: 1, booking: .16 } },
+    booking: { caption: 'Demo booking: a separate workflow saves a sample booking only. It does not make a real reservation.', layers: { ingestion: .16, chat: .16, booking: 1 } }
+  };
+  const layers = {
+    ingestion: document.getElementById('layer-ingestion'),
+    chat: document.getElementById('layer-chat'),
+    booking: document.getElementById('layer-booking')
+  };
+  const caption = document.getElementById('diagramCaption');
+  const tabs = document.querySelectorAll('.tab-btn[data-view]');
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    const config = views[btn.dataset.view];
+    if (!config) return;
+    tabs.forEach(tab => tab.setAttribute('aria-selected', String(tab === btn)));
+    Object.keys(layers).forEach(key => { if (layers[key]) layers[key].style.opacity = config.layers[key]; });
+    caption.textContent = config.caption;
+  }));
+
+  // Diagram zoom
+  let scale = 1;
+  const stage = document.getElementById('diagramStage');
+  const readout = document.getElementById('zoomReadout');
+  function setZoom(value) {
+    scale = Math.max(.65, Math.min(1.8, value));
+    stage.style.transform = `scale(${scale})`;
+    readout.textContent = `${Math.round(scale * 100)}%`;
   }
-}
+  document.getElementById('zoomInBtn').addEventListener('click', () => setZoom(scale + .15));
+  document.getElementById('zoomOutBtn').addEventListener('click', () => setZoom(scale - .15));
+  document.getElementById('zoomResetBtn').addEventListener('click', () => setZoom(1));
 
-if (videoEl && fallbackEl) {
-  // Show the message only if the video actually fails
-  videoEl.addEventListener("error", showVideoFallback);
+  // Full diagram modal
+  const modal = document.getElementById('diagramModal');
+  const modalDiagram = document.getElementById('modalDiagram');
+  document.getElementById('fullViewBtn').addEventListener('click', () => {
+    const svg = document.getElementById('workflowSvg').cloneNode(true);
+    svg.removeAttribute('id');
+    modalDiagram.innerHTML = '';
+    modalDiagram.appendChild(svg);
+    modal.classList.add('is-open');
+  });
+  function closeModal() { modal.classList.remove('is-open'); }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });
 
-  // Hide the message once the video loads successfully
-  videoEl.addEventListener("loadedmetadata", hideVideoFallback);
-  videoEl.addEventListener("canplay", hideVideoFallback);
-}
-      })();
-  </script>
+  // Show the video warning only when the video really fails to load.
+  const video = document.getElementById('chatbotVideo');
+  const videoNotice = document.getElementById('videoFallbackMessage');
+  if (video && videoNotice) {
+    video.addEventListener('error', () => videoNotice.classList.add('is-visible'));
+    video.addEventListener('loadedmetadata', () => videoNotice.classList.remove('is-visible'));
+    video.addEventListener('canplay', () => videoNotice.classList.remove('is-visible'));
+  }
+})();
+</script>
 </body>
 </html>

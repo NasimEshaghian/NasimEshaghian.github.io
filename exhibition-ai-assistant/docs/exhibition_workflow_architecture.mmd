@@ -1,0 +1,22 @@
+flowchart TD
+    A[Google Drive: Booths JSON] --> D[Download and Extract]
+    B[Google Drive: General Info JSON] --> D
+    C[Google Drive: Events JSON] --> D
+    D --> E[Normalize Data and Metadata]
+    E --> F[Create Embeddings with Ollama]
+    F --> G[Supabase Vector Store: mcp_rag]
+
+    H[Visitor Message] --> I[Chat Webhook]
+    I --> J[Create Anonymous Session]
+    J --> K[Validate Message]
+    K --> L[Exhibition AI Agent]
+    M[Qwen Chat Model] --> L
+    N[Session Memory] --> L
+    G --> O[Knowledge Retrieval]
+    O --> L
+    L --> P[JSON Response]
+
+    L --> Q[Sandbox Booking Tool]
+    Q --> R[Booking Sub-workflow]
+    R --> S[Validate Booking Details]
+    S --> T[Save Demo Booking]

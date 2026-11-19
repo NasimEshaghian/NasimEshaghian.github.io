@@ -1,0 +1,954 @@
+{
+  "name": "exhibition_ai_assistant_portfolio",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "triggerOn": "specificFile",
+        "fileToWatch": {
+          "__rl": true,
+          "value": "REPLACE_WITH_GOOGLE_DRIVE_BOOTHS_FILE_ID",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -240
+      ],
+      "id": "a1000001-0001-4000-8000-000000000001",
+      "name": "Booths Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id || 'REPLACE_WITH_GOOGLE_DRIVE_BOOTHS_FILE_ID' }}"
+        },
+        "options": {
+          "fileName": "={{ $json.name || 'booths.json' }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -420,
+        -240
+      ],
+      "id": "a1000001-0001-4000-8000-000000000002",
+      "name": "Download Booths JSON",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        -240
+      ],
+      "id": "a1000001-0001-4000-8000-000000000003",
+      "name": "Extract Booths JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawInput = $input.first()?.json;\nconst booths = Array.isArray(rawInput?.data)\n  ? rawInput.data\n  : Array.isArray(rawInput)\n    ? rawInput\n    : [];\n\nconst safeStr = (val, fallback = \"نامشخص\") => {\n  if (val === null || val === undefined || val === \"-\" || String(val).trim() === \"\") {\n    return fallback;\n  }\n  return String(val).trim();\n};\n\n// Configurable placeholder map URLs per hall group\nconst hallMaps = {\n  \"8 - 9\": \"REPLACE_WITH_HALL_8_9_MAP_URL\",\n  \"10 - 11\": \"REPLACE_WITH_HALL_10_11_MAP_URL\"\n};\n\nreturn booths\n  .map((item) => {\n    const meta = item.metadata || {};\n    const companyName = safeStr(item.company_name || item[\"اسم شرکت\"] || meta.company);\n    const hall = safeStr(item.hall || item[\"شماره سالن\"] || meta.hall);\n    const boothNumber = safeStr(item.booth_number || item[\"شماره غرفه\"] || meta.booth_number);\n    const topic = safeStr(item.activity_field || item[\"حوزه فعالیت\"] || meta.field || item.topic || \"عمومی\");\n    const accessPath = safeStr(\n      item.access_path || item[\"مسیر نسبی از ورودی جنوب\"] || meta.access_path,\n      \"مراجعه به نقشه سالن\"\n    );\n\n    const content =\n      item.content &&\n      item.content.includes(\"مسیر دسترسی\") &&\n      item.content.includes(\"غرفه شماره\")\n        ? String(item.content).trim()\n        : `غرفه شرکت ${companyName} در سالن ${hall} و غرفه شماره ${boothNumber} قرار دارد. حوزه فعالیت: ${topic}. مسیر دسترسی: ${accessPath}.`;\n\n    return {\n      json: {\n        content,\n        metadata: {\n          type: \"booth_info\",\n          category: \"exhibition_info\",\n          topic,\n          company_name: companyName,\n          hall,\n          booth_number: boothNumber,\n          access_path: accessPath,\n          map_url: item.map_url || meta.map_url || hallMaps[hall] || \"\"\n        }\n      }\n    };\n  })\n  .filter((entry) => Boolean(entry.json.content));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -240
+      ],
+      "id": "a1000001-0001-4000-8000-000000000004",
+      "name": "Normalize Booths & Metadata"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "triggerOn": "specificFile",
+        "fileToWatch": {
+          "__rl": true,
+          "value": "REPLACE_WITH_GOOGLE_DRIVE_GENERAL_INFO_FILE_ID",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -40
+      ],
+      "id": "a1000001-0001-4000-8000-000000000005",
+      "name": "General Info Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id || 'REPLACE_WITH_GOOGLE_DRIVE_GENERAL_INFO_FILE_ID' }}"
+        },
+        "options": {
+          "fileName": "={{ $json.name || 'general_info.json' }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -420,
+        -40
+      ],
+      "id": "a1000001-0001-4000-8000-000000000006",
+      "name": "Download General Info JSON",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        -40
+      ],
+      "id": "a1000001-0001-4000-8000-000000000007",
+      "name": "Extract General Info JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first()?.json?.data?.exhibition_main || $input.first()?.json?.exhibition_main || {};\n\nconst safe = (v, fallback = \"نامشخص\") =>\n  v === null || v === undefined || String(v).trim() === \"\" ? fallback : String(v).trim();\n\nconst exName = safe(raw.exhibition_name, \"اولین نمایشگاه بین‌المللی هوش مصنوعی (AIX)\");\nconst exLoc = safe(raw.location);\nconst exDate = safe(raw.date, \"۲۲ تا ۲۵ مهر ۱۴۰۴\");\nconst exHours = safe(raw.visiting_hours, \"۸ صبح تا ۳ بعدازظهر\");\nconst exSupport = safe(raw.support);\nconst exPrice = safe(raw.entry_ticket, \"رایگان\");\n\nconst dataPoints = [\n  {\n    topic: \"overview\",\n    content: `${exName} در محل ${exLoc} برگزار می‌شود و میزبان شرکت‌ها و فعالان حوزه هوش مصنوعی است.`\n  },\n  {\n    topic: \"halls\",\n    content: `برای بازدید از بخش‌های مختلف ${exName} می‌توانید به ${safe(raw.halls)} مراجعه کنید.`\n  },\n  {\n    topic: \"date_and_time\",\n    content: `برنامه زمانی ${exName}: تاریخ ${exDate}، ساعات بازدید ${exHours}.`\n  },\n  {\n    topic: \"entry_rules\",\n    content: `شرایط حضور در ${exName}: ورود با QR Code ثبت‌نام انجام می‌شود و بلیط در بخش «بلیط‌های قبلی» در دسترس است.`\n  },\n  {\n    topic: \"support\",\n    content: `پشتیبانی ${exName}: ${exSupport}.`\n  }\n];\n\nreturn dataPoints.map((item) => ({\n  json: {\n    content: item.content,\n    metadata: {\n      type: \"general_info\",\n      category: \"exhibition_info\",\n      topic: item.topic,\n      location: exLoc,\n      exhibition_name: exName,\n      price: exPrice,\n      start_time: safe(raw.start_time, \"2025-10-22 08:00\"),\n      end_time: safe(raw.end_time, \"2025-10-25 15:00\"),\n      capacity: safe(raw.capacity, \"نامحدود\")\n    }\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -40
+      ],
+      "id": "a1000001-0001-4000-8000-000000000008",
+      "name": "Normalize General Info & Metadata"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "triggerOn": "specificFile",
+        "fileToWatch": {
+          "__rl": true,
+          "value": "REPLACE_WITH_GOOGLE_DRIVE_EVENTS_FILE_ID",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        160
+      ],
+      "id": "a1000001-0001-4000-8000-000000000009",
+      "name": "Events Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id || 'REPLACE_WITH_GOOGLE_DRIVE_EVENTS_FILE_ID' }}"
+        },
+        "options": {
+          "fileName": "={{ $json.name || 'events.json' }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -420,
+        160
+      ],
+      "id": "a1000001-0001-4000-8000-000000000010",
+      "name": "Download Events JSON",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        160
+      ],
+      "id": "a1000001-0001-4000-8000-000000000011",
+      "name": "Extract Events JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawInput = $input.first()?.json;\nconst rawEvents = Array.isArray(rawInput?.data?.events)\n  ? rawInput.data.events\n  : Array.isArray(rawInput?.events)\n    ? rawInput.events\n    : [];\n\nreturn rawEvents.map((ev) => {\n  const title = (ev.title || ev.topic || \"رویداد بدون نام\").toString().trim();\n  const location = (ev.location || \"نامشخص\").toString().trim();\n  const date = ev.start_date || (ev.startAt ? String(ev.startAt).split(\"T\")[0] : \"نامشخص\");\n  const startTime = ev.start_time || ev.eventTimeFrom || \"نامشخص\";\n  const endTime = ev.end_time || ev.eventTimeTo || \"نامشخص\";\n  const ticketPrice = ev.ticket_price !== undefined ? ev.ticket_price : (ev.ticketPrice ?? 0);\n  const isFree = ev.is_free !== undefined ? Boolean(ev.is_free) : Number(ticketPrice) === 0;\n  const capacity = ev.capacity ?? \"نامشخص\";\n\n  const content = [\n    `عنوان رویداد: ${title}`,\n    `محل برگزاری: ${location}`,\n    `تاریخ برگزاری: ${date}`,\n    `بازه زمانی: ${startTime} تا ${endTime}`,\n    `وضعیت هزینه: ${isFree ? \"رایگان\" : `${ticketPrice} تومان`}`,\n    `ظرفیت: ${capacity}`\n  ].join(\" | \");\n\n  return {\n    json: {\n      content,\n      metadata: {\n        type: \"events\",\n        category: \"exhibition_info\",\n        topic: title,\n        event_id: ev.event_id || ev.id || \"\",\n        location,\n        start_date: date,\n        start_time: startTime,\n        end_time: endTime,\n        is_free: isFree,\n        ticket_price: ticketPrice,\n        capacity\n      }\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        160
+      ],
+      "id": "a1000001-0001-4000-8000-000000000012",
+      "name": "Normalize Events & Metadata"
+    },
+    {
+      "parameters": {
+        "jsonMode": "=expressionData",
+        "jsonData": "={{ $json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "type",
+                "value": "={{ $json.metadata.type }}"
+              },
+              {
+                "name": "category",
+                "value": "={{ $json.metadata.category }}"
+              },
+              {
+                "name": "topic",
+                "value": "={{ $json.metadata.topic }}"
+              },
+              {
+                "name": "company_name",
+                "value": "={{ $json.metadata.company_name || '' }}"
+              },
+              {
+                "name": "hall",
+                "value": "={{ $json.metadata.hall || '' }}"
+              },
+              {
+                "name": "booth_number",
+                "value": "={{ $json.metadata.booth_number || '' }}"
+              },
+              {
+                "name": "access_path",
+                "value": "={{ $json.metadata.access_path || '' }}"
+              },
+              {
+                "name": "map_url",
+                "value": "={{ $json.metadata.map_url || '' }}"
+              },
+              {
+                "name": "location",
+                "value": "={{ $json.metadata.location || '' }}"
+              },
+              {
+                "name": "event_id",
+                "value": "={{ $json.metadata.event_id || '' }}"
+              },
+              {
+                "name": "start_date",
+                "value": "={{ $json.metadata.start_date || '' }}"
+              },
+              {
+                "name": "start_time",
+                "value": "={{ $json.metadata.start_time || '' }}"
+              },
+              {
+                "name": "end_time",
+                "value": "={{ $json.metadata.end_time || '' }}"
+              },
+              {
+                "name": "is_free",
+                "value": "={{ $json.metadata.is_free ?? '' }}"
+              },
+              {
+                "name": "ticket_price",
+                "value": "={{ $json.metadata.ticket_price ?? '' }}"
+              },
+              {
+                "name": "capacity",
+                "value": "={{ $json.metadata.capacity ?? '' }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        420,
+        140
+      ],
+      "id": "a1000001-0001-4000-8000-000000000013",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        420,
+        340
+      ],
+      "id": "a1000001-0001-4000-8000-000000000014",
+      "name": "Nomic Embeddings (Ollama)",
+      "credentials": {
+        "ollamaApi": {
+          "id": "REPLACE_WITH_OLLAMA_CREDENTIAL_ID",
+          "name": "Ollama Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "mcp_rag",
+          "mode": "list",
+          "cachedResultName": "mcp_rag"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        300,
+        -40
+      ],
+      "id": "a1000001-0001-4000-8000-000000000015",
+      "name": "Supabase Vector Store (Ingest)",
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE_WITH_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "exhibition-chat",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "http://localhost, http://localhost:3000, http://localhost:5173, http://127.0.0.1"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        620
+      ],
+      "id": "a1000001-0001-4000-8000-000000000016",
+      "name": "Visitor Chat Webhook",
+      "webhookId": "REPLACE_WITH_PORTFOLIO_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first()?.json?.body || $input.first()?.json || {};\nconst rawMessage = typeof body.message === \"string\"\n  ? body.message.trim()\n  : typeof body.chatInput === \"string\"\n    ? body.chatInput.trim()\n    : \"\";\n\nif (!rawMessage) {\n  return [\n    {\n      json: {\n        valid: false,\n        sessionId: body.sessionId || `anon_${Date.now()}`,\n        message: \"\",\n        errorMessage: \"پیام ورودی خالی است. لطفاً سؤال یا موضوع مورد نظر خود درباره نمایشگاه را بنویسید.\"\n      }\n    }\n  ];\n}\n\nconst providedSession = typeof body.sessionId === \"string\" && body.sessionId.trim().length > 0\n  ? body.sessionId.trim()\n  : `anon_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;\n\nreturn [\n  {\n    json: {\n      valid: true,\n      sessionId: providedSession,\n      message: rawMessage\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        620
+      ],
+      "id": "a1000001-0001-4000-8000-000000000017",
+      "name": "Normalize Anonymous Session"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-valid-message",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        620
+      ],
+      "id": "a1000001-0001-4000-8000-000000000018",
+      "name": "Validate Chat Input"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"ok\": false,\n  \"mode\": \"sandbox_demo\",\n  \"sessionId\": $json.sessionId,\n  \"reply\": $json.errorMessage\n} }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        80,
+        820
+      ],
+      "id": "a1000001-0001-4000-8000-000000000019",
+      "name": "Respond Validation Error"
+    },
+    {
+      "parameters": {
+        "model": "qwen3:4b-instruct",
+        "options": {
+          "temperature": 0,
+          "topK": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        40,
+        840
+      ],
+      "id": "a1000001-0001-4000-8000-000000000020",
+      "name": "Qwen Chat Model (Ollama)",
+      "credentials": {
+        "ollamaApi": {
+          "id": "REPLACE_WITH_OLLAMA_CREDENTIAL_ID",
+          "name": "Ollama Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Normalize Anonymous Session').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        200,
+        840
+      ],
+      "id": "a1000001-0001-4000-8000-000000000021",
+      "name": "Anonymous Session Memory"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool to retrieve verified exhibition information from the RAG knowledge base. Always specify type in your query context: type=\"general_info\" (hours, location, entry rules, support), type=\"booth_info\" (companies, activity topics, booth_number, hall, access_path, map_url), or type=\"events\" (workshops, sessions, dates, times, locations). Never invent exhibition details.",
+        "tableName": {
+          "__rl": true,
+          "value": "mcp_rag",
+          "mode": "list",
+          "cachedResultName": "mcp_rag"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        360,
+        840
+      ],
+      "id": "a1000001-0001-4000-8000-000000000022",
+      "name": "Knowledge Base Retrieval Tool",
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE_WITH_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Sandbox demo booking tool ONLY. Use ONLY when a visitor explicitly wants to test/simulate booking an exhibition event and has provided their full_name and selected event details (event_name, event_date, start_time, end_time, event_location). Creates a simulated demo reservation in the sandbox table—never a real exhibition booking.",
+        "workflowId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_DEMO_BOOKING_WORKFLOW_ID",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "full_name": "={{ $fromAI('full_name', 'Visitor full name in Persian or as provided', 'string') }}",
+            "event_name": "={{ $fromAI('event_name', 'Selected exhibition event title', 'string') }}",
+            "event_date": "={{ $fromAI('event_date', 'Event date', 'string') }}",
+            "start_time": "={{ $fromAI('start_time', 'Event start time', 'string') }}",
+            "end_time": "={{ $fromAI('end_time', 'Event end time', 'string') }}",
+            "event_location": "={{ $fromAI('event_location', 'Event hall or location', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "full_name",
+              "displayName": "full_name",
+              "required": true,
+              "type": "string",
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "event_name",
+              "displayName": "event_name",
+              "required": true,
+              "type": "string",
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "event_date",
+              "displayName": "event_date",
+              "required": true,
+              "type": "string",
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "start_time",
+              "displayName": "start_time",
+              "required": true,
+              "type": "string",
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "end_time",
+              "displayName": "end_time",
+              "required": true,
+              "type": "string",
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "event_location",
+              "displayName": "event_location",
+              "required": true,
+              "type": "string",
+              "defaultMatch": false,
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        840
+      ],
+      "id": "a1000001-0001-4000-8000-000000000023",
+      "name": "Sandbox Demo Booking Tool"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Normalize Anonymous Session').item.json.message }}",
+        "options": {
+          "systemMessage": "=شما «دستیار هوشمند نمایشگاه» (Exhibition AI Assistant) هستید؛ یک راهنمای فارسی‌زبان، دقیق و حرفه‌ای برای بازدیدکنندگان نمایشگاه.\n\nاصول کلیدی:\n1. فقط و منحصراً بر اساس اطلاعات بازیابی‌شده از ابزار Knowledge Base Retrieval Tool پاسخ دهید و هیچ جزئیات نمایشگاهی، غرفه، سالن یا رویدادی را از خود ابداع نکنید.\n2. قانون تک‌دسته در هر پیام را رعایت کنید: اطلاعات عمومی، جدول غرفه‌ها، جدول مسیر/نقشه و جدول رویدادها را در یک پیام با هم مخلوط نکنید.\n3. در جستجوی غرفه یا سالن، دقت فیلتر را حفظ کنید: اگر شماره غرفه دقیق مشخص شده، فقط همان غرفه را نمایش دهید؛ اگر سالن مشخص شده، فیلتر سالن را رعایت کنید.\n4. هنگام نمایش نقشه سالن، آن را در پیام/بخش جداگانه با عنوان مناسب و تصویر Markdown نمایش دهید و از لینک خام خودداری کنید.\n5. برای رزرو رویداد، این نسخه صرفاً یک محیط آزمایشی (Sandbox Demo) است و رزرو واقعی انجام نمی‌دهد؛ پس از دریافت نام کامل و رویداد انتخابی، از ابزار Sandbox Demo Booking Tool استفاده کنید و صریحاً اعلام کنید که رزرو شبیه‌سازی‌شده (دمو) است.\n6. فقط پرسش‌های تکمیلی ضروری و مرتبط بپرسید و از تکرار بی‌مورد خودداری کنید."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        220,
+        600
+      ],
+      "id": "a1000001-0001-4000-8000-000000000024",
+      "name": "Exhibition AI Agent",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"ok\": true,\n  \"mode\": \"sandbox_demo\",\n  \"sessionId\": $('Normalize Anonymous Session').item.json.sessionId,\n  \"reply\": $json.output\n} }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        540,
+        540
+      ],
+      "id": "a1000001-0001-4000-8000-000000000025",
+      "name": "Respond Chat Success"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"ok\": false,\n  \"mode\": \"sandbox_demo\",\n  \"sessionId\": $('Normalize Anonymous Session').item.json.sessionId,\n  \"reply\": \"متأسفانه در پردازش درخواست شما خطایی رخ داد. لطفاً مجدداً تلاش کنید یا موضوع پرسش خود را ساده‌تر بیان نمایید.\",\n  \"error\": $json.error?.message || \"Agent execution error\"\n} }}",
+        "options": {
+          "responseCode": 500
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        540,
+        720
+      ],
+      "id": "a1000001-0001-4000-8000-000000000026",
+      "name": "Respond Agent Error"
+    }
+  ],
+  "connections": {
+    "Booths Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download Booths JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Booths JSON": {
+      "main": [
+        [
+          {
+            "node": "Extract Booths JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Booths JSON": {
+      "main": [
+        [
+          {
+            "node": "Normalize Booths & Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Booths & Metadata": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store (Ingest)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "General Info Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download General Info JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download General Info JSON": {
+      "main": [
+        [
+          {
+            "node": "Extract General Info JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract General Info JSON": {
+      "main": [
+        [
+          {
+            "node": "Normalize General Info & Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize General Info & Metadata": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store (Ingest)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Events Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download Events JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Events JSON": {
+      "main": [
+        [
+          {
+            "node": "Extract Events JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Events JSON": {
+      "main": [
+        [
+          {
+            "node": "Normalize Events & Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Events & Metadata": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store (Ingest)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store (Ingest)",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nomic Embeddings (Ollama)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store (Ingest)",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Knowledge Base Retrieval Tool",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Visitor Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Anonymous Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Anonymous Session": {
+      "main": [
+        [
+          {
+            "node": "Validate Chat Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Exhibition AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qwen Chat Model (Ollama)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Exhibition AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anonymous Session Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Exhibition AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Base Retrieval Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Exhibition AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sandbox Demo Booking Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Exhibition AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exhibition AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond Chat Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Agent Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "portfolio-v1-sanitized",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "exhibition_ai_assistant_portfolio",
+  "tags": [
+    "portfolio",
+    "rag",
+    "n8n",
+    "ollama"
+  ]
+}

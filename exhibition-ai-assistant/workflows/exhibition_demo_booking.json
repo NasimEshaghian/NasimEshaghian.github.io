@@ -1,0 +1,218 @@
+{
+  "name": "exhibition_demo_booking",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "b2000002-0002-4000-8000-000000000001",
+      "name": "Sub-Workflow Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first()?.json || {};\n\nconst requiredFields = [\n  \"full_name\",\n  \"event_name\",\n  \"event_date\",\n  \"start_time\",\n  \"end_time\",\n  \"event_location\"\n];\n\nconst missing = requiredFields.filter(\n  (field) => !raw[field] || String(raw[field]).trim() === \"\"\n);\n\nif (missing.length > 0) {\n  return [\n    {\n      json: {\n        valid: false,\n        missing_fields: missing,\n        message: `اطلاعات زیر برای رزرو آزمایشی (Sandbox) ناقص است: ${missing.join(\", \")}`\n      }\n    }\n  ];\n}\n\nconst randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();\nconst bookingId = `DEMO-${Date.now()}-${randomPart}`;\n\nreturn [\n  {\n    json: {\n      valid: true,\n      full_name: String(raw.full_name).trim(),\n      event_name: String(raw.event_name).trim(),\n      event_date: String(raw.event_date).trim(),\n      start_time: String(raw.start_time).trim(),\n      end_time: String(raw.end_time).trim(),\n      event_location: String(raw.event_location).trim(),\n      booking_mode: \"sandbox\",\n      booking_status: \"simulated_confirmed\",\n      booking_id: bookingId,\n      is_simulated: true,\n      created_at: new Date().toISOString()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        0
+      ],
+      "id": "b2000002-0002-4000-8000-000000000002",
+      "name": "Validate & Build Sandbox Record"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-booking-valid",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        40,
+        0
+      ],
+      "id": "b2000002-0002-4000-8000-000000000003",
+      "name": "Check Required Fields"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "demo_bookings",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "booking_id",
+              "fieldValue": "={{ $json.booking_id }}"
+            },
+            {
+              "fieldId": "full_name",
+              "fieldValue": "={{ $json.full_name }}"
+            },
+            {
+              "fieldId": "event_name",
+              "fieldValue": "={{ $json.event_name }}"
+            },
+            {
+              "fieldId": "event_date",
+              "fieldValue": "={{ $json.event_date }}"
+            },
+            {
+              "fieldId": "start_time",
+              "fieldValue": "={{ $json.start_time }}"
+            },
+            {
+              "fieldId": "end_time",
+              "fieldValue": "={{ $json.end_time }}"
+            },
+            {
+              "fieldId": "event_location",
+              "fieldValue": "={{ $json.event_location }}"
+            },
+            {
+              "fieldId": "booking_mode",
+              "fieldValue": "sandbox"
+            },
+            {
+              "fieldId": "booking_status",
+              "fieldValue": "={{ $json.booking_status }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -100
+      ],
+      "id": "b2000002-0002-4000-8000-000000000004",
+      "name": "Save Sandbox Demo Booking",
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE_WITH_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase Portfolio Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const built = $('Validate & Build Sandbox Record').first().json;\n\nreturn [\n  {\n    json: {\n      ok: true,\n      simulation_notice: \"این یک رزرو آزمایشی (Sandbox Demo) است و رزرو واقعی در سامانه نمایشگاه ثبت نشده است.\",\n      booking_id: built.booking_id,\n      booking_mode: \"sandbox\",\n      booking_status: built.booking_status,\n      full_name: built.full_name,\n      event_name: built.event_name,\n      event_date: built.event_date,\n      start_time: built.start_time,\n      end_time: built.end_time,\n      event_location: built.event_location\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        -100
+      ],
+      "id": "b2000002-0002-4000-8000-000000000005",
+      "name": "Format Sandbox Confirmation"
+    },
+    {
+      "parameters": {
+        "jsCode": "const err = $input.first()?.json || {};\n\nreturn [\n  {\n    json: {\n      ok: false,\n      simulation_notice: \"رزرو آزمایشی (Sandbox Demo) تکمیل نشد؛ اطلاعات الزامی را بررسی کنید.\",\n      booking_mode: \"sandbox\",\n      booking_status: \"validation_failed\",\n      missing_fields: err.missing_fields || [],\n      error: err.message || \"Missing required sandbox booking fields\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        120
+      ],
+      "id": "b2000002-0002-4000-8000-000000000006",
+      "name": "Format Validation Error"
+    }
+  ],
+  "connections": {
+    "Sub-Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate & Build Sandbox Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Build Sandbox Record": {
+      "main": [
+        [
+          {
+            "node": "Check Required Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Required Fields": {
+      "main": [
+        [
+          {
+            "node": "Save Sandbox Demo Booking",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Sandbox Demo Booking": {
+      "main": [
+        [
+          {
+            "node": "Format Sandbox Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "portfolio-demo-booking-v1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "exhibition_demo_booking",
+  "tags": [
+    "portfolio",
+    "sandbox",
+    "booking"
+  ]
+}
